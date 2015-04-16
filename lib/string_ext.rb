@@ -1,5 +1,5 @@
-# $Id: string_ext.rb 5294 2015-01-23 15:59:21Z bmck $
-# $(c): Copyright 2008-2015 by Capitalytics $
+# $Id$
+# $(c)$
 
 # Extend the core Ruby String class with Capitalytics-specific functionality.
 class String

@@ -1,5 +1,5 @@
-# $Id: permitted_params.rb 5694 2015-04-12 21:23:36Z bmck $
-# $(c): Copyright 2008-2015 by Capitalytics $
+# $Id$
+# $(c)$
 
 # based on information presented at http://railscasts.com/episodes/371-strong-parameters
 # Use this class to screen params provided in ctor, and to provide default values

@@ -1,5 +1,5 @@
-# $Id: active_record_base_ext.rb 5627 2015-03-21 20:10:54Z bmck $
-# $(c): Copyright 2008-2015 by Capitalytics $
+# $Id$
+# $(c)$
 
 module ActiveRecord
 
