@@ -15,7 +15,7 @@ THIS_DIR=`dirname "$THIS_FILE"`
 
 svn -R propdel svn:keywords "$THIS_DIR"/..
 svn -R propdel svn:eol-style "$THIS_DIR"/..
-svn -R propset svn:keywords "Id (c)=Copyright%_2008-2015%_by%_Newco" "$THIS_DIR"/..
+svn -R propset svn:keywords "Id (c)=Copyright%_2015%_by%_Newco" "$THIS_DIR"/..
 
 # 4. Add the SVN "LF" eol-style for only the files that should have it.
 #    Files should have this property if they are not binary, i.e. if they do not have an SVN mime-type property.
