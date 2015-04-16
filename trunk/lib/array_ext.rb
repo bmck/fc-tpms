@@ -1,5 +1,5 @@
-# $Id: array_ext.rb 5225 2015-01-12 16:40:00Z bmck $
-# $(c): Copyright 2008-2015 by Capitalytics $
+# $Id$
+# $(c)$
 
 # Extend the core Ruby Array class with weighted-random-value functionality.
 
