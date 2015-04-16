@@ -1,0 +1,845 @@
+#!/bin/bash --login
+# $Id: init_centos_server 5463 2015-02-12 23:12:18Z bmck $
+# $(c): Copyright 2008-2015 by Capitalytics $
+
+# This script is intended to be a _single_file_ installation script to set up a Centos server with all Capitalytics'
+# bells and whistles.  It should only be run by root.
+
+
+
+
+
+
+
+
+
+
+step_0() {
+
+echo --------------------------------------------- STEP 0
+echo Preconfiguration
+
+#  /data is typically on a "larger" partition than /; / usually contains /tmp
+mv /home /data
+ln -s /data/home /
+
+echo At this time, please use ^Z to stop this process so that you may set the password for root with "passwd".
+echo Then return to this process using \'fg 1\' or similar command, and press Enter to resume this script.
+read -t 100 NTR
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+step_1() {
+
+echo --------------------------------------------- STEP 1
+echo Installing RPMForge, EPEL and dependent repositories
+
+# RPM Forge
+rpm --import http://apt.sw.be/RPM-GPG-KEY.dag.txt
+rpm -Uvh http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.2-2.el6.rf.x86_64.rpm
+
+# EPEL & Remi
+
+# Per http://stackoverflow.com/questions/14016286/how-to-programmatically-install-the-latest-epel-release-rpm-without-knowing-its
+cat <<EOM >/etc/yum.repos.d/epel-bootstrap.repo
+[epel]
+name=Bootstrap EPEL
+mirrorlist=http://mirrors.fedoraproject.org/mirrorlist?repo=epel-\$releasever&arch=\$basearch
+failovermethod=priority
+enabled=0
+gpgcheck=0
+EOM
+
+cat <<EOM >/etc/yum.repos.d/mariadb.repo
+# MariaDB 10.0 CentOS repository list
+# http://mariadb.org/mariadb/repositories/
+[mariadb]
+name = MariaDB
+baseurl = http://yum.mariadb.org/10.0/centos6-amd64
+gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+gpgcheck=1
+EOM
+
+yum --enablerepo=epel -y install epel-release
+rm -f /etc/yum.repos.d/epel-bootstrap.repo
+
+rpm --import https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
+
+yum -y install http://rpms.famillecollet.com/enterprise/remi-release-6.rpm
+
+mkdir /var/lib/mysql
+
+
+}
+
+
+
+
+
+
+
+
+
+
+step_2() {
+
+echo --------------------------------------------- STEP 2
+echo Installing RPM packages
+#
+#     Note that on an x86_64 (64-bit) architecture, it is necessary to specify the architecture for
+#     the R and R-devel packages (i.e. "R.x86_64" and "R-devel.x86_64"). DO NOT install the standard
+#     (32-bit) versions of these two packages.  For example,
+
+yum -y erase parted-2.3-11.fu2012.x86_64 mysql*
+
+yum -y install nmap.x86_64 libcurl.x86_64 libcurl-devel.x86_64 \
+        MariaDB-shared.x86_64 MariaDB-compat.x86_64 MariaDB-client.x86_64 MariaDB-server.x86_64 \
+        httpd.x86_64 mod_ssl.x86_64 httpd-devel.x86_64 make.x86_64 apr-devel.x86_64 openssl-devel.x86_64 openssl-static.x86_64 \
+        apr-util-devel.x86_64 libxml2.x86_64 libxml2-devel.x86_64 R.x86_64 R-devel.x86_64 cronie.x86_64 crontabs \
+        subversion.x86_64 db4.x86_64 db4-utils.x86_64 zlib.x86_64 zlib-devel.x86_64 libffi.x86_64 \
+        p7zip.x86_64 cmake.x86_64 libpng.x86_64 libpng-devel.x86_64 mutt.x86_64 make.x86_64 \
+        logwatch.noarch gcc.x86_64 gcc-c++.x86_64 autoconf.noarch automake.noarch libtool.x86_64 \
+        java-1.6.0-openjdk.x86_64 freetype.x86_64 expat.x86_64 sendmail.x86_64 sendmail-cf.noarch \
+        cyrus-sasl.x86_64 cyrus-sasl-devel.x86_64 cyrus-sasl-lib.x86_64 cyrus-sasl-md5.x86_64 cyrus-sasl-plain.x86_64 \
+        bzip2-devel.x86_64 iscsi-initiator-utils.x86_64 libxslt-devel.x86_64 gsl-devel.x86_64 \
+        # unoconv-0.4-1.noarch pdftk.x86_64 \
+        libreoffice-headless.x86_64 libreoffice-writer.x86_64 libreoffice.x86_64 libreoffice-sdk.x86_64 \
+        libreoffice-sdk-doc.x86_64 git.x86_64 libreoffice-pyuno.x86_64 openssh-clients.x86_64 rsync.x86_64 \
+        libreoffice-core.x86_64 libreoffice-pdfimport.x86_64
+yum -y install MariaDB-devel.x86_64
+yum -y update --obsoletes
+
+if [ $? != 0 ]; then
+  echo Yum processes did not complete correctly.  Pls examine output, correct any issues, and re-run.
+  exit
+fi
+
+}
+
+
+
+
+
+
+
+
+
+
+
+step_3() {
+
+echo --------------------------------------------- STEP 3
+echo Installing rvm, ruby and its dependencies
+
+curl -L get.rvm.io | bash -s stable
+source /etc/profile.d/rvm.sh
+rvm install 2.1.4 ; rvm use 2.1.4 --default
+
+
+}
+
+
+
+
+
+
+
+
+
+
+step_4() {
+
+echo --------------------------------------------- STEP 4
+echo Disable selinux.
+
+setenforce 0
+sed -e 's/SELINUX=enforcing//g' -e 's/SELINUX=permissive//g' < /etc/selinux/config > /tmp/selinux.config
+echo -e "\nSELINUX=disabled\n" >> /tmp/selinux.config
+mv /etc/selinux/config /etc/selinux/config.bak
+mv /tmp/selinux.config /etc/selinux/config
+
+}
+
+
+
+
+
+
+
+
+
+step_5() {
+
+echo --------------------------------------------- STEP 5
+echo Configure Services
+#  Use nmap ("nmap -p1-65535 localhost") to determine which services are listening on open ports.
+#     Then shut down all unnecessary services ("service XXXX stop") and disable them upon startup
+#     ("chkconfig XXXX off").
+#
+#     The observed output for a "stock" image from NewServers is as follows:
+#
+#       [root@server3799 ~]# nmap -p1-65535 localhost
+#
+#       Starting Nmap 4.11 ( http://www.insecure.org/nmap/ ) at 2010-01-08 10:55 EST
+#       Interesting ports on localhost.localdomain (127.0.0.1):
+#       Not shown: 65528 closed ports
+#       PORT     STATE SERVICE
+#       22/tcp   open  ssh
+#       25/tcp   open  smtp
+#       111/tcp  open  rpcbind
+#       199/tcp  open  smux
+#       631/tcp  open  ipp
+#       680/tcp  open  unknown
+#       1311/tcp open  unknown
+#
+#     Port 25 (smtp) should remain open for sending email as part of the Capitalytics service.
+#     Ports 111 (rpcbind), 199 (smux), and 1311 should remain open for the NewServers management system.
+#     Port 631 (ipp) is controlled via the cups service, and should be closed.
+#     It is not clear what services are using port 680.  Port 6311 will be needed for for Rserve.
+#
+#     Ensure that yum-cron and yum-updatesd are not running and explicitly disabled.  A cron job will be
+#     installed later in this process to notify us of pending new packages of interest, so that the new
+#     packages can be vetted prior to deployment.
+
+service yum-cron stop; chkconfig yum-cron off
+service yum-updatesd stop; chkconfig yum-updatesd off
+service cups stop; chkconfig cups off
+
+}
+
+
+
+
+
+
+
+
+
+step_6() {
+
+echo --------------------------------------------- STEP 6
+echo Updating R
+
+./update.R
+
+}
+
+
+
+
+
+
+
+
+
+step_7() {
+
+echo --------------------------------------------- STEP 7
+echo Creating user accounts
+#  Create the "newco" local user account, as well as other accounts required for administrators.
+
+useradd newco && chmod 755 /home/newco
+usermod -G wheel,rvm newco
+useradd bmck && chmod 700 /home/bmck
+
+}
+
+
+
+
+
+
+
+
+
+step_8() {
+
+echo --------------------------------------------- STEP 8
+echo Setup SSH keys
+#   Install the appropriate authorized_keys file for each administrator account, to enable SSH access
+#     without a password.
+
+# bmck key is installed to allow access to get mysql dbase files later in this installation process
+mkdir -p /home/bmck/.ssh && chown bmck:bmck /home/bmck/.ssh && chmod 700 /home/bmck/.ssh
+echo "ssh-dss AAAAB3NzaC1kc3MAAACBAJ1UgOLagb9nu4yvNH1mZNpkGM9FozmA+CIMgCTXzJs2epSRA/sstAmhQW85Tqti8JmoilOiWheD2HX5HaC14Mowk3yctCit3vUvkiAVgl86ZpcKUBYl5/7mHanYWsV8TESnpY9255MFJkncxJJI5F/+9Y+WG0+bmGvZuT3OLXW7AAAAFQDlFO4EPvurUdggw2QuZ+H+R+A/swAAAIBT+4KnSyxU+rdjGyBhgEtk7GSzlsBcOmFzRJdfAp/xHAfF+QlhueOk++DNtrDHPwQkngMDNUWcyo4z9nqRY52gvD4c7UVmju+kjID0Ru7jahsSMh+nd/dRYaaTW/lhbYJLzKU00tcqlj9Rlc0kgbBHjNhNu1kDtPDKaJl+uYk/oAAAAIBmTIWfpiogpVLKVeRExFi43tSYG68IM75M/Ph4m4uR2HvGdsPMrpSXSXgRdBUuy7p/gTk1Vd1E6UVZYLw3WC0Ukc6Wuu9jsKs6PwM3S6c9ZsCtiVn6x3Ed3nYqLvdTUsWWbyL01w+6aRBI2nn5uvOvuCTWOQutjVLMBDqySOAn+Q==" > ~bmck/.ssh/authorized_keys && chown bmck:bmck ~bmck/.ssh/authorized_keys && chmod 600 ~bmck/.ssh/authorized_keys
+echo -e "-----BEGIN DSA PRIVATE KEY-----
+MIIBugIBAAKBgQCdVIDi2oG/Z7uMrzR9ZmTaZBjPRaM5gPgiDIAk18ybNnqUkQP7
+LLQJoUFvOU6rYvCZqIpToloXg9h1+R2gteDKMJN8nLQord71L5IgFYJfOmaXClAW
+Jef+5h2p2FrFfExEp6WPdueTBSZJ3MSSSORf/vWPlhtPm5hr2bk9zi11uwIVAOUU
+7gQ++6tR2CDDZC5n4f5H4D+zAoGAU/uCp0ssVPq3YxsgYYBLZOxks5bAXDphc0SX
+XwKf8RwHxfkJYbnjpPvgzbawxz8EJJ4DAzVFnMqOM/Z6kWOdoLw+HO1FZo7vpIyA
+9Ebu42obEjIfp3f3UWGmk1v5YW2CS8ylNNLXKpY/UZXNJIGwR4zYTbtZA7TwymiZ
+frmJP6ACgYBmTIWfpiogpVLKVeRExFi43tSYG68IM75M/Ph4m4uR2HvGdsPMrpSX
+SXgRdBUuy7p/gTk1Vd1E6UVZYLw3WC0Ukc6Wuu9jsKs6PwM3S6c9ZsCtiVn6x3Ed
+3nYqLvdTUsWWbyL01w+6aRBI2nn5uvOvuCTWOQutjVLMBDqySOAn+QIURclHgjON
+Y6dZWZj7a7aLyY7+UUA=
+-----END DSA PRIVATE KEY-----" > ~bmck/.ssh/id_dsa && chown bmck:bmck ~bmck/.ssh/id_dsa && chmod 400 ~bmck/.ssh/id_dsa
+
+# echo -e "Port 9922
+# User bmck
+# Host www.capitalytics.com
+# Port 9922
+# User bmck
+# Host capitalytics.com" > ~bmck/.ssh/config && chown bmck:bmck ~bmck/.ssh/config && chmod 400 ~bmck/.ssh/config
+
+}
+
+
+
+
+
+
+
+
+
+step_9() {
+
+echo --------------------------------------------- STEP 9
+echo Setup newco account
+# Configure the "newco" account to run the web application code and configuration files.
+
+mkdir -p /home/newco/html && chown newco:newco /home/newco/html && chmod 775 /home/newco/html
+su - newco -c "cd && svn checkout --username newco --password w4r4w4Rjp --non-interactive https://subversion.assembla.com/svn/newco/trunk assembla"
+su - newco -c "ln -s ~/assembla ~/src"
+su - newco -c "cd ~/src/config && ln -s database-mysql-prod.yml database.yml"
+echo "export PATH=$PATH:/usr/local/lib/ruby/gems/1.9.1/bin" >> ~newco/.bash_profile
+mkdir /home/newco/tmp && mkdir /home/newco/tmp/cores && chown -R newco:newco /home/newco/tmp && ln -s /home/newco/tmp/cores /cores
+
+}
+
+
+
+
+
+
+
+
+
+
+step_10() {
+
+echo --------------------------------------------- STEP 10
+
+
+}
+
+
+
+
+
+
+
+
+
+
+step_11() {
+
+echo --------------------------------------------- STEP 11
+
+
+}
+
+
+
+
+
+
+
+
+
+
+step_12() {
+
+echo --------------------------------------------- STEP 12
+echo Install gems
+#
+#    NOTE 1: Use "gem install --version VERSION --no-ri --no-rdoc <PKGNAME>" to install a gem package.
+#    Specifying --no-ri and --no-rdoc prevents installation of local package documentation files,
+#    which are unnecessary and require significant additional installation time.
+#
+#    NOTE 2: During installation of some gems, other gems may be installed as dependencies. In some
+#    cases, the dependencies installed will be a different version than is listed above. If this happens,
+#    be sure to uninstall the incorrect version and install the correct version in its place.
+#    Alternatively, you can install all gems with the --ignore-dependencies option, but this is riskier.
+#
+
+rvm use 2.1.4@global --create
+gem install --no-rdoc --no-ri bundler
+gem install --no-rdoc --no-ri rake -v 10.3.2
+gem install --no-rdoc --no-ri rack -v 1.5.2
+rvm gemset delete newco --force
+su - newco -c "rvm use 2.1.4@newco --create && cd src && bundle install "
+rvm use 2.1.4@newco
+
+}
+
+
+
+
+
+
+
+
+
+
+step_13() {
+
+echo --------------------------------------------- STEP 13
+echo Configure and populate MariaDB
+
+USR=bmck
+
+service mysql stop
+mv /etc/my.cnf /etc/my.cnf.bak
+ln -s ~newco/src/etc/mysql/my.cnf.prod /etc/my.cnf
+ln -s /etc/init.d/mysql /etc/init.d/mysqld
+
+mv /var/lib/mysql /data
+ln -s /data/mysql /var/lib
+chown -h mysql:mysql /var/lib/mysql
+
+# echo At this time, please use ^Z to stop this process, so that you may ensure that dbase tables on the current capitalytics.com have appropriately set permissions.
+# echo You may also want to make sure that the user $USR can access www.capitalytics.com by running a command set similar to the following:
+# echo
+# echo -e "(as root)"
+# echo $ su - $USR
+# echo
+# echo -e "(as $USR)"
+# echo $ ssh -l $USR -p 9922 www.capitalytics.com
+# echo
+# echo You may also wish to ensure that all of the relevant tables are in MyISAM format.  One way to do so is the following command, executed as
+# echo -e "the \"newco\" user on the target machine (i.e., www.capitalytics.com)."
+# echo
+# echo -e "(as newco)"
+# echo $ rake db:caplyt:myisam_convert --trace
+# echo
+# echo Then return to this process using \'fg 1\' or similar command, and press Enter to resume this script.
+# read NTR
+
+chmod 777 /data/mysql
+ls -d1 /var/lib/mysql/* | xargs chmod 777
+su - $USR -c "~newco/src/bin/sync_db"
+chown -R mysql:mysql /var/lib/mysql/*
+ls -d1 /var/lib/mysql/* | xargs chmod 700
+chmod 644 /var/lib/mysql/*/*
+chmod 755 /data/mysql
+service mysql start; chkconfig mysql on
+
+mysql -u admin --password=w4r4w4R -e "create database newco_test;"
+mysql_upgrade -u admin --password=w4r4w4R
+mysql -u admin --password=w4r4w4R -D mysql -e "repair table proc;"
+
+
+}
+
+
+
+
+
+
+
+
+
+
+step_14() {
+
+echo --------------------------------------------- STEP 14
+echo Configure httpd and passenger
+
+service httpd stop
+cd /etc/httpd/conf ; mv httpd.conf httpd.conf.old ; ln -s  ~newco/src/etc/httpd/httpd.conf .
+cd /etc/httpd/conf.d ; mv ssl.conf ssl.conf.old ; ln -s  ~newco/src/etc/httpd/ssl.conf .
+/usr/local/rvm/gems/ruby-2.1.4@caplyt/gems/passenger-*/bin/passenger-install-apache2-module  --auto
+service httpd start; chkconfig httpd on
+
+}
+
+
+
+
+
+
+
+
+
+
+
+step_15() {
+
+echo --------------------------------------------- STEP 15
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+step_16() {
+
+echo --------------------------------------------- STEP 16
+# echo Configure outgoing email
+
+
+# cd /etc/pki/tls/certs ; ln -s /home/newco/src/etc/email/*.pem .
+# mv /etc/mail/authinfo /etc/mail/authinfo.bak
+# mv /etc/mail/sendmail.mc /etc/mail/sendmail.mc.bak
+# ln -s ~newco/src/etc/email/authinfo /etc/mail
+# ln -s ~newco/src/etc/email/sendmail.mc /etc/mail
+cd /etc/mail ; make clean ; make
+service sendmail restart; chkconfig sendmail on
+# echo "info@capitalytics.com" > ~/.forward
+# su - newco -c "echo 'support@capitalytics.com' > ~/.forward"
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+step_17() {
+
+echo --------------------------------------------- STEP 17
+echo Install 3rd party software
+
+mkdir ~newco/tmp
+cd ~newco/tmp
+
+# echo Boost v.1.47
+# cd ~newco/src/vendor/3rdparty/boost/1.47.0
+# ./bootstrap.sh --without-libraries=python
+# ./b2 --clean
+# ./b2 -a -d+2 install
+
+# echo Boost v.1.53
+# cd ~newco/src/vendor/3rdparty/boost/1.53.0
+# ./bootstrap.sh --without-libraries=python
+# ./b2 --clean
+# ./b2 -a -d+2 install
+
+# echo Boost v.1.55
+# cd ~newco/src/vendor/3rdparty/boost/1.55.0
+# ./bootstrap.sh --without-libraries=python
+# ./b2 --clean
+# ./b2 -a -d+2 install
+
+# cd ..
+
+# echo yaml-cpp v.0.2.7
+
+# cd ~newco/tmp
+# wget http://yaml-cpp.googlecode.com/files/yaml-cpp-0.2.7.tar.gz
+# tar -zxvf yaml-cpp-0.2.7.tar.gz
+# cd yaml-cpp-0.2.7
+# cmake -DCMAKE_INSTALL_PREFIX:PATH=/usr -DBUILD_SHARED_LIBS=ON .
+# make clean; make; make install
+
+
+# echo mysql++ v.3.2.1
+
+# cd ~newco/tmp
+# rm -rf mysql++-3.2.1*
+# wget http://tangentsoft.net/mysql++/releases/mysql++-3.2.1.tar.gz
+# tar -zxvf mysql++-3.2.1.tar.gz
+# cd mysql++-3.2.1
+
+# ./configure --prefix=/usr --enable-thread-check
+# make clean; make; make install
+
+# echo unoconv
+
+# cd /usr/local/bin
+# ln -s ~newco/src/vendor/3rdparty/unoconv/trunk/unoconv .
+
+# echo QuantLib v.1.2.1
+
+# cd ~newco/src/vendor/3rdparty/quantlib/1.2.1/QuantLib
+# ./autogen.sh
+# ./configure --prefix=/usr --with-boost-include=/usr/local/include/boost --with-boost-lib=/usr/local/lib
+# make clean ; make all
+
+# echo QuantLib v.1.3
+
+# cd ~newco/src/vendor/3rdparty/quantlib/1.3/QuantLib
+# ./autogen.sh
+# ./configure --prefix=/usr --with-boost-include=/usr/local/include/boost --with-boost-lib=/usr/local/lib
+# make clean ; make all
+
+# echo QuantLib v.1.3
+
+# cd ~newco/src/vendor/3rdparty/quantlib/1.4/QuantLib
+# ./autogen.sh
+# ./configure --prefix=/usr --with-boost-include=/usr/local/include/boost --with-boost-lib=/usr/local/lib
+# mv ql/config.hpp ql/config.hpp.bak
+# ln -s ~newco/src/etc/QuantLib/config-prod.hpp ql/config.hpp
+# make clean ; make all install
+
+# mv /usr/include/ql/config.hpp /usr/include/ql/config.hpp.old
+# ln -s ~newco/src/etc/QuantLib/config-prod.hpp /usr/include/ql/config.hpp
+
+chown -R newco:newco ~newco/tmp
+}
+
+
+
+
+
+
+
+
+
+
+step_18() {
+
+echo --------------------------------------------- STEP 18
+
+
+}
+
+
+
+
+
+
+
+
+
+
+step_19() {
+
+echo --------------------------------------------- STEP 19
+echo Configure logrotate and logwatch
+
+cd /etc; rm -f logrotate.conf; ln -s /home/newco/src/etc/logrotate/logrotate.conf
+
+cd /usr/share/logwatch/scripts/services
+mv http ~newco/src/etc/logwatch/scripts/services
+chown newco:newco ~newco/src/etc/logwatch/scripts/services/http
+ln -s ~newco/src/etc/logwatch/scripts/services/http .
+
+}
+
+
+
+
+
+
+
+
+
+step_20() {
+
+echo --------------------------------------------- STEP 20
+echo Configure SSHD
+
+service iptables stop
+mv /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
+cd /etc/ssh
+ln -s ~newco/src/etc/ssh/sshd_config .
+service sshd restart
+
+}
+
+
+
+
+
+
+
+
+
+
+step_21() {
+
+echo --------------------------------------------- STEP 21
+echo Shut down and disable ip6tables
+
+service ip6tables stop; chkconfig ip6tables off
+
+}
+
+
+
+
+
+
+
+
+
+
+step_22() {
+
+echo --------------------------------------------- STEP 22
+echo Configure iptables
+
+mv /etc/sysconfig/iptables /etc/sysconfig/iptables.bak
+ln -s ~newco/src/etc/iptables/iptables.conf /etc/sysconfig/iptables
+service iptables restart; chkconfig iptables on
+
+}
+
+
+
+
+
+
+
+
+
+step_23() {
+
+echo --------------------------------------------- STEP 23
+echo Configure NTP
+
+echo At this time, please use ^Z to stop this process so that you may configure NTP.
+echo Then return to this process using \'fg 1\' or similar command, and press Enter to resume this script.
+read -t 100 NTR
+
+}
+
+
+
+
+
+
+
+
+
+step_24() {
+
+echo --------------------------------------------- STEP 24
+echo Configure cron jobs
+
+echo At this time, please use ^Z to stop this process so that you may rsync all necessary files between ~newco/tmp on the current production server and this server.
+echo When completed, return to this process using \'fg 1\' or similar command, and press Enter to resume this script.
+read -t 100 NTR
+
+}
+
+
+
+
+
+
+
+
+
+
+
+step_25() {
+
+echo --------------------------------------------- STEP 25
+echo Configure External DNS Records
+
+echo At this time, please use ^Z to stop this process so that you may update external DNS records to point to this machine appropriately.
+echo When completed, return to this process using \'fg 1\' or similar command, and press Enter to resume this script.
+read -t 100 NTR
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+usage() {
+
+echo -e "This program sets up and installs the Newco system onto a Centos 6 system.  It is divided into \`expr $MAXSTEP \+ 1\` steps,
+by default running from step 0 to step $MAXSTEP.
+
+This program can take up to two optional arguments:
+-s: the number of the first step to run \[default value: 0\]
+-e: the number of the last step to run \[default value: $MAXSTEP\]
+"
+
+}
+
+
+STARTTIME=`date`
+
+THIS_FILE=`which $0`
+THIS_DIR=`dirname "$THIS_FILE"`
+
+SYSTYPE=`uname`
+if ! test "$SYSTYPE" = "Linux"; then
+    echo "error: You can run this script only on Linux systems."
+    exit 1
+fi
+if ! test -e /etc/redhat-release; then
+    echo "error: unknown flavor of Linux"
+    exit 1
+fi
+WHOAMI=`whoami`
+if ! test "$WHOAMI" = "root"; then
+    echo "error: you must be root to run this script"
+    exit 1
+fi
+
+START=0
+END=25
+MAXSTEP=25
+
+while getopts s:e:h opt; do
+  case "$opt" in
+    s) START=$OPTARG;;
+    e) END=$OPTARG;;
+    h) usage
+  esac
+done
+
+CURRSTEP=$START
+
+shift $((OPTIND - 1))
+
+while [ $CURRSTEP -le $END ]
+do
+  echo -e "\n\n\n\n\n"
+  step_$CURRSTEP
+  CURRSTEP=`expr $CURRSTEP + 1`
+done
+
+ENDTIME=`date`
+
+echo Process complete.
+echo Started at $STARTTIME
+echo Finished at $ENDTIME
+
+if [ "$END" -eq "$MAXSTEP" ]; then
+  echo At this time, the network interface will be restarted, and the system will be rebooted.
+  echo You will need to reconnect to this machine when that process has completed.
+
+  service network restart
+  reboot
+fi

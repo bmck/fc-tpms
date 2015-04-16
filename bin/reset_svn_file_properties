@@ -1,0 +1,34 @@
+#!/bin/bash
+# $Id: reset_svn_file_properties 5180 2015-01-03 22:03:32Z bmck $
+# $(c): Copyright 2008-2015 by Capitalytics $
+
+THIS_FILE=`which $0`
+THIS_DIR=`dirname "$THIS_FILE"`
+
+# 1. Delete the svn:keywords property from all files.
+
+# 2. Delete the svn:eol-style property from all files.
+
+# 3. Add the SVN "Id" keyword for only the files that should have it.
+# Also add the SVN "(c)" (copyright) keyword for all files.  This allows for keyword substitution to occur on appropriately tagged files.
+# This functionality is only possible with Subversion 1.8 clients and later.
+
+svn -R propdel svn:keywords "$THIS_DIR"/..
+svn -R propdel svn:eol-style "$THIS_DIR"/..
+svn -R propset svn:keywords "Id (c)=Copyright%_2008-2015%_by%_Newco" "$THIS_DIR"/..
+
+# 4. Add the SVN "LF" eol-style for only the files that should have it.
+#    Files should have this property if they are not binary, i.e. if they do not have an SVN mime-type property.
+#    This ensures that every text file is stored with a consistent end-of-line (EOL) character in SVN, regardless
+#    of the native EOL character on the platform from which it was last checked in.
+
+DIRS=". app bin config db/migrate doc etc lib public test"
+
+for DIR in $DIRS; do
+  for FILE in `svn -R list "$THIS_DIR"/../"$DIR" | egrep -v "/$" | egrep -v '\.gif$|\.png$|\.jpg$|\.db$|\.swf$|\.ico$' `; do
+    # see http://stackoverflow.com/questions/1764521/recursive-svn-propset
+    if [[ `svn propget svn:keywords "$THIS_DIR"/../"$DIR"/"$FILE"` && -z `svn propget svn:mime-type "$THIS_DIR"/../"$DIR"/"$FILE"` ]] ; then
+        svn propset svn:eol-style "LF" "$THIS_DIR"/../"$DIR"/"$FILE"
+    fi
+  done
+done
