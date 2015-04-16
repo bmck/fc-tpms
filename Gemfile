@@ -1,4 +1,4 @@
-# $Id: Gemfile 5713 2015-04-16 17:22:54Z bmck $
+# $Id$
 # $(c)$
 
 source 'http://rubygems.org'
