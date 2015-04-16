@@ -1,6 +1,6 @@
 #!/bin/bash --login
-# $Id: init_centos_server 5463 2015-02-12 23:12:18Z bmck $
-# $(c): Copyright 2008-2015 by Capitalytics $
+# $Id$
+# $(c)$
 
 # This script is intended to be a _single_file_ installation script to set up a Centos server with all Capitalytics'
 # bells and whistles.  It should only be run by root.

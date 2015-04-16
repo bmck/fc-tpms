@@ -1,4 +1,4 @@
-# $Id: sshd_config 5180 2015-01-03 22:03:32Z bmck $
+# $Id$
 # Capitalytics SSHD Config File
 # This file implements the following changes from the "standard" SSHD config file distributed with OpenSSH 4.x on CentOS/RHEL 5.x.
 #
