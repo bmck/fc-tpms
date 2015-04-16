@@ -310,7 +310,7 @@ echo Setup newco account
 # Configure the "newco" account to run the web application code and configuration files.
 
 mkdir -p /home/newco/html && chown newco:newco /home/newco/html && chmod 775 /home/newco/html
-su - newco -c "cd && svn checkout --username newco --password w4r4w4Rjp --non-interactive https://subversion.assembla.com/svn/newco/trunk assembla"
+su - newco -c "cd && svn checkout --username bmck_newco --password w4r4w4Rjp --non-interactive https://subversion.assembla.com/svn/bmck-newco/trunk assembla"
 su - newco -c "ln -s ~/assembla ~/src"
 su - newco -c "cd ~/src/config && ln -s database-mysql-prod.yml database.yml"
 echo "export PATH=$PATH:/usr/local/lib/ruby/gems/1.9.1/bin" >> ~newco/.bash_profile
