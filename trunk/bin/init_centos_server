@@ -113,7 +113,6 @@ yum -y install nmap.x86_64 libcurl.x86_64 libcurl-devel.x86_64 \
         java-1.6.0-openjdk.x86_64 freetype.x86_64 expat.x86_64 sendmail.x86_64 sendmail-cf.noarch \
         cyrus-sasl.x86_64 cyrus-sasl-devel.x86_64 cyrus-sasl-lib.x86_64 cyrus-sasl-md5.x86_64 cyrus-sasl-plain.x86_64 \
         bzip2-devel.x86_64 iscsi-initiator-utils.x86_64 libxslt-devel.x86_64 gsl-devel.x86_64 \
-        # unoconv-0.4-1.noarch pdftk.x86_64 \
         libreoffice-headless.x86_64 libreoffice-writer.x86_64 libreoffice.x86_64 libreoffice-sdk.x86_64 \
         libreoffice-sdk-doc.x86_64 git.x86_64 libreoffice-pyuno.x86_64 openssh-clients.x86_64 rsync.x86_64 \
         libreoffice-core.x86_64 libreoffice-pdfimport.x86_64
@@ -203,7 +202,7 @@ echo Configure Services
 #       680/tcp  open  unknown
 #       1311/tcp open  unknown
 #
-#     Port 25 (smtp) should remain open for sending email as part of the Capitalytics service.
+#     Port 25 (smtp) should remain open for sending email as part of the Newco service.
 #     Ports 111 (rpcbind), 199 (smux), and 1311 should remain open for the NewServers management system.
 #     Port 631 (ipp) is controlled via the cups service, and should be closed.
 #     It is not clear what services are using port 680.  Port 6311 will be needed for for Rserve.
@@ -330,38 +329,6 @@ mkdir /home/newco/tmp && mkdir /home/newco/tmp/cores && chown -R newco:newco /ho
 step_10() {
 
 echo --------------------------------------------- STEP 10
-
-
-}
-
-
-
-
-
-
-
-
-
-
-step_11() {
-
-echo --------------------------------------------- STEP 11
-
-
-}
-
-
-
-
-
-
-
-
-
-
-step_12() {
-
-echo --------------------------------------------- STEP 12
 echo Install gems
 #
 #    NOTE 1: Use "gem install --version VERSION --no-ri --no-rdoc <PKGNAME>" to install a gem package.
@@ -393,9 +360,9 @@ rvm use 2.1.4@newco
 
 
 
-step_13() {
+step_11() {
 
-echo --------------------------------------------- STEP 13
+echo --------------------------------------------- STEP 11
 echo Configure and populate MariaDB
 
 USR=bmck
@@ -452,9 +419,9 @@ mysql -u admin --password=w4r4w4R -D mysql -e "repair table proc;"
 
 
 
-step_14() {
+step_12() {
 
-echo --------------------------------------------- STEP 14
+echo --------------------------------------------- STEP 12
 echo Configure httpd and passenger
 
 service httpd stop
@@ -473,29 +440,9 @@ service httpd start; chkconfig httpd on
 
 
 
+step_13() {
 
-
-step_15() {
-
-echo --------------------------------------------- STEP 15
-
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-step_16() {
-
-echo --------------------------------------------- STEP 16
+echo --------------------------------------------- STEP 13
 # echo Configure outgoing email
 
 
@@ -522,9 +469,9 @@ service sendmail restart; chkconfig sendmail on
 
 
 
-step_17() {
+step_14() {
 
-echo --------------------------------------------- STEP 17
+echo --------------------------------------------- STEP 14
 echo Install 3rd party software
 
 mkdir ~newco/tmp
@@ -613,26 +560,9 @@ chown -R newco:newco ~newco/tmp
 
 
 
+step_15() {
 
-step_18() {
-
-echo --------------------------------------------- STEP 18
-
-
-}
-
-
-
-
-
-
-
-
-
-
-step_19() {
-
-echo --------------------------------------------- STEP 19
+echo --------------------------------------------- STEP 15
 echo Configure logrotate and logwatch
 
 cd /etc; rm -f logrotate.conf; ln -s /home/newco/src/etc/logrotate/logrotate.conf
@@ -652,9 +582,9 @@ ln -s ~newco/src/etc/logwatch/scripts/services/http .
 
 
 
-step_20() {
+step_16() {
 
-echo --------------------------------------------- STEP 20
+echo --------------------------------------------- STEP 16
 echo Configure SSHD
 
 service iptables stop
@@ -674,9 +604,9 @@ service sshd restart
 
 
 
-step_21() {
+step_17() {
 
-echo --------------------------------------------- STEP 21
+echo --------------------------------------------- STEP 17
 echo Shut down and disable ip6tables
 
 service ip6tables stop; chkconfig ip6tables off
@@ -692,9 +622,9 @@ service ip6tables stop; chkconfig ip6tables off
 
 
 
-step_22() {
+step_18() {
 
-echo --------------------------------------------- STEP 22
+echo --------------------------------------------- STEP 18
 echo Configure iptables
 
 mv /etc/sysconfig/iptables /etc/sysconfig/iptables.bak
@@ -711,9 +641,9 @@ service iptables restart; chkconfig iptables on
 
 
 
-step_23() {
+step_19() {
 
-echo --------------------------------------------- STEP 23
+echo --------------------------------------------- STEP 19
 echo Configure NTP
 
 echo At this time, please use ^Z to stop this process so that you may configure NTP.
@@ -730,9 +660,9 @@ read -t 100 NTR
 
 
 
-step_24() {
+step_20() {
 
-echo --------------------------------------------- STEP 24
+echo --------------------------------------------- STEP 20
 echo Configure cron jobs
 
 echo At this time, please use ^Z to stop this process so that you may rsync all necessary files between ~newco/tmp on the current production server and this server.
@@ -751,9 +681,9 @@ read -t 100 NTR
 
 
 
-step_25() {
+step_21() {
 
-echo --------------------------------------------- STEP 25
+echo --------------------------------------------- STEP 21
 echo Configure External DNS Records
 
 echo At this time, please use ^Z to stop this process so that you may update external DNS records to point to this machine appropriately.
@@ -761,7 +691,6 @@ echo When completed, return to this process using \'fg 1\' or similar command, a
 read -t 100 NTR
 
 }
-
 
 
 
@@ -808,8 +737,8 @@ if ! test "$WHOAMI" = "root"; then
 fi
 
 START=0
-END=25
-MAXSTEP=25
+END=21
+MAXSTEP=21
 
 while getopts s:e:h opt; do
   case "$opt" in
