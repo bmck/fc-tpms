@@ -1,0 +1,313 @@
+Mysql2::Error: Table 'newco_development.users' doesn't exist: SHOW FULL FIELDS FROM `users`
+  [1m[36m (23.5ms)[0m  [1mCREATE TABLE `schema_migrations` (`version` varchar(255) NOT NULL) ENGINE=InnoDB[0m
+  [1m[35m (36.5ms)[0m  CREATE UNIQUE INDEX `unique_schema_migrations`  ON `schema_migrations` (`version`) 
+  [1m[36mActiveRecord::SchemaMigration Load (0.4ms)[0m  [1mSELECT `schema_migrations`.* FROM `schema_migrations`[0m
+Migrating to CreateTireSamples (20150416212650)
+  [1m[35m (15.2ms)[0m  CREATE TABLE `tire_samples` (`id` int(11) auto_increment PRIMARY KEY, `tire_id` int(11) NOT NULL, `receiver_id` int(11), `sample` decimal(10,6) NOT NULL, `sample_time` datetime, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20150416212650')
+  [1m[36m (0.6ms)[0m  [1mCOMMIT[0m
+Migrating to CreateUsers (20150417012934)
+  [1m[35m (12.2ms)[0m  CREATE TABLE `users` (`id` int(11) auto_increment PRIMARY KEY, `first_name` varchar(255) NOT NULL, `last_name` varchar(255) NOT NULL, `email_address` varchar(255) NOT NULL, `role` varchar(255) NOT NULL, `company_id` int(11) NOT NULL, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20150417012934')
+  [1m[36m (0.5ms)[0m  [1mCOMMIT[0m
+Migrating to CreateCompanies (20150417012946)
+  [1m[35m (13.8ms)[0m  CREATE TABLE `companies` (`id` int(11) auto_increment PRIMARY KEY, `name` varchar(64) NOT NULL, `start_service` datetime NOT NULL, `end_service` datetime NOT NULL, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB
+  [1m[36m (0.2ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20150417012946')
+  [1m[36m (0.4ms)[0m  [1mCOMMIT[0m
+Migrating to CreateTires (20150417013023)
+  [1m[35m (16.2ms)[0m  CREATE TABLE `tires` (`id` int(11) auto_increment PRIMARY KEY, `sensor_id` int(11) NOT NULL, `tire_type_id` int(11), `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB
+  [1m[36m (0.6ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.4ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20150417013023')
+  [1m[36m (0.7ms)[0m  [1mCOMMIT[0m
+Migrating to AddDeviseToUsers (20150417160252)
+  [1m[35m (36.5ms)[0m  ALTER TABLE `users` ADD `email` varchar(255) DEFAULT '' NOT NULL
+  [1m[36m (20.5ms)[0m  [1mALTER TABLE `users` ADD `encrypted_password` varchar(255) DEFAULT '' NOT NULL[0m
+  [1m[35m (20.4ms)[0m  ALTER TABLE `users` ADD `reset_password_token` varchar(255)
+  [1m[36m (20.2ms)[0m  [1mALTER TABLE `users` ADD `reset_password_sent_at` datetime[0m
+  [1m[35m (20.9ms)[0m  ALTER TABLE `users` ADD `remember_created_at` datetime
+  [1m[36m (22.5ms)[0m  [1mALTER TABLE `users` ADD `sign_in_count` int(11) DEFAULT 0 NOT NULL[0m
+  [1m[35m (22.6ms)[0m  ALTER TABLE `users` ADD `current_sign_in_at` datetime
+  [1m[36m (23.1ms)[0m  [1mALTER TABLE `users` ADD `last_sign_in_at` datetime[0m
+  [1m[35m (21.8ms)[0m  ALTER TABLE `users` ADD `current_sign_in_ip` varchar(255)
+  [1m[36m (23.6ms)[0m  [1mALTER TABLE `users` ADD `last_sign_in_ip` varchar(255)[0m
+  [1m[35m (21.3ms)[0m  ALTER TABLE `users` ADD `confirmation_token` varchar(255)
+  [1m[36m (21.0ms)[0m  [1mALTER TABLE `users` ADD `confirmed_at` datetime[0m
+  [1m[35m (22.1ms)[0m  ALTER TABLE `users` ADD `confirmation_sent_at` datetime
+  [1m[36m (20.5ms)[0m  [1mALTER TABLE `users` ADD `failed_attempts` int(11) DEFAULT 0 NOT NULL[0m
+  [1m[35m (21.2ms)[0m  ALTER TABLE `users` ADD `unlock_token` varchar(255)
+  [1m[36m (25.2ms)[0m  [1mALTER TABLE `users` ADD `locked_at` datetime[0m
+  [1m[35m (17.2ms)[0m  CREATE UNIQUE INDEX `index_users_on_email`  ON `users` (`email`) 
+  [1m[36m (16.5ms)[0m  [1mCREATE UNIQUE INDEX `index_users_on_reset_password_token`  ON `users` (`reset_password_token`) [0m
+  [1m[35m (15.0ms)[0m  CREATE UNIQUE INDEX `index_users_on_confirmation_token`  ON `users` (`confirmation_token`) 
+  [1m[36m (16.4ms)[0m  [1mCREATE UNIQUE INDEX `index_users_on_unlock_token`  ON `users` (`unlock_token`) [0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20150417160252')[0m
+  [1m[35m (0.4ms)[0m  COMMIT
+Migrating to CreateSensors (20150417171932)
+  [1m[36m (19.7ms)[0m  [1mCREATE TABLE `sensors` (`id` int(11) auto_increment PRIMARY KEY, `serial_no` varchar(255) NOT NULL, `type` varchar(255), `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20150417171932')[0m
+  [1m[35m (0.5ms)[0m  COMMIT
+Migrating to CreateTireTypes (20150417171941)
+  [1m[36m (14.5ms)[0m  [1mCREATE TABLE `tire_types` (`id` int(11) auto_increment PRIMARY KEY, `name` varchar(255) NOT NULL, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20150417171941')[0m
+  [1m[35m (0.6ms)[0m  COMMIT
+Migrating to CreateReceivers (20150417172023)
+  [1m[36m (15.2ms)[0m  [1mCREATE TABLE `receivers` (`id` int(11) auto_increment PRIMARY KEY, `serial_no` varchar(255) NOT NULL, `type` varchar(255), `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB[0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.3ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20150417172023')[0m
+  [1m[35m (0.5ms)[0m  COMMIT
+  [1m[36mActiveRecord::SchemaMigration Load (0.4ms)[0m  [1mSELECT `schema_migrations`.* FROM `schema_migrations`[0m
+  [1m[35m (3.7ms)[0m  SELECT fk.referenced_table_name as 'to_table'
+      ,fk.referenced_column_name as 'primary_key'
+      ,fk.column_name as 'column'
+      ,fk.constraint_name as 'name'
+FROM information_schema.key_column_usage fk
+WHERE fk.referenced_column_name is not null
+  AND fk.table_schema = 'newco_development'
+  AND fk.table_name = 'companies'
+
+  [1m[36m (0.4ms)[0m  [1mSHOW CREATE TABLE `companies`[0m
+  [1m[35m (0.6ms)[0m  SELECT fk.referenced_table_name as 'to_table'
+      ,fk.referenced_column_name as 'primary_key'
+      ,fk.column_name as 'column'
+      ,fk.constraint_name as 'name'
+FROM information_schema.key_column_usage fk
+WHERE fk.referenced_column_name is not null
+  AND fk.table_schema = 'newco_development'
+  AND fk.table_name = 'receivers'
+
+  [1m[36m (0.2ms)[0m  [1mSHOW CREATE TABLE `receivers`[0m
+  [1m[35m (0.5ms)[0m  SELECT fk.referenced_table_name as 'to_table'
+      ,fk.referenced_column_name as 'primary_key'
+      ,fk.column_name as 'column'
+      ,fk.constraint_name as 'name'
+FROM information_schema.key_column_usage fk
+WHERE fk.referenced_column_name is not null
+  AND fk.table_schema = 'newco_development'
+  AND fk.table_name = 'sensors'
+
+  [1m[36m (0.2ms)[0m  [1mSHOW CREATE TABLE `sensors`[0m
+  [1m[35m (2.4ms)[0m  SELECT fk.referenced_table_name as 'to_table'
+      ,fk.referenced_column_name as 'primary_key'
+      ,fk.column_name as 'column'
+      ,fk.constraint_name as 'name'
+FROM information_schema.key_column_usage fk
+WHERE fk.referenced_column_name is not null
+  AND fk.table_schema = 'newco_development'
+  AND fk.table_name = 'tire_samples'
+
+  [1m[36m (0.3ms)[0m  [1mSHOW CREATE TABLE `tire_samples`[0m
+  [1m[35m (0.4ms)[0m  SELECT fk.referenced_table_name as 'to_table'
+      ,fk.referenced_column_name as 'primary_key'
+      ,fk.column_name as 'column'
+      ,fk.constraint_name as 'name'
+FROM information_schema.key_column_usage fk
+WHERE fk.referenced_column_name is not null
+  AND fk.table_schema = 'newco_development'
+  AND fk.table_name = 'tire_types'
+
+  [1m[36m (0.2ms)[0m  [1mSHOW CREATE TABLE `tire_types`[0m
+  [1m[35m (0.4ms)[0m  SELECT fk.referenced_table_name as 'to_table'
+      ,fk.referenced_column_name as 'primary_key'
+      ,fk.column_name as 'column'
+      ,fk.constraint_name as 'name'
+FROM information_schema.key_column_usage fk
+WHERE fk.referenced_column_name is not null
+  AND fk.table_schema = 'newco_development'
+  AND fk.table_name = 'tires'
+
+  [1m[36m (0.2ms)[0m  [1mSHOW CREATE TABLE `tires`[0m
+  [1m[35m (0.4ms)[0m  SELECT fk.referenced_table_name as 'to_table'
+      ,fk.referenced_column_name as 'primary_key'
+      ,fk.column_name as 'column'
+      ,fk.constraint_name as 'name'
+FROM information_schema.key_column_usage fk
+WHERE fk.referenced_column_name is not null
+  AND fk.table_schema = 'newco_development'
+  AND fk.table_name = 'users'
+
+  [1m[36m (0.3ms)[0m  [1mSHOW CREATE TABLE `users`[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.2ms)[0m  [1mSELECT `schema_migrations`.* FROM `schema_migrations`[0m
+Migrating to AddConfirmableToDevise (20150417174136)
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.4ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20150417174136')[0m
+  [1m[35m (1.3ms)[0m  COMMIT
+  [1m[36mActiveRecord::SchemaMigration Load (0.3ms)[0m  [1mSELECT `schema_migrations`.* FROM `schema_migrations`[0m
+  [1m[35m (0.4ms)[0m  SELECT fk.referenced_table_name as 'to_table'
+      ,fk.referenced_column_name as 'primary_key'
+      ,fk.column_name as 'column'
+      ,fk.constraint_name as 'name'
+FROM information_schema.key_column_usage fk
+WHERE fk.referenced_column_name is not null
+  AND fk.table_schema = 'newco_development'
+  AND fk.table_name = 'companies'
+
+  [1m[36m (0.2ms)[0m  [1mSHOW CREATE TABLE `companies`[0m
+  [1m[35m (1.6ms)[0m  SELECT fk.referenced_table_name as 'to_table'
+      ,fk.referenced_column_name as 'primary_key'
+      ,fk.column_name as 'column'
+      ,fk.constraint_name as 'name'
+FROM information_schema.key_column_usage fk
+WHERE fk.referenced_column_name is not null
+  AND fk.table_schema = 'newco_development'
+  AND fk.table_name = 'receivers'
+
+  [1m[36m (0.4ms)[0m  [1mSHOW CREATE TABLE `receivers`[0m
+  [1m[35m (0.5ms)[0m  SELECT fk.referenced_table_name as 'to_table'
+      ,fk.referenced_column_name as 'primary_key'
+      ,fk.column_name as 'column'
+      ,fk.constraint_name as 'name'
+FROM information_schema.key_column_usage fk
+WHERE fk.referenced_column_name is not null
+  AND fk.table_schema = 'newco_development'
+  AND fk.table_name = 'sensors'
+
+  [1m[36m (0.2ms)[0m  [1mSHOW CREATE TABLE `sensors`[0m
+  [1m[35m (0.4ms)[0m  SELECT fk.referenced_table_name as 'to_table'
+      ,fk.referenced_column_name as 'primary_key'
+      ,fk.column_name as 'column'
+      ,fk.constraint_name as 'name'
+FROM information_schema.key_column_usage fk
+WHERE fk.referenced_column_name is not null
+  AND fk.table_schema = 'newco_development'
+  AND fk.table_name = 'tire_samples'
+
+  [1m[36m (0.3ms)[0m  [1mSHOW CREATE TABLE `tire_samples`[0m
+  [1m[35m (0.5ms)[0m  SELECT fk.referenced_table_name as 'to_table'
+      ,fk.referenced_column_name as 'primary_key'
+      ,fk.column_name as 'column'
+      ,fk.constraint_name as 'name'
+FROM information_schema.key_column_usage fk
+WHERE fk.referenced_column_name is not null
+  AND fk.table_schema = 'newco_development'
+  AND fk.table_name = 'tire_types'
+
+  [1m[36m (0.3ms)[0m  [1mSHOW CREATE TABLE `tire_types`[0m
+  [1m[35m (0.5ms)[0m  SELECT fk.referenced_table_name as 'to_table'
+      ,fk.referenced_column_name as 'primary_key'
+      ,fk.column_name as 'column'
+      ,fk.constraint_name as 'name'
+FROM information_schema.key_column_usage fk
+WHERE fk.referenced_column_name is not null
+  AND fk.table_schema = 'newco_development'
+  AND fk.table_name = 'tires'
+
+  [1m[36m (0.3ms)[0m  [1mSHOW CREATE TABLE `tires`[0m
+  [1m[35m (0.5ms)[0m  SELECT fk.referenced_table_name as 'to_table'
+      ,fk.referenced_column_name as 'primary_key'
+      ,fk.column_name as 'column'
+      ,fk.constraint_name as 'name'
+FROM information_schema.key_column_usage fk
+WHERE fk.referenced_column_name is not null
+  AND fk.table_schema = 'newco_development'
+  AND fk.table_name = 'users'
+
+  [1m[36m (0.3ms)[0m  [1mSHOW CREATE TABLE `users`[0m
+  [1m[36mActiveRecord::SchemaMigration Load (0.2ms)[0m  [1mSELECT `schema_migrations`.* FROM `schema_migrations`[0m
+Migrating to CreateAdmins (20150417182708)
+  [1m[35m (49.9ms)[0m  CREATE TABLE `admins` (`id` int(11) auto_increment PRIMARY KEY, `created_at` datetime NOT NULL, `updated_at` datetime NOT NULL) ENGINE=InnoDB
+  [1m[36m (0.7ms)[0m  [1mBEGIN[0m
+  [1m[35mSQL (0.3ms)[0m  INSERT INTO `schema_migrations` (`version`) VALUES ('20150417182708')
+  [1m[36m (0.6ms)[0m  [1mCOMMIT[0m
+Migrating to AddDeviseToAdmins (20150417182847)
+  [1m[35m (27.9ms)[0m  ALTER TABLE `admins` ADD `email` varchar(255) DEFAULT '' NOT NULL
+  [1m[36m (19.8ms)[0m  [1mALTER TABLE `admins` ADD `encrypted_password` varchar(255) DEFAULT '' NOT NULL[0m
+  [1m[35m (19.8ms)[0m  ALTER TABLE `admins` ADD `reset_password_token` varchar(255)
+  [1m[36m (21.5ms)[0m  [1mALTER TABLE `admins` ADD `reset_password_sent_at` datetime[0m
+  [1m[35m (20.1ms)[0m  ALTER TABLE `admins` ADD `remember_created_at` datetime
+  [1m[36m (22.1ms)[0m  [1mALTER TABLE `admins` ADD `sign_in_count` int(11) DEFAULT 0 NOT NULL[0m
+  [1m[35m (21.1ms)[0m  ALTER TABLE `admins` ADD `current_sign_in_at` datetime
+  [1m[36m (21.9ms)[0m  [1mALTER TABLE `admins` ADD `last_sign_in_at` datetime[0m
+  [1m[35m (21.8ms)[0m  ALTER TABLE `admins` ADD `current_sign_in_ip` varchar(255)
+  [1m[36m (20.9ms)[0m  [1mALTER TABLE `admins` ADD `last_sign_in_ip` varchar(255)[0m
+  [1m[35m (18.8ms)[0m  CREATE UNIQUE INDEX `index_admins_on_email`  ON `admins` (`email`) 
+  [1m[36m (16.4ms)[0m  [1mCREATE UNIQUE INDEX `index_admins_on_reset_password_token`  ON `admins` (`reset_password_token`) [0m
+  [1m[35m (0.2ms)[0m  BEGIN
+  [1m[36mSQL (0.6ms)[0m  [1mINSERT INTO `schema_migrations` (`version`) VALUES ('20150417182847')[0m
+  [1m[35m (0.4ms)[0m  COMMIT
+  [1m[36mActiveRecord::SchemaMigration Load (0.4ms)[0m  [1mSELECT `schema_migrations`.* FROM `schema_migrations`[0m
+  [1m[35m (0.4ms)[0m  SELECT fk.referenced_table_name as 'to_table'
+      ,fk.referenced_column_name as 'primary_key'
+      ,fk.column_name as 'column'
+      ,fk.constraint_name as 'name'
+FROM information_schema.key_column_usage fk
+WHERE fk.referenced_column_name is not null
+  AND fk.table_schema = 'newco_development'
+  AND fk.table_name = 'admins'
+
+  [1m[36m (0.2ms)[0m  [1mSHOW CREATE TABLE `admins`[0m
+  [1m[35m (1.6ms)[0m  SELECT fk.referenced_table_name as 'to_table'
+      ,fk.referenced_column_name as 'primary_key'
+      ,fk.column_name as 'column'
+      ,fk.constraint_name as 'name'
+FROM information_schema.key_column_usage fk
+WHERE fk.referenced_column_name is not null
+  AND fk.table_schema = 'newco_development'
+  AND fk.table_name = 'companies'
+
+  [1m[36m (0.3ms)[0m  [1mSHOW CREATE TABLE `companies`[0m
+  [1m[35m (0.5ms)[0m  SELECT fk.referenced_table_name as 'to_table'
+      ,fk.referenced_column_name as 'primary_key'
+      ,fk.column_name as 'column'
+      ,fk.constraint_name as 'name'
+FROM information_schema.key_column_usage fk
+WHERE fk.referenced_column_name is not null
+  AND fk.table_schema = 'newco_development'
+  AND fk.table_name = 'receivers'
+
+  [1m[36m (0.2ms)[0m  [1mSHOW CREATE TABLE `receivers`[0m
+  [1m[35m (0.4ms)[0m  SELECT fk.referenced_table_name as 'to_table'
+      ,fk.referenced_column_name as 'primary_key'
+      ,fk.column_name as 'column'
+      ,fk.constraint_name as 'name'
+FROM information_schema.key_column_usage fk
+WHERE fk.referenced_column_name is not null
+  AND fk.table_schema = 'newco_development'
+  AND fk.table_name = 'sensors'
+
+  [1m[36m (0.2ms)[0m  [1mSHOW CREATE TABLE `sensors`[0m
+  [1m[35m (0.3ms)[0m  SELECT fk.referenced_table_name as 'to_table'
+      ,fk.referenced_column_name as 'primary_key'
+      ,fk.column_name as 'column'
+      ,fk.constraint_name as 'name'
+FROM information_schema.key_column_usage fk
+WHERE fk.referenced_column_name is not null
+  AND fk.table_schema = 'newco_development'
+  AND fk.table_name = 'tire_samples'
+
+  [1m[36m (0.2ms)[0m  [1mSHOW CREATE TABLE `tire_samples`[0m
+  [1m[35m (0.3ms)[0m  SELECT fk.referenced_table_name as 'to_table'
+      ,fk.referenced_column_name as 'primary_key'
+      ,fk.column_name as 'column'
+      ,fk.constraint_name as 'name'
+FROM information_schema.key_column_usage fk
+WHERE fk.referenced_column_name is not null
+  AND fk.table_schema = 'newco_development'
+  AND fk.table_name = 'tire_types'
+
+  [1m[36m (0.2ms)[0m  [1mSHOW CREATE TABLE `tire_types`[0m
+  [1m[35m (0.4ms)[0m  SELECT fk.referenced_table_name as 'to_table'
+      ,fk.referenced_column_name as 'primary_key'
+      ,fk.column_name as 'column'
+      ,fk.constraint_name as 'name'
+FROM information_schema.key_column_usage fk
+WHERE fk.referenced_column_name is not null
+  AND fk.table_schema = 'newco_development'
+  AND fk.table_name = 'tires'
+
+  [1m[36m (0.2ms)[0m  [1mSHOW CREATE TABLE `tires`[0m
+  [1m[35m (0.3ms)[0m  SELECT fk.referenced_table_name as 'to_table'
+      ,fk.referenced_column_name as 'primary_key'
+      ,fk.column_name as 'column'
+      ,fk.constraint_name as 'name'
+FROM information_schema.key_column_usage fk
+WHERE fk.referenced_column_name is not null
+  AND fk.table_schema = 'newco_development'
+  AND fk.table_name = 'users'
+
+  [1m[36m (0.2ms)[0m  [1mSHOW CREATE TABLE `users`[0m
