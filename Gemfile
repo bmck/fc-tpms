@@ -3,7 +3,6 @@
 
 source 'http://rubygems.org'
 
-gem 'activejob_backport', '0.0.3'
 gem 'active_record_query_trace', '1.4'
 gem 'activerecord-import', '0.7.0'
 gem 'activerecord-session_store', '0.1.1'
@@ -20,15 +19,15 @@ gem 'flog', group: [:quality, :development]
 gem 'haml', '4.0.6'
 gem 'httpclient', '2.6.0.1'
 gem 'httparty', '0.13.3'
-gem 'jquery-rails', '3.1.2'
+gem 'jquery-rails', '4.0.3'
 gem 'jquery-ui-rails', '5.0.3'
 gem 'jquery-migrate-rails', '1.2.1' # TODO: can jquery-migrate-rails be removed?
 gem 'lograge', '0.3.1'
 gem 'meta_request', '0.3.4', group: :development # to support Rails Panel
 gem 'mysql2', '0.3.18'
-gem 'passenger', '4.0.58'
+gem 'passenger', '5.0.6'
 gem 'protected_attributes', '1.0.9'
-gem 'rails', '4.1.10'
+gem 'rails', '4.2.1'
 gem 'rails_best_practices', group: [:quality, :development]
 gem 'rails-html-sanitizer', '1.0.2'
 gem 'rails-i18n', '4.0.4'
