@@ -34,6 +34,7 @@ gem 'sprockets-rails', '2.2.4'
 gem 'test-unit'
 gem 'therubyracer', '0.12.2',  platforms: :ruby
 gem 'tracer_bullets', '0.0.5'
+gem 'turbolinks', '2.5.3'
 gem 'uglifier', '2.7.1'
 gem 'yui-compressor', '0.12.0'
 

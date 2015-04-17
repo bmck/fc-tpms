@@ -7,15 +7,21 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   before_action \
-    :fetch_logged_in_user,
     :capture_orig_request_params, :log_action, :permitted_params,
-    :login_required, :tos_agreement_required,
-    :assign_locale,
     :authorize_action
 
   after_action :cache_request_data_in_flash
 
   attr_reader :current_user
+
+  def permitted_params
+    params.except!(ApplicationController.screened_param_keys)
+    @permitted_params ||= ::PermittedParams.new(params, @current_user)
+  end
+
+  def self.screened_param_keys
+    NON_PROPAGATED_PARAMS
+  end
 
   NON_PROPAGATED_PARAMS = %w(
     authenticity_token
@@ -28,12 +34,6 @@ class ApplicationController < ActionController::Base
 
   rescue_from CanCan::AccessDenied do |exception|
     Rails.logger.debug "Access denied on #{exception.action} #{exception.subject.inspect}"
-    Rails.logger.debug "\n\n#{caller.join("\n")}\n\n"
-    render_550(exception)
-  end
-
-  rescue_from CapErr::PermissionDenied do |exception|
-    Rails.logger.debug "Access denied on #{params.inspect} -- #{exception.inspect}"
     Rails.logger.debug "\n\n#{caller.join("\n")}\n\n"
     render_550(exception)
   end
@@ -51,6 +51,14 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def after_sign_in_path_for(_resource_or_scope)
+    '/main/home'
+  end
+
+  def after_sign_out_path_for(_resource_or_scope)
+    '/main/index'
+  end
 
   def render_404(exception)
     @exception = exception
@@ -87,23 +95,23 @@ class ApplicationController < ActionController::Base
     notify_airbrake exception
   end
 
-  def fetch_logged_in_user
-    return unless session[:user_id] && session[:user_type]
-    @current_user = session[:user_type].safe_constantize.try(:find_by_id, session[:user_id])
-  end
+  # def fetch_logged_in_user
+  #   return unless session[:user_id] && session[:user_type]
+  #   @current_user = session[:user_type].safe_constantize.try(:find_by_id, session[:user_id])
+  # end
 
-  def login_required
-    return true if logged_in?
-    session[:return_to] = request.url
-    redirect_to controller: :login and return false
-  end
+  # def login_required
+  #   return true if logged_in?
+  #   session[:return_to] = request.url
+  #   redirect_to controller: :login and return false
+  # end
 
-  def tos_agreement_required
-    return true if @current_user.agreed_to_tos?
-    session[:return_to] = request.url
-    flash.notice = 'You must agree to the Terms of Service before you may continue.'
-    redirect_to controller: :login, action: :tos and return false
-  end
+  # def tos_agreement_required
+  #   return true if @current_user.agreed_to_tos?
+  #   session[:return_to] = request.url
+  #   flash.notice = 'You must agree to the Terms of Service before you may continue.'
+  #   redirect_to controller: :login, action: :tos and return false
+  # end
 
   def capture_orig_request_params
     if params[:attr] && !(params[:attr].try(:key?, :id).in?([false, nil])) && params[:attr][:id].is_a?(Array)
@@ -133,7 +141,7 @@ class ApplicationController < ActionController::Base
   end
 
   def authorize_action
-    authorize!(params[:action].to_sym, params[:controller].to_sym)
+    # authorize!(params[:action].to_sym, params[:controller].to_sym)
   end
 
   alias_method :logged_in?, :current_user
@@ -163,10 +171,7 @@ class ApplicationController < ActionController::Base
 
   def handle_caplyt_exceptions
     yield
-  rescue CapErr::InvalidBucketId, CapErr::NilBucketId, CapErr::InvalidBucketParameters => e
-    flash.notice = ApplicationController.error_msg_prefix + e.msg
-    render_404(e)
-  rescue CapErr::CapRuntimeError => e
+  rescue RuntimeError => e
     Rails.logger.error { e.inspect }
     Rails.logger.error { ApplicationController.error_msg_prefix + e.msg }
     Rails.logger.error e.message
@@ -178,27 +183,27 @@ class ApplicationController < ActionController::Base
   end
 
   def log_action
-    params[:controller] ||= controller_name
-    params[:action] ||= action_name
-    session_user_id = session.try(:[], :user_id).try(:to_i) || -1
+    # params[:controller] ||= controller_name
+    # params[:action] ||= action_name
+    # session_user_id = session.try(:[], :user_id).try(:to_i) || -1
 
-    entry = LogEntry.new
-    entry.timestamp = DateTime.now
-    entry.user_id = session_user_id
-    entry.session_id = request.session_options[:id]
-    entry.user_agent = request.env['HTTP_USER_AGENT']
-    entry.ip_address = request.env['REMOTE_ADDR']
-    entry.req_method = request.method
-    entry.full_url = "#{request.protocol}#{request.host_with_port}#{request.fullpath}"
-    entry.controller = controller_name
-    entry.action = action_name
+    # entry = LogEntry.new
+    # entry.timestamp = DateTime.now
+    # entry.user_id = session_user_id
+    # entry.session_id = request.session_options[:id]
+    # entry.user_agent = request.env['HTTP_USER_AGENT']
+    # entry.ip_address = request.env['REMOTE_ADDR']
+    # entry.req_method = request.method
+    # entry.full_url = "#{request.protocol}#{request.host_with_port}#{request.fullpath}"
+    # entry.controller = controller_name
+    # entry.action = action_name
 
-    # create a deep copy of the params hash
-    log_params = params.deep_dup.except(*screened_param_keys)
-    log_params[:email].try(:delete, :chart_img) # if log_params.key?(:email) && log_params[:email].is_a?(Hash)
-    hide_sensitive_params(log_params)
-    entry.params = log_params.inspect.encode('UTF-8')
-    entry.save!
+    # # create a deep copy of the params hash
+    # log_params = params.deep_dup.except(*screened_param_keys)
+    # log_params[:email].try(:delete, :chart_img) # if log_params.key?(:email) && log_params[:email].is_a?(Hash)
+    # hide_sensitive_params(log_params)
+    # entry.params = log_params.inspect.encode('UTF-8')
+    # entry.save!
   end
 
   private
