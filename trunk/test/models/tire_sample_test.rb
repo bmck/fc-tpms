@@ -1,3 +1,6 @@
+# $Id$
+# $(c)$
+
 require 'test_helper'
 
 class TireSampleTest < ActiveSupport::TestCase
