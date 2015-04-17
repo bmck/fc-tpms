@@ -10,8 +10,10 @@ gem 'airbrake', '4.1.0'
 gem 'annotate', group: :development
 gem 'better_errors', group: :development
 gem 'binding_of_caller', group: :development
+gem 'bootstrap-sass', '3.3.4.1'
 gem 'brakeman', group: [:quality, :development]
 gem 'cancancan', '1.10.1'
+gem 'devise', '3.4.1'
 gem 'exception_notification', '4.1.0'
 gem 'fastercsv', '1.5.5'
 gem 'flay', group: [:quality, :development]
@@ -38,6 +40,7 @@ gem 'rubocop', group: [:quality, :development]
 gem 'rubygems-update'
 gem 'sass-rails', '5.0.3'
 gem 'simplecov', '0.9.2', group: :test
+gem 'sprockets-rails', '2.2.4'
 gem 'test-unit'
 gem 'therubyracer', '0.12.2',  platforms: :ruby
 gem 'tracer_bullets', '0.0.5'
