@@ -18,6 +18,8 @@
 //= require jquery_ujs
 //= require jquery-migrate-min
 //
+//= require bootstrap-sprockets
+//
 // jqueryui
 //= require jquery-ui/autocomplete
 //= require jquery-ui/button
