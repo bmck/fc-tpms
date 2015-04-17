@@ -1,0 +1,10 @@
+-# $Id: internal_server_error.html.haml 5180 2015-01-03 22:03:32Z bmck $
+-# $(c): Copyright 2008-2015 by Capitalytics $
+%div
+  - @title = "500 Internal Server Error"
+  %h1 "Oh! This is embarrassing!"
+  %p
+    Oops! Something went wrong;
+    We apologize for the problem. We have been notified about this issue, and we will take a look at it shortly.
+
+= render partial: "errors/development_trace", formats: [:html], layout: false

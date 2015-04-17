@@ -1,11 +1,14 @@
-# $Id: app.rb 11 2015-04-16 21:45:33Z bmck_newco $
-# $(c): Copyright 2015 by Newco $
+# $Id$
+# $(c)$
 
 class CreateCompanies < ActiveRecord::Migration
   def change
     create_table :companies do |t|
+      t.string      :name, limit: 64, null: false
+      t.datetime    :start_service, null: false
+      t.datetime    :end_service, null: false
 
-      t.timestamps
+      t.timestamps null: false
     end
   end
 end

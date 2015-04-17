@@ -1,0 +1,8 @@
+-# $Id: unprocessable_entity.html.haml 5180 2015-01-03 22:03:32Z bmck $
+-# $(c): Copyright 2008-2015 by Capitalytics $
+%div
+  - @title = "422 Unprocessable Entity"
+  %h1 "Something is amiss ..."
+  %p The change you wanted was rejected. Maybe you tried to change something you did not have permission to change.
+
+= render partial: "errors/development_trace", formats: [:html], layout: false

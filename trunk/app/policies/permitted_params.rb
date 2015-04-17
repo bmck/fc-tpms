@@ -54,14 +54,12 @@ Thread.exclusive do
     end
 
     def object
-      params.permit(
-        # :controller, :action, :current_user_id, :current_user_type, :current_user,
-        # :user_validated, :email
-      )
+      params.permit
+      # :controller, :action, :current_user_id, :current_user_type, :current_user,
+      # :user_validated, :email
     end
 
     private
-
   end
 
   Dir.glob(Rails.root.join('config', 'policies', 'permitted_params', '*.rb')).each do |params_file|

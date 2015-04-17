@@ -1,5 +1,5 @@
-// $Id: application.caplyt.js 5189 2015-01-07 23:08:31Z bmck $
-// $(c): Copyright 2008-2015 by Capitalytics $
+// $Id$
+// $(c)$
 //
 
 // function togglespin(el) {

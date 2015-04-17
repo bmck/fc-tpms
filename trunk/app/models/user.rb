@@ -1,5 +1,14 @@
-# $Id: app.rb 11 2015-04-16 21:45:33Z bmck_newco $
-# $(c): Copyright 2015 by Newco $
+# $Id$
+# $(c)$
 
 class User < ActiveRecord::Base
+  # Include default devise modules. Others available are:
+  # :confirmable, :lockable, :timeoutable and :omniauthable
+  devise :database_authenticatable, :registerable,
+    :recoverable, :rememberable, :trackable, :validatable,
+    :confirmable, :timeoutable
+
+  def timeout_in
+    2.hours
+  end
 end
