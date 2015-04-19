@@ -1,0 +1,21 @@
+%h1 tire_types
+= form_for_filterrific @filterrific do |f|
+  %div
+    Search
+    = f.text_field(                                |
+        :search_query,                             |
+        class: 'filterrific-periodically-observed' |
+      )                                            |
+  %div
+    Registered after
+    \#{f.text_field(:with_created_at_gte, class: 'js-datepicker')}
+  %div
+    = link_to(                 |
+        'Reset filters',       |
+        reset_filterrific_url, |
+      )                        |
+  = render_filterrific_spinner
+= render(                                |
+    partial: 'tire_types/list',          |
+    locals: { tire_types: @tire_types }  |
+  )                                      |

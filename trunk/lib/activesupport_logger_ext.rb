@@ -1,5 +1,5 @@
-# $Id: activesupport_logger_ext.rb 5461 2015-02-12 17:00:19Z bmck $
-# $(c): Copyright 2008-2015 by Capitalytics $
+# $Id$
+# $(c)$
 
 module ActiveSupport
   class Logger

@@ -4,56 +4,72 @@
 class Ability
   include CanCan::Ability if defined? CanCan
 
-  cattr_accessor :layout
-
   def initialize(user)
-    if user.try(:global_admin?) == true
-      can :manage, :all
-      return
+    # Duplicated from https://github.com/CanCanCommunity/cancancan/wiki/Action-Aliases
+    # so as to be clearly documented
+    # clear_aliased_actions
+    # alias_action :index, :show, :to => :read
+    # alias_action :new, :to => :create
+    # alias_action :edit, :to => :update
+    alias_action :update, :destroy, to: :modify
+    # alias_action :show, :to => :read
+
+    Rails.logger.verbose do
+      if user.nil?
+        "I don\'t know who you are."
+      else
+        "You are #{user.first_last}, a #{user.role}."
+      end
     end
 
+    if user.nil?
+      can [:new, :create], :"devise/sessions"
+      can :manage, :main
+      return
 
-    setup_controller_abilities(user) unless user.nil?
-    setup_model_abilities(user)
+    elsif user.global_admin?
+      can :manage, :all
+      return
+
+    else
+      setup_abilities(user)
+
+    end
   end
 
-  def setup_controller_abilities(_user)
+  def setup_abilities(user)
+    unless user.nil? # redundant
+      if user.global_admin? # redundant
+        can :manage, :all
+      elsif user.company_admin?
+        can :manage, :user, company: { id: user.company_id }
+      elsif user.basic_user?
+        setup_basic_user_abilities(user)
+      end
+    end
+
     true
   end
 
-  def setup_model_abilities(user)
-    setup_model_create_abilities(user)
-    setup_model_read_abilities(user)
-    setup_model_update_abilities(user)
-    setup_model_delete_abilities(user)
-  end
+  def setup_basic_user_abilities(_user)
+    can :manage, :tire
+    can :manage, :tire_sample
+    can :read, :tire_sample_report
+    can :new, :tire_type
 
-  def setup_model_create_abilities(_user)
-    true
-  end
-
-  def setup_model_read_abilities(_user)
-    true
-  end
-
-  def setup_model_update_abilities(_user)
-    true
-  end
-
-  def setup_model_delete_abilities(_user)
-    true
+    can :main, :all
   end
 end
 
-Dir.glob(Rails.root.join('config', 'policies', 'ability', '*.rb')).each do |ability_file|
-  require ability_file.to_s
-  module_name = Pathname.new(ability_file).basename.sub_ext('').to_s
-  module_suffix = module_name[-1] == 's' ? 's' : ''
-  module_name = module_name.classify + module_suffix
+# Dir.glob(Rails.root.join('config', 'policies', 'ability', '*.rb')).each do |ability_file|
+#   require ability_file.to_s
+#   module_name = Pathname.new(ability_file).basename.sub_ext('').to_s
+#   module_suffix = module_name[-1] == 's' ? 's' : ''
+#   module_name = module_name.classify + module_suffix
 
-  module_name = '::Ability::' + module_name
-  mod = module_name.safe_constantize
-  next unless mod
+#   module_name = '::Ability::' + module_name
+#   mod = module_name.safe_constantize
+#   next unless mod
 
-  Ability.send(:include, mod)
-end
+#   Ability.send(:include, mod)
+# end

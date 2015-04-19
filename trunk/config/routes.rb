@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   resources :companies
   resources :users
   resources :tires
+  resources :tire_types
   resources :tire_samples
   resource  :tire_sample_reports, only: [:show]
 
