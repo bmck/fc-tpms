@@ -2,7 +2,6 @@
 # $(c)$
 
 class MainController < ApplicationController
-
   def index
     if user_signed_in?
       flash.notice = "You are logged in, #{current_user.first_last}. #{flash.notice}"
@@ -15,5 +14,4 @@ class MainController < ApplicationController
     reset_session
     flash.notice = "You have successfully logged out. #{flash.notice}"
   end
-
 end

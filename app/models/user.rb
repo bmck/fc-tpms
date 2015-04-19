@@ -5,27 +5,19 @@ class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable,
-    :recoverable, :rememberable, :trackable, :validatable,
-    :confirmable, :timeoutable
+         :recoverable, :rememberable, :trackable, :validatable,
+         :confirmable, :timeoutable
 
   after_update :send_password_change_email, if: :needs_password_change_email?
 
   cattr_reader :timeout_in do 2.hours end
-  cattr_reader :valid_roles do %w(basic_user global_admin) end
-
-  # def self.valid_roles
-  #   %w(basic_user global_admin)
-  # end
+  cattr_reader :valid_roles do %w(basic_user   company_admin   global_admin) end
 
   valid_roles.each do |x|
     define_method "#{x}?".to_sym do
       role == "#{x}"
     end
   end
-
-  # def timeout_in
-  #   2.hours
-  # end
 
   def first_last
     "#{first_name} #{last_name}"

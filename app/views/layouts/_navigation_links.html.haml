@@ -1,4 +1,16 @@
 - if user_signed_in?
+  - if can? :index, :company
+    %li= link_to 'List/Edit Companies', companies_path
+  - if can? :index, :user
+    %li= link_to 'List/Edit Users', users_path
+  - if can? :index, :tire_type
+    %li= link_to 'List/Edit Tire Types', tire_types_path
+  - if can? :index, :tire
+    %li= link_to 'List/Edit Tires', tires_path
+  - if can? :index, :tire_sample
+    %li= link_to 'List/Edit Tire Samples', tire_samples_path
+  - if can? :index, :tire_sample_report
+    %li= link_to 'View/Chart Tire Samples', tire_sample_reports_path
   %li= link_to 'Edit account', edit_user_registration_path
   %li= link_to 'Sign out', destroy_user_session_path, :method=>'delete'
 - else

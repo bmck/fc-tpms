@@ -10,13 +10,12 @@ class ApplicationController < ActionController::Base
 
   before_action \
     :reset_flash,
-    :capture_orig_request_params, :log_action,
+    :capture_orig_request_params,
+    :log_action,
     :permitted_params,
     :authorize_action
 
   after_action :cache_request_data_in_flash
-
-  # attr_reader :current_user
 
   def permitted_params
     params.except!(ApplicationController.screened_param_keys)
@@ -154,7 +153,7 @@ class ApplicationController < ActionController::Base
   end
 
   def authorize_action
-    # authorize!(params[:action].to_sym, params[:controller].to_sym)
+    authorize!(params[:action].to_sym, params[:controller].to_sym)
   end
 
   alias_method :logged_in?, :current_user

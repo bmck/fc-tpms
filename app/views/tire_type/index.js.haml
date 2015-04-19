@@ -1,0 +1,4 @@
+- js = escape_javascript(
+- render(partial: 'tire_types/list', locals: { tire_types: @tire_types })
+- )
+$("#filterrific_results").html("#{js}");
