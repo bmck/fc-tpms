@@ -12,33 +12,6 @@ class Ability
       return
     end
 
-    can :manage, :testbank_reports
-
-    cannot [
-      :create_cash_flow_sim,
-      :configure_cash_flow_sim,
-      :configure_rates,
-      :save_rates,
-      :configure_policies,
-      :save_pap,
-      :configure_net_volumes,
-      :save_net_volumes,
-      :configure_prepayments,
-      :save_prepayments,
-      :configure_dep_distribs,
-      :save_dep_distribs,
-      :duplicate_cash_flow_sim,
-      :schedule_cash_flow_sim,
-      :unschedule_cash_flow_sim,
-      :delete_cash_flow_sim
-    ], :testbank_reports
-
-    cannot [
-      :add2bank,
-      :convert,
-      :configure_consultant,
-      :update_consultant
-    ], :users
 
     setup_controller_abilities(user) unless user.nil?
     setup_model_abilities(user)

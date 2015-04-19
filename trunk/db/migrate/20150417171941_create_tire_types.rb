@@ -1,5 +1,5 @@
-# $Id: 20150416212650_create_tire_samples.rb 13 2015-04-17 02:03:45Z bmck_newco $
-# $(c): Copyright 2015 by Newco $
+# $Id$
+# $(c)$
 
 class CreateTireTypes < ActiveRecord::Migration
   def change

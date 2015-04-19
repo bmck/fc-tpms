@@ -1,5 +1,5 @@
-# $Id: 20150416212650_create_tire_samples.rb 13 2015-04-17 02:03:45Z bmck_newco $
-# $(c): Copyright 2015 by Newco $
+# $Id$
+# $(c)$
 
 class AddDeviseToUsers < ActiveRecord::Migration
   def self.up
@@ -26,7 +26,7 @@ class AddDeviseToUsers < ActiveRecord::Migration
       t.string   :confirmation_token
       t.datetime :confirmed_at
       t.datetime :confirmation_sent_at
-      # t.string   :unconfirmed_email # Only if using reconfirmable
+      t.string   :unconfirmed_email # Only if using reconfirmable
 
       ## Lockable
       t.integer  :failed_attempts, default: 0, null: false # Only if lock strategy is :failed_attempts

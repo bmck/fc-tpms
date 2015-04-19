@@ -5,16 +5,24 @@ Rails.application.routes.draw do
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
-  devise_for :users
-  devise_scope :user do
-    get '/login' => 'devise/sessions#new'
-    get '/logout' => 'devise/sessions#destroy'
-  end
-  resources :user, :controller => "user"
+  devise_for :user # , controllers: { sessions: "user/sessions", registrations: "user/registrations" }
 
   # You can have the root of your site routed with "root"
   # root 'welcome#index'
+
   root to: 'main#index'
+
+  get '/errors/internal_server_error' => 'errors#internal_server_error'
+  get '/errors/not_found' => 'errors#not_found'
+  get '/errors/unprocessable_entity' => 'errors#unprocessable_entity'
+
+  get '/home' => 'main#home'
+
+  resources :companies
+  resources :users
+  resources :tires
+  resources :tire_samples
+  resource  :tire_sample_reports, only: [:show]
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
