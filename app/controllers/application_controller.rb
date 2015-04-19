@@ -2,21 +2,25 @@
 # $(c)$
 
 class ApplicationController < ActionController::Base
+  helper :all # include all helpers, all the time
+
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
   protect_from_forgery with: :exception
 
   before_action \
-    :capture_orig_request_params, :log_action, :permitted_params,
+    :reset_flash,
+    :capture_orig_request_params, :log_action,
+    :permitted_params,
     :authorize_action
 
   after_action :cache_request_data_in_flash
 
-  attr_reader :current_user
+  # attr_reader :current_user
 
   def permitted_params
     params.except!(ApplicationController.screened_param_keys)
-    @permitted_params ||= ::PermittedParams.new(params, @current_user)
+    @permitted_params ||= ::PermittedParams.new(params, current_user)
   end
 
   def self.screened_param_keys
@@ -50,15 +54,20 @@ class ApplicationController < ActionController::Base
     )
   end
 
+  # def after_sign_in_path_for(resource)
+  #   sign_in_url = new_user_session_url
+  #   if request.referer == sign_in_url
+  #     super
+  #   else
+  #     stored_location_for(resource) || '/home' || root_path
+  #   end
+  # end
+
+  # def after_sign_out_path_for(resource)
+  #   '/'
+  # end
+
   private
-
-  def after_sign_in_path_for(_resource_or_scope)
-    '/main/home'
-  end
-
-  def after_sign_out_path_for(_resource_or_scope)
-    '/main/index'
-  end
 
   def render_404(exception)
     @exception = exception
@@ -93,6 +102,10 @@ class ApplicationController < ActionController::Base
 
   def rescue_action_in_public(exception)
     notify_airbrake exception
+  end
+
+  def reset_flash
+    flash.clear
   end
 
   # def fetch_logged_in_user
@@ -147,7 +160,7 @@ class ApplicationController < ActionController::Base
   alias_method :logged_in?, :current_user
 
   delegate \
-    :global_admin?, to: :@current_user, allow_nil: true
+    :global_admin?, to: :current_user, allow_nil: true
 
   helper_method \
     :logged_in?, :global_admin?

@@ -7,6 +7,7 @@ class CreateCompanies < ActiveRecord::Migration
       t.string      :name, limit: 64, null: false
       t.datetime    :start_service, null: false
       t.datetime    :end_service, null: false
+      t.string      :domain_name, limit: 128, null: false
 
       t.timestamps null: false
     end

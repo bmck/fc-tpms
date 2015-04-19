@@ -3,15 +3,17 @@
 
 class MainController < ApplicationController
 
-  before_action :authenticate_user!, except: [:index]
-
   def index
-    reset_session
-    flash.notice = "You have successfully logged out. #{flash.notice}"
+    if user_signed_in?
+      flash.notice = "You are logged in, #{current_user.first_last}. #{flash.notice}"
+    else
+      redirect_to '/home' and return
+    end
   end
 
   def home
-    flash.notice = "You are logged in. #{flash.notice}"
+    reset_session
+    flash.notice = "You have successfully logged out. #{flash.notice}"
   end
 
 end

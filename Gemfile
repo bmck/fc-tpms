@@ -21,7 +21,6 @@ gem 'jquery-migrate-rails', '1.2.1' # TODO: can jquery-migrate-rails be removed?
 gem 'lograge', '0.3.1'
 gem 'mysql2', '0.3.18'
 gem 'passenger', '5.0.6'
-gem 'protected_attributes', '1.0.9'
 gem 'rails', '4.2.1'
 gem 'rails-html-sanitizer', '1.0.2'
 gem 'rails-i18n', '4.0.4'
