@@ -1,3 +1,6 @@
+// $Id$
+// $(c)$
+
 $(document).ready(function(){
     generate_jqplot();
     $(document).unload(function() {$('*').unbind(); });
