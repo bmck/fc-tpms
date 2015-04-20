@@ -1,3 +1,6 @@
+# $Id$
+# $(c)$
+
 module Airbrake
 
   class << self

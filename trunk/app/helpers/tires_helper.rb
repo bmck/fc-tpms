@@ -1,5 +1,5 @@
 # $Id$
 # $(c)$
 
-module TireHelper
+module TiresHelper
 end

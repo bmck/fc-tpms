@@ -1,3 +1,6 @@
+// $Id$
+// $(c)$
+
 /**
  * Title: jqPlot Charts
  *

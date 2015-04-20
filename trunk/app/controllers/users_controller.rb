@@ -1,3 +1,6 @@
+# $Id$
+# $(c)$
+
 class UsersController < ApplicationController
   include SmartListing::Helper::ControllerExtensions
   helper  SmartListing::Helper
@@ -18,9 +21,9 @@ class UsersController < ApplicationController
     scoped_users = scoped_users.contains(params[:filter]) if params[:filter]
 
     smart_listing_create :users,
-                         scoped_users,
-                         partial: 'users/list',
-                         default_sort: { last_name: 'asc', first_name: 'asc' }
+      scoped_users,
+      partial: 'users/list',
+      default_sort: { last_name: 'asc', first_name: 'asc' }
   end
 
   def new
