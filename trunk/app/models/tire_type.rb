@@ -2,12 +2,10 @@
 # $(c)$
 
 class TireType < ActiveRecord::Base
-  filterrific(
-    default_filter_params: { sorted_by: 'name_asc' },
-    available_filters: [
-      :sorted_by,
-      :search_query,
-      :with_created_at_gte
-    ]
-  )
+  has_many :tires
+
+  scope :all_tire_types, -> { }
+  scope :this_company_tire_types -> company_id { joins("LEFT JOIN `tires` ON tires.tire_type_id = tire_types.id")
+                                                 .where("tires.company_id = #{company_id}") }
+
 end

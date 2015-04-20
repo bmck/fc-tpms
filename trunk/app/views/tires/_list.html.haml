@@ -1,0 +1,21 @@
+- unless smart_listing.empty?
+  %table.table.table-striped
+    %thead
+      %tr
+        %th= smart_listing.sortable "Sensor ID", :sensor_id
+        %th= smart_listing.sortable "Tire Type", :tire_type
+        %th= smart_listing.sortable "Company", :company
+        %th
+    %tbody
+      - smart_listing.collection.each do |tire|
+        %tr.editable{data: {id: tire.id}}
+          = smart_listing.render object: tire, partial: 'tires/tire', locals: {tire: tire}
+        = smart_listing.item_new colspan: 4, link: new_tire_path
+
+  -# Render nice pagination links fitted for Bootstrap 3 by default
+  .text-center
+    = smart_listing.paginate
+    = smart_listing.pagination_per_page_links
+
+- else
+  %p.warning No records found.

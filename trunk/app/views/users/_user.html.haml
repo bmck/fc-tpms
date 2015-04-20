@@ -1,0 +1,8 @@
+%td= user.first_last
+%td= user.email
+%td= user.company
+%td= user.role
+%td.actions= smart_listing_item_actions [ |
+ {name: :edit,    url: edit_user_path(user)}, |
+ {name: :destroy, url: user_path(user), confirmation: "Are you sure you want to delete this user?"} |
+ ] |

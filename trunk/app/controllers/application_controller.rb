@@ -17,23 +17,21 @@ class ApplicationController < ActionController::Base
 
   after_action :cache_request_data_in_flash
 
+  cattr_reader :screened_param_keys do
+    %w(
+      authenticity_token
+      commit
+      current_layout
+      current_user
+      request
+      utf8
+    )
+  end
+
   def permitted_params
     params.except!(ApplicationController.screened_param_keys)
     @permitted_params ||= ::PermittedParams.new(params, current_user)
   end
-
-  def self.screened_param_keys
-    NON_PROPAGATED_PARAMS
-  end
-
-  NON_PROPAGATED_PARAMS = %w(
-    authenticity_token
-    commit
-    current_layout
-    current_user
-    request
-    utf8
-  ) unless ApplicationController.const_defined?(:NON_PROPAGATED_PARAMS)
 
   rescue_from CanCan::AccessDenied do |exception|
     Rails.logger.debug "Access denied on #{exception.action} #{exception.subject.inspect}"
@@ -52,19 +50,6 @@ class ApplicationController < ActionController::Base
       parameters: { parameters: params, exception: exception }
     )
   end
-
-  # def after_sign_in_path_for(resource)
-  #   sign_in_url = new_user_session_url
-  #   if request.referer == sign_in_url
-  #     super
-  #   else
-  #     stored_location_for(resource) || '/home' || root_path
-  #   end
-  # end
-
-  # def after_sign_out_path_for(resource)
-  #   '/'
-  # end
 
   private
 

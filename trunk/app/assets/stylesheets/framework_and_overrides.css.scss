@@ -80,3 +80,13 @@ section {
   @extend .btn-primary;
   @extend .btn-xs;
 }
+
+.main_content {
+  // font-family: Arial, Helvetica, sans-serif;
+  font-size: 1.0em;
+  color: black;
+  margin: 0 auto;
+  margin-top: 10px;
+  max-width: 800px;
+  width: 800px;
+}

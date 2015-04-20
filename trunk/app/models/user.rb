@@ -10,6 +10,18 @@ class User < ActiveRecord::Base
 
   after_update :send_password_change_email, if: :needs_password_change_email?
 
+  scope :myself, -> user_id { where(id: user_id) }
+  scope :same_company, -> user_company_id { where(company_id: user_company_id) }
+  scope :all_users, -> {}
+
+  scope :contains, -> x { joins('LEFT JOIN `companies` ON users.company_id = companies.id')
+                          .where("locate(\"#{x}\", first_name) > 0 or " \
+                                 "locate(\"#{x}\", last_name) > 0 or " \
+                                 "locate(\"#{x}\", email) > 0 or " \
+                                 "locate(\"#{x}\", name) > 0") }
+
+  belongs_to :company
+
   cattr_reader :timeout_in do 2.hours end
   cattr_reader :valid_roles do %w(basic_user   company_admin   global_admin) end
 
@@ -25,6 +37,11 @@ class User < ActiveRecord::Base
 
   def last_first
     "#{last_name}, #{first_name}"
+  end
+
+  def company
+    return 'No Company Specified' unless company_id
+    Company.find(company_id) rescue 'Unknown company'
   end
 
   private

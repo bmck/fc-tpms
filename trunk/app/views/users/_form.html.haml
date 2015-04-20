@@ -1,0 +1,46 @@
+%td{colspan: 5}
+  = form_for object, url: object.new_record? ? users_path : user_path(object), remote: true, html: {class: "form-horizontal"} do |f|
+    %table.table
+      %tr
+        %td{colspan: 2}
+          = f.label :first_and_last_name
+          \&nbsp;
+          = f.text_field :first_name, :size => 15, :autofocus => true
+          \&nbsp;
+          = f.text_field :last_name, :size => 25, :autofocus => true
+      %tr
+        %td
+          .field
+            = f.label :company
+            \&nbsp;
+            = f.collection_select :role, Company.all.select { |c| !c.name.nil? }, :id, :name, :include_blank => 'No Company Specified', autofocus: true
+        %td
+          .field
+            = f.label :email
+            %br/
+            = f.email_field :email, :size => 25, autofocus: true
+      - if current_user.global_admin?
+        %tr
+          %td{colspan: 2}
+            .field
+              = f.label :role
+              \&nbsp;
+              = f.collection_select :role, User.valid_roles, :to_str, :humanize, autofocus: true
+      %tr
+        %td
+          .field
+            = f.label :password
+            - if @validatable
+              %em
+                (#{@minimum_password_length} characters minimum)
+            %br/
+            = f.password_field :password, autocomplete: "off"
+        %td
+          .field
+            = f.label :password_confirmation
+            %br/
+            = f.password_field :password_confirmation, autocomplete: "off"
+      %tr
+        %td{colspan:2}
+          = f.submit "Save", class: "btn btn-primary"
+          %button.btn.btn-link.cancel Cancel
