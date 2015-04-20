@@ -14,13 +14,13 @@ class Ability
     alias_action :update, :destroy, to: :modify
     # alias_action :show, :to => :read
 
-    Rails.logger.verbose do
-      if user.nil?
-        "I don\'t know who you are."
-      else
-        "You are #{user.first_last}, a #{user.role}."
-      end
-    end
+    # Rails.logger.verbose do
+    #   if user.nil?
+    #     "I don\'t know who you are."
+    #   else
+    #     "You are #{user.first_last}, a #{user.role}."
+    #   end
+    # end
 
     if user.nil?
       can [:new, :create], :"devise/sessions"

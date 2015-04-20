@@ -1,0 +1,5 @@
+%td= tire_type.tire_type_name
+%td.actions= smart_listing_item_actions [ |
+ {name: :edit,    url: edit_tire_type_path(tire_type)}, |
+ {name: :destroy, url: tire_type_path(tire_type), confirmation: "Are you sure you want to delete this tire type?"} |
+ ] |

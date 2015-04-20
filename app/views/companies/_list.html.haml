@@ -1,0 +1,27 @@
+- unless smart_listing.empty?
+  %table.table.table-striped
+    %thead
+      %tr
+        %th= smart_listing.sortable "Company Name", :last_first
+        %th= smart_listing.sortable "Start Date", :start_service_date
+        %th= smart_listing.sortable "End Date", :end_service_date
+        %th= smart_listing.sortable "Contact", :contact_name
+        %th= smart_listing.sortable "Address", :contact_address
+        %th= smart_listing.sortable "City", :contact_city
+        %th= smart_listing.sortable "St", :contact_state
+        %th= smart_listing.sortable "Zip", :contact_zip
+        %th= smart_listing.sortable "Email Domain", :domain_name
+        %th
+    %tbody
+      - smart_listing.collection.each do |company|
+        %tr.editable{data: {id: company.id}}
+          = smart_listing.render object: company, partial: 'companies/company', locals: {company: company}
+        = smart_listing.item_new colspan: 10, link: new_company_path
+
+  -# Render nice pagination links fitted for Bootstrap 3 by default
+  .text-center
+    = smart_listing.paginate
+    = smart_listing.pagination_per_page_links
+
+- else
+  %p.warning No records found.

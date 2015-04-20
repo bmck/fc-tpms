@@ -32,11 +32,17 @@ ActiveRecord::Schema.define(version: 20150417182847) do
   add_index "admins", ["reset_password_token"], name: "index_admins_on_reset_password_token", unique: true, using: :btree
 
   create_table "companies", force: :cascade do |t|
-    t.string   "name",          limit: 64, null: false
-    t.datetime "start_service",            null: false
-    t.datetime "end_service",              null: false
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.string   "company_name",    limit: 64,  null: false
+    t.datetime "start_service",               null: false
+    t.datetime "end_service",                 null: false
+    t.string   "contact_name",    limit: 64,  null: false
+    t.string   "contact_address", limit: 128, null: false
+    t.string   "contact_city",    limit: 32,  null: false
+    t.string   "contact_state",   limit: 2,   null: false
+    t.string   "contact_zip",     limit: 10,  null: false
+    t.string   "domain_name",     limit: 128, null: false
+    t.datetime "created_at",                  null: false
+    t.datetime "updated_at",                  null: false
   end
 
   create_table "receivers", force: :cascade do |t|
@@ -71,24 +77,24 @@ ActiveRecord::Schema.define(version: 20150417182847) do
   create_table "tires", force: :cascade do |t|
     t.integer  "sensor_id",    limit: 4, null: false
     t.integer  "tire_type_id", limit: 4
+    t.integer  "company_id",   limit: 4
     t.datetime "created_at",             null: false
     t.datetime "updated_at",             null: false
   end
 
   create_table "users", force: :cascade do |t|
-    t.string   "first_name",             limit: 255,              null: false
-    t.string   "last_name",              limit: 255,              null: false
-    t.string   "email_address",          limit: 255,              null: false
-    t.string   "role",                   limit: 255,              null: false
-    t.integer  "company_id",             limit: 4,                null: false
-    t.datetime "created_at",                                      null: false
-    t.datetime "updated_at",                                      null: false
-    t.string   "email",                  limit: 255, default: "", null: false
-    t.string   "encrypted_password",     limit: 255, default: "", null: false
+    t.string   "first_name",             limit: 255,                        null: false
+    t.string   "last_name",              limit: 255,                        null: false
+    t.string   "role",                   limit: 255, default: "basic_user", null: false
+    t.integer  "company_id",             limit: 4
+    t.datetime "created_at",                                                null: false
+    t.datetime "updated_at",                                                null: false
+    t.string   "email",                  limit: 255, default: "",           null: false
+    t.string   "encrypted_password",     limit: 255, default: "",           null: false
     t.string   "reset_password_token",   limit: 255
     t.datetime "reset_password_sent_at"
     t.datetime "remember_created_at"
-    t.integer  "sign_in_count",          limit: 4,   default: 0,  null: false
+    t.integer  "sign_in_count",          limit: 4,   default: 0,            null: false
     t.datetime "current_sign_in_at"
     t.datetime "last_sign_in_at"
     t.string   "current_sign_in_ip",     limit: 255
@@ -96,7 +102,8 @@ ActiveRecord::Schema.define(version: 20150417182847) do
     t.string   "confirmation_token",     limit: 255
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
-    t.integer  "failed_attempts",        limit: 4,   default: 0,  null: false
+    t.string   "unconfirmed_email",      limit: 255
+    t.integer  "failed_attempts",        limit: 4,   default: 0,            null: false
     t.string   "unlock_token",           limit: 255
     t.datetime "locked_at"
   end

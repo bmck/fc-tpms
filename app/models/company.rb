@@ -2,12 +2,10 @@
 # $(c)$
 
 class Company < ActiveRecord::Base
-  filterrific(
-    default_filter_params: { sorted_by: 'name_asc' },
-    available_filters: [
-      :sorted_by,
-      :search_query,
-      :with_start_service_gte
-    ]
-  )
+  has_many :users
+
+  scope :all_companies, -> {}
+  scope :active, -> { where('(start_service is null or start_service <= NOW()) and ' \
+                            '(end_service >= NOW() or end_service is null)') }
+  scope :my_company, -> company_id { where(id: company_id) }
 end
