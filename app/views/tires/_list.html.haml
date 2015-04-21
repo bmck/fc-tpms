@@ -13,7 +13,8 @@
       - smart_listing.collection.each do |tire|
         %tr.editable{data: {id: tire.id}}
           = smart_listing.render object: tire, partial: 'tires/tire', locals: {tire: tire}
-        = smart_listing.item_new colspan: 4, link: new_tire_path
+    %tfoot
+      = smart_listing.item_new colspan: 4, link: new_tire_path
 
   -# Render nice pagination links fitted for Bootstrap 3 by default
   .text-center
@@ -21,4 +22,6 @@
     = smart_listing.pagination_per_page_links
 
 - else
-  %p.warning No records found.
+  %p
+  %table.table
+    = smart_listing.item_new colspan: 1, link: new_tire_path
