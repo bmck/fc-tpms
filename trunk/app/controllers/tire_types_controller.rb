@@ -1,7 +1,7 @@
 # $Id$
 # $(c)$
 
-class TireTypeController < ApplicationController
+class TireTypesController < ApplicationController
   include SmartListing::Helper::ControllerExtensions
   helper  SmartListing::Helper
 

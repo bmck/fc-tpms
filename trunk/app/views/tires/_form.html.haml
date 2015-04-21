@@ -10,10 +10,10 @@
     .field
       = f.label :tire_type
       \&nbsp;
-      = f.collection_select :role, TireType.all, :id, :name, :include_blank => 'No Tire Type Specified', autofocus: true
+      = f.collection_select :tire_type, TireType.all, :id, :name, :include_blank => 'No Tire Type Specified', autofocus: true
     .field
       = f.label :company
       \&nbsp;
-      = f.collection_select :role, Company.all.select { |c| !c.name.nil? }, :id, :name, :include_blank => 'No Company Specified', autofocus: true
+      = f.collection_select :company, Company.all.select { |c| !c.name.nil? }, :id, :name, :include_blank => 'No Company Specified', autofocus: true
     = f.submit "Save", class: "btn btn-primary"
     %button.btn.btn-link.cancel Cancel
