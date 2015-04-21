@@ -1,0 +1,10 @@
+- # $Id$
+- # $(c)$
+
+%td= object.sensor_id
+%td= object.tire_type
+%td= object.company
+%td.actions= smart_listing_item_actions [ |
+ {name: :edit,    url: edit_tire_path(object)}, |
+ {name: :destroy, url: tire_path(object), confirmation: "Are you sure you want to delete this tire?"} |
+ ] |

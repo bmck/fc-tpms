@@ -1,0 +1,16 @@
+- # $Id$
+- # $(c)$
+
+%td= object.company_name
+%td= object.start_service
+%td= object.end_service
+%td= object.contact_name
+%td= object.contact_address
+%td= object.contact_city
+%td= object.contact_state
+%td= object.contact_zip
+%td= object.domain_name
+%td.actions= smart_listing_item_actions [ |
+ {name: :edit,    url: edit_company_path(object)}, |
+ {name: :destroy, url: company_path(object), confirmation: "Are you sure you want to delete this company?"} |
+ ] |

@@ -6,14 +6,11 @@ class TiresController < ApplicationController
   helper  SmartListing::Helper
 
   def index
-    @tires = smart_listing_create(:tires,
-                                  TireType.all_tires,
-                                  partial: 'tires/list',
-                                  default_sort: { sensor_id: 'asc' })
+    @tires = smart_listing_create partial: "tires/list"
   end
 
   def new
-    @tire = TireType.new
+    @tire = Tire.new
   end
 
   def create
@@ -31,13 +28,23 @@ class TiresController < ApplicationController
     @tire.destroy
   end
 
+  def smart_listing_resource
+    @tire ||= params[:id] ? Tire.find(params[:id]) : Tire.new(params[:tire])
+  end
+  helper_method :smart_listing_resource
+
+  def smart_listing_collection
+    @tire_types ||= Tire.all_tires
+  end
+  helper_method :smart_listing_collection
+
   private
 
   def find_tire
-    @tire = TireType.find(params[:id])
+    @tire = Tire.find(params[:id])
   end
 
   def tire_params
-    params.require(:tire).permit(:name)
+    params.require(:tire).permit(:sensor_id, :company_id, :tire_type_id)
   end
 end
