@@ -12,7 +12,7 @@
     %tbody
       - smart_listing.collection.each do |tire|
         %tr.editable{data: {id: tire.id}}
-          = smart_listing.render object: tire, partial: 'tires/tire', locals: {tire: tire}
+          = smart_listing.render object: tire, partial: 'tires/tire', locals: {object: tire}
     %tfoot
       = smart_listing.item_new colspan: 4, link: new_tire_path
 

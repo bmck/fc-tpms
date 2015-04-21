@@ -6,10 +6,7 @@ class TireTypesController < ApplicationController
   helper  SmartListing::Helper
 
   def index
-    @tire_types = smart_listing_create(:tire_types,
-                                       TireType.all_tire_types,
-                                       partial: 'tire_types/list',
-                                       default_sort: { name: 'asc' })
+    @tire_types = smart_listing_create partial: "tire_types/list"
   end
 
   def new
@@ -30,6 +27,16 @@ class TireTypesController < ApplicationController
   def destroy
     @tire_type.destroy
   end
+
+  def smart_listing_resource
+    @tire_type ||= params[:id] TireType.find(params[:id]) : TireType.new(params[:tire_type])
+  end
+  helper_method :smart_listing_resource
+
+  def smart_listing_collection
+    @tire_types ||= TireType.all_tire_types
+  end
+  helper_method :smart_listing_collection
 
   private
 

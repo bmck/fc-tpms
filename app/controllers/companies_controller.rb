@@ -6,20 +6,7 @@ class CompaniesController < ApplicationController
   helper  SmartListing::Helper
 
   def index
-    scoped_companies = \
-    if current_user.global_admin?
-      Company.all_companies
-    else
-      Company.my_company
-    end
-
-    # Apply the search control filter.
-    scoped_companies = scoped_users.contains(params[:filter]) if params[:filter]
-
-    @companies = smart_listing_create(:companies,
-                                      scoped_companies,
-                                      partial: 'companies/list',
-                                      default_sort: { company_name: 'asc' })
+    @companies = smart_listing_create partial: 'companies/list'
   end
 
   def new
@@ -40,6 +27,26 @@ class CompaniesController < ApplicationController
   def destroy
     @company.destroy
   end
+
+  def smart_listing_resource
+    @company ||= params[:id] ? Company.find(params[:id]) : Company.new(params[:company])
+  end
+  helper_method :smart_listing_resource
+
+  def smart_listing_collection
+    scoped_companies = \
+    if current_user.global_admin?
+      Company.all_companies
+    else
+      Company.my_company
+    end
+
+    # Apply the search control filter.
+    scoped_companies = scoped_users.contains(params[:filter]) if params[:filter]
+
+    @companies ||= scoped_companies
+  end
+  helper_method :smart_listing_collection
 
   private
 
