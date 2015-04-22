@@ -5,7 +5,7 @@ Rails.application.routes.draw do
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
-  devise_for :user # , controllers: { sessions: "user/sessions", registrations: "user/registrations" }
+  devise_for :user, controllers: { sessions: "user/sessions", registrations: "user/registrations" }
 
   # You can have the root of your site routed with "root"
   # root 'welcome#index'

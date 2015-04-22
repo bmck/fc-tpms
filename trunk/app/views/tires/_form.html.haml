@@ -14,6 +14,6 @@
     .field
       = f.label :company
       \&nbsp;
-      = f.collection_select :company_id, Company.all.select { |c| !c.company_name.nil? }, :id, :company_name, :include_blank => 'No Company Specified', autofocus: true
+      = f.collection_select :company_id, Company.all.select { |c| !c.name.nil? }, :id, :name, :include_blank => 'No Company Specified', autofocus: true
     = f.submit "Save", class: "btn btn-primary"
     %button.btn.btn-link.cancel Cancel

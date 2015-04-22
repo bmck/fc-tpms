@@ -1,15 +1,15 @@
 - # $Id$
 - # $(c)$
 
-%td{colspan: 10}
+%td{colspan: 12}
   = form_for object, url: object.new_record? ? companies_path : company_path(object), remote: true, html: {class: "form-horizontal"} do |f|
     %table.table
       %tr
         %td{:colspan => 2}
           .field
-            = f.label :company_name
+            = f.label :name
             \&nbsp;
-            = f.text_field :company_name, :size => 40, :autofocus => true
+            = f.text_field :name, :size => 40, :autofocus => true
       %tr
         %td
           .field
@@ -43,6 +43,18 @@
             = f.text_field :contact_state, :size => 4, :autofocus => true
             \&nbsp;
             = f.text_field :contact_zip, :size => 10, :autofocus => true
+      %tr
+        %td{:colspan => 2}
+          .field
+            = f.label :contact_phone
+            \&nbsp;
+            = f.text_field :contact_phone, :size => 15, :autofocus => true
+      %tr
+        %td{:colspan => 2}
+          .field
+            = f.label :contact_email
+            \&nbsp;
+            = f.text_field :contact_email, :size => 48, :autofocus => true
       %tr
         %td{:colspan => 2}
           .field

@@ -9,7 +9,6 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   before_action \
-    :reset_flash,
     :capture_orig_request_params,
     :log_action,
     :permitted_params,
@@ -86,6 +85,10 @@ class ApplicationController < ActionController::Base
 
   def rescue_action_in_public(exception)
     notify_airbrake exception
+  end
+
+  def show_flashes
+    Rails.logger.verbose { "flash = #{flash.inspect}" }
   end
 
   def reset_flash

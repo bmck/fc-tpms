@@ -4,8 +4,8 @@
 class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable,
-         :recoverable, :rememberable, :trackable, :validatable,
+  devise :database_authenticatable, :registerable, \
+         :recoverable, :rememberable, :trackable, :validatable, \
          :confirmable, :timeoutable
 
   after_update :send_password_change_email, if: :needs_password_change_email?

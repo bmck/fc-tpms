@@ -4,12 +4,9 @@
 class TiresController < ApplicationController
   include SmartListing::Helper::ControllerExtensions
   helper  SmartListing::Helper
-  helper_method :smart_listing_resource, :smart_listing_collection
-
-  before_filter :smart_listing_resource, only: [:update, :destroy]
 
   def index
-    @tires = smart_listing_create partial: "tires/list"
+    @tires = smart_listing_create partial: 'tires/list'
   end
 
   def new
@@ -24,25 +21,26 @@ class TiresController < ApplicationController
   end
 
   def update
-    @tire.update_attributes(tire_params)
+    smart_listing_resource.update_attributes(tire_params)
   end
 
   def destroy
-    @tire.destroy
+    smart_listing_resource.destroy
   end
 
   def smart_listing_resource
     @tire ||= params[:id] ? Tire.find(params[:id]) : Tire.new(params[:tire])
   end
+  helper_method :smart_listing_resource
 
   def smart_listing_collection
     scoped_tires = Tire.all_tires
 
     scoped_tires = scoped_tires.contains(params[:filter]) if params[:filter]
 
-    @tires ||= scoped_tires
+    @tires = scoped_tires
   end
-
+  helper_method :smart_listing_collection
 
   private
 
@@ -53,5 +51,4 @@ class TiresController < ApplicationController
   def tire_params
     params.require(:tire).permit(:sensor_id, :company_id, :tire_type_id)
   end
-
 end

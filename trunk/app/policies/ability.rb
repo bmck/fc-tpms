@@ -22,36 +22,31 @@ class Ability
     #   end
     # end
 
-    if user.nil?
-      can [:new, :create], :"devise/sessions"
-      can :manage, :main
-      return
-
-    elsif user.global_admin?
+    if user.try(:global_admin?) == true
       can :manage, :all
       return
-
-    else
-      setup_abilities(user)
-
     end
+
+    can [:new, :create], :"user/sessions"
+    can [:new, :create], :"user/registrations"
+    can [:show], :"devise/confirmations"
+    can :manage, :main
+
+    return if user.nil?
+
+    setup_abilities(user)
   end
 
   def setup_abilities(user)
-    unless user.nil? # redundant
-      if user.global_admin? # redundant
-        can :manage, :all
-      elsif user.company_admin?
-        can :manage, :user, company: { id: user.company_id }
-      elsif user.basic_user?
-        setup_basic_user_abilities(user)
-      end
-    end
+    can :manage, :user, company: { id: user.company_id } if user.company_admin?
 
-    true
+    setup_basic_user_abilities(user)
   end
 
   def setup_basic_user_abilities(_user)
+    can [:destroy], :"user/sessions"
+    can [:edit], :'user/registrations'
+
     can :manage, :tire
     can :manage, :tire_sample
     can :read, :tire_sample_report

@@ -6,18 +6,17 @@ class UsersController < ApplicationController
   helper  SmartListing::Helper
   helper_method :smart_listing_resource, :smart_listing_collection
 
-  before_filter :smart_listing_resource, only: [:update, :destroy]
+  before_action :smart_listing_collection, only: [:index]
+  before_action :smart_listing_resource, only: [:update, :destroy]
   before_action :find_user, except: [:index, :new, :create]
 
   def index
-    smart_listing_create :users,
-      scoped_users,
-      partial: 'users/list',
-      default_sort: { last_name: 'asc', first_name: 'asc' }
+    Rails.logger.verbose { "@users = #{@users.inspect}" }
+    smart_listing_create partial: 'users/list'
   end
 
   def new
-    @new_user = User.new
+    @user = User.new
   end
 
   def create
@@ -28,15 +27,15 @@ class UsersController < ApplicationController
   end
 
   def update
-    @user.update_attributes(user_params)
+    smart_listing_resource.update_attributes(user_params)
   end
 
   def destroy
-    @user.destroy
+    smart_listing_resource.destroy
   end
 
   def smart_listing_resource
-    @tire ||= params[:id] ? User.find(params[:id]) : User.new(params[:user])
+    @user ||= params[:id] ? User.find(params[:id]) : User.new(params[:user])
   end
 
   def smart_listing_collection
@@ -52,7 +51,9 @@ class UsersController < ApplicationController
     # Apply the search control filter.
     scoped_users = scoped_users.contains(params[:filter]) if params[:filter]
 
-    @tire_types ||= scoped_users
+    @users = scoped_users
+    Rails.logger.verbose { "@users = #{@users.inspect}" }
+    @users
   end
 
   private
@@ -63,6 +64,6 @@ class UsersController < ApplicationController
 
   def user_params
     params.require(:user).permit(:first_name, :last_name, :company, :email,
-                                 :session_id)
+                                 :session_id, :role, :password, :password_confirmation)
   end
 end
