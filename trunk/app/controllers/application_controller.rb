@@ -9,9 +9,6 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   before_action \
-    :capture_orig_request_params,
-    :log_action,
-    :permitted_params,
     :authorize_action
 
   after_action :cache_request_data_in_flash
@@ -25,11 +22,6 @@ class ApplicationController < ActionController::Base
       request
       utf8
     )
-  end
-
-  def permitted_params
-    params.except!(ApplicationController.screened_param_keys)
-    @permitted_params ||= ::PermittedParams.new(params, current_user)
   end
 
   rescue_from CanCan::AccessDenied do |exception|
@@ -87,123 +79,17 @@ class ApplicationController < ActionController::Base
     notify_airbrake exception
   end
 
-  def show_flashes
-    Rails.logger.verbose { "flash = #{flash.inspect}" }
-  end
-
-  def reset_flash
-    flash.clear
-  end
-
-  # def fetch_logged_in_user
-  #   return unless session[:user_id] && session[:user_type]
-  #   @current_user = session[:user_type].safe_constantize.try(:find_by_id, session[:user_id])
-  # end
-
-  # def login_required
-  #   return true if logged_in?
-  #   session[:return_to] = request.url
-  #   redirect_to controller: :login and return false
-  # end
-
-  # def tos_agreement_required
-  #   return true if @current_user.agreed_to_tos?
-  #   session[:return_to] = request.url
-  #   flash.notice = 'You must agree to the Terms of Service before you may continue.'
-  #   redirect_to controller: :login, action: :tos and return false
-  # end
-
-  def capture_orig_request_params
-    if params[:attr] && !(params[:attr].try(:key?, :id).in?([false, nil])) && params[:attr][:id].is_a?(Array)
-      params[:attr][:id] = params[:attr][:id] - ['']
-      params[:attr][:id] = params[:attr][:id].first if params[:attr][:id].length == 1
-    end
-
-    @orig_request_params = params.deep_dup
-  end
-
-  def cache_request_data_in_flash
-    flash[:pvs_url] = request.url
-    # Caching plaintext passwords in a semi-permanent data structure is a security risk.
-    if @orig_request_params.key?(:user)
-      @orig_request_params[:user][:password] = '(hidden)' if @orig_request_params[:user].try(:key?, :password)
-      @orig_request_params[:user][:password_confirmation] = '(hidden)' if
-      @orig_request_params[:user].try(:key?, :password_confirmation)
-    end
-
-    @orig_request_params[:email].delete(:chart_img) if @orig_request_params.key?(:email) &&
-      @orig_request_params[:email].is_a?(Hash)
-    @orig_request_params.delete(:rates)
-    @orig_request_params.delete(:net_volumes)
-    @orig_request_params.delete(:orig_rates)
-    @orig_request_params.delete(:prepayments)
-    flash[:pvs_params] = @orig_request_params
-  end
-
   def authorize_action
     authorize!(params[:action].to_sym, params[:controller].to_sym)
   end
 
   alias_method :logged_in?, :current_user
 
-  delegate \
-    :global_admin?, to: :current_user, allow_nil: true
-
-  helper_method \
-    :logged_in?, :global_admin?
-
-  def requires_global_admin
-    user_allowed(global_admin?)
-  end
+  delegate :global_admin?, to: :current_user, allow_nil: true
+  helper_method :logged_in?, :global_admin?
 
   def self.error_msg_prefix
     'ERROR: '
-  end
-
-  def handle_controller_error(msg)
-    flash.notice = ApplicationController.error_msg_prefix + msg
-    begin
-      redirect_to :back
-    rescue
-      redirect_to controller: :main
-    end
-  end
-
-  def handle_caplyt_exceptions
-    yield
-  rescue RuntimeError => e
-    Rails.logger.error { e.inspect }
-    Rails.logger.error { ApplicationController.error_msg_prefix + e.msg }
-    Rails.logger.error e.message
-    Rails.logger.error e.backtrace.join("\n")
-    handle_controller_error(e.msg) and return
-  rescue SystemStackError => e
-    Rails.logger.error e.message
-    Rails.logger.error e.backtrace.join("\n")
-  end
-
-  def log_action
-    # params[:controller] ||= controller_name
-    # params[:action] ||= action_name
-    # session_user_id = session.try(:[], :user_id).try(:to_i) || -1
-
-    # entry = LogEntry.new
-    # entry.timestamp = DateTime.now
-    # entry.user_id = session_user_id
-    # entry.session_id = request.session_options[:id]
-    # entry.user_agent = request.env['HTTP_USER_AGENT']
-    # entry.ip_address = request.env['REMOTE_ADDR']
-    # entry.req_method = request.method
-    # entry.full_url = "#{request.protocol}#{request.host_with_port}#{request.fullpath}"
-    # entry.controller = controller_name
-    # entry.action = action_name
-
-    # # create a deep copy of the params hash
-    # log_params = params.deep_dup.except(*screened_param_keys)
-    # log_params[:email].try(:delete, :chart_img) # if log_params.key?(:email) && log_params[:email].is_a?(Hash)
-    # hide_sensitive_params(log_params)
-    # entry.params = log_params.inspect.encode('UTF-8')
-    # entry.save!
   end
 
   private

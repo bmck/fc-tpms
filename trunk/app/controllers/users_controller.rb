@@ -4,14 +4,10 @@
 class UsersController < ApplicationController
   include SmartListing::Helper::ControllerExtensions
   helper  SmartListing::Helper
-  helper_method :smart_listing_resource, :smart_listing_collection
 
-  before_action :smart_listing_collection, only: [:index]
-  before_action :smart_listing_resource, only: [:update, :destroy]
-  before_action :find_user, except: [:index, :new, :create]
+  before_action :authenticate_user!
 
   def index
-    Rails.logger.verbose { "@users = #{@users.inspect}" }
     smart_listing_create partial: 'users/list'
   end
 

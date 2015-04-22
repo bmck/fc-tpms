@@ -5,6 +5,8 @@ class CompaniesController < ApplicationController
   include SmartListing::Helper::ControllerExtensions
   helper  SmartListing::Helper
 
+  before_action :authenticate_user!
+
   def index
     @companies = smart_listing_create partial: 'companies/list'
   end

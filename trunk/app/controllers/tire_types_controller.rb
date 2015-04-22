@@ -5,6 +5,8 @@ class TireTypesController < ApplicationController
   include SmartListing::Helper::ControllerExtensions
   helper  SmartListing::Helper
 
+  before_action :authenticate_user!
+
   def index
     @tire_types = smart_listing_create partial: 'tire_types/list'
   end

@@ -5,6 +5,8 @@ class TireSamplesController < ApplicationController
   include SmartListing::Helper::ControllerExtensions
   helper  SmartListing::Helper
 
+  before_action :authenticate_user!
+
   def index
     @tire_samples = smart_listing_create partial: 'tire_sample/list'
   end
@@ -42,6 +44,15 @@ class TireSamplesController < ApplicationController
   end
   helper_method :smart_listing_collection
 
+  def self.generate_verify_value(tmp_params)
+    tmp_tire_sample_params = tmp_params[:tire_sample].slice(:sensor_id, :receiver_id, :value, :sample_time)
+    tire_param_str = tmp_tire_sample_params.values.map { |val| val.to_s }.sort.join('_')
+    verify_val = BCrypt::Password.create(tire_param_str, :cost => 10)
+  end
+
+  delegate :generate_verify_value, to: :class
+  helper_method :generate_verify_value
+
   private
 
   def find_tire_sample
@@ -49,6 +60,11 @@ class TireSamplesController < ApplicationController
   end
 
   def tire_sample_params
-    params.require(:tire_sample).permit(:sensor_id, :receiver_id, :value, :sample_time)
+    params.require(:tire_sample).permit(:sensor_id, :receiver_id, :value, :sample_time, :verify, :current_user)
+  end
+
+  def confirm_verify_value
+    generate_verify_value(tire_sample_params) == tire_sample_params[:verify] ||
+      tire_sample_params[:current_user] == current_user.email
   end
 end

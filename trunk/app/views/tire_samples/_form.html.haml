@@ -1,0 +1,26 @@
+- # $Id: _form.html.haml 29 2015-04-21 01:59:10Z bmck_newco $
+- # $(c): Copyright 2015 by Newco $
+
+%td
+  = form_for object, url: object.new_record? ? tire_samples_path : tire_sample_path(object), remote: true, html: {class: "form-horizontal"} do |f|
+    .field
+      = f.label :sensor
+      \&nbsp;
+      = f.collection_select :sensor, Sensor.all, :id, :name, autofocus: true
+    .field
+      = f.label :receiver
+      \&nbsp;
+      = f.collection_select :receiver, Receiver.all, :id, :name, autofocus: true
+    .field
+      = f.label :value
+      \&nbsp;
+      = f.number_field :value, :size => 12, :autofocus => true
+    .field
+      = f.label :sample_time
+      \&nbsp;
+      = f.datetime_local_field :sample_time, :size => 64, :autofocus => true
+
+    = f.hidden_field(:current_user, :email)
+
+    = f.submit "Save", class: "btn btn-primary", id: :submit_tire_sample
+    %button.btn.btn-link.cancel Cancel

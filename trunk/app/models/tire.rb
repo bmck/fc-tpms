@@ -7,6 +7,10 @@ class Tire < ActiveRecord::Base
 
   scope :all_tires, -> {}
 
+  def name
+    serial
+  end
+
   def tire_type_name
     tire_type.name
   end
