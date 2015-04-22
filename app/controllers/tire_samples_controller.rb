@@ -1,15 +1,12 @@
 # $Id$
 # $(c)$
 
-class TireSampleController < ApplicationController
+class TireSamplesController < ApplicationController
   include SmartListing::Helper::ControllerExtensions
   helper  SmartListing::Helper
-  helper_method :smart_listing_resource, :smart_listing_collection
-
-  before_filter :smart_listing_resource, only: [:update, :destroy]
 
   def index
-    @tire_samples = smart_listing_create partial: "tire_sample/list"
+    @tire_samples = smart_listing_create partial: 'tire_sample/list'
   end
 
   def new
@@ -24,25 +21,26 @@ class TireSampleController < ApplicationController
   end
 
   def update
-    @tire_sample.update_attributes(tire_sample_params)
+    smart_listing_resource.update_attributes(tire_sample_params)
   end
 
   def destroy
-    @tire_sample.destroy
+    smart_listing_resource.destroy
   end
 
   def smart_listing_resource
     @tire_sample ||= params[:id] ? TireSample.find(params[:id]) : TireSample.new(params[:tire])
   end
+  helper_method :smart_listing_resource
 
   def smart_listing_collection
     scoped_tire_samples = TireSample.all_tire_samples
 
     scoped_tire_samples = scoped_tire_samples.contains(params[:filter]) if params[:filter]
 
-    @tire_samples ||= scoped_tire_samples
+    @tire_samples = scoped_tire_samples
   end
-
+  helper_method :smart_listing_collection
 
   private
 
@@ -50,8 +48,7 @@ class TireSampleController < ApplicationController
     @tire_sample = TireSample.find(params[:id])
   end
 
-  def tire_sampleparams
-    params.require(:tire_sample).permit()
+  def tire_sample_params
+    params.require(:tire_sample).permit(:sensor_id, :receiver_id, :value, :sample_time)
   end
-
 end

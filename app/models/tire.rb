@@ -11,7 +11,7 @@ class Tire < ActiveRecord::Base
     tire_type.name
   end
 
-  def company_name
-    company.company_name
+  def name
+    company.name
   end
 end
