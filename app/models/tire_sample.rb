@@ -23,4 +23,16 @@ class TireSample < ActiveRecord::Base
   def tire_type_name
     tire_type.name
   end
+
+  def tire_name
+    tire.name
+  end
+
+  def sensor_name
+    sensor.name
+  end
+
+  def receiver_name
+    receiver.name
+  end
 end

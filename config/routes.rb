@@ -18,12 +18,10 @@ Rails.application.routes.draw do
 
   get '/home' => 'main#home'
 
-  resources :companies
-  resources :users
-  resources :tires
-  resources :tire_types
-  resources :tire_samples
-  resource  :tire_sample_reports, only: [:show]
+  resources :companies, :users
+  resources :sensors, :receivers
+  resources :tires, :tire_types, :tire_samples
+  resource  :tire_sample_report, only: [:index, :new, :create]
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'
