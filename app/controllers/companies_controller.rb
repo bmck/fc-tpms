@@ -4,6 +4,9 @@
 class CompaniesController < ApplicationController
   include SmartListing::Helper::ControllerExtensions
   helper  SmartListing::Helper
+  helper_method :smart_listing_resource, :smart_listing_collection
+
+  before_filter :smart_listing_resource, only: [:update, :destroy]
 
   def index
     @companies = smart_listing_create partial: 'companies/list'
@@ -31,7 +34,6 @@ class CompaniesController < ApplicationController
   def smart_listing_resource
     @company ||= params[:id] ? Company.find(params[:id]) : Company.new(params[:company])
   end
-  helper_method :smart_listing_resource
 
   def smart_listing_collection
     scoped_companies = \
@@ -46,7 +48,6 @@ class CompaniesController < ApplicationController
 
     @companies ||= scoped_companies
   end
-  helper_method :smart_listing_collection
 
   private
 
@@ -56,6 +57,8 @@ class CompaniesController < ApplicationController
 
   def company_params
     params.require(:company).permit(:company_name, :contact_name, :contact_address, :contact_phone,
-                                    :contact_city, :contact_state, :contact_zip)
+                                    :contact_city, :contact_state, :contact_zip, :domain_name,
+                                    :"start_service(1i)", :"start_service(2i)", :"start_service(3i)",
+                                    :"end_service(1i)", :"end_service(2i)", :"end_service(3i)")
   end
 end

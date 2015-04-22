@@ -59,15 +59,6 @@ ActiveRecord::Schema.define(version: 20150417182847) do
     t.datetime "updated_at",             null: false
   end
 
-  create_table "tire_samples", force: :cascade do |t|
-    t.integer  "tire_id",     limit: 4,                          null: false
-    t.integer  "receiver_id", limit: 4
-    t.decimal  "sample",                precision: 10, scale: 6, null: false
-    t.datetime "sample_time"
-    t.datetime "created_at",                                     null: false
-    t.datetime "updated_at",                                     null: false
-  end
-
   create_table "tire_types", force: :cascade do |t|
     t.string   "name",       limit: 255, null: false
     t.datetime "created_at",             null: false
