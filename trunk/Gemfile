@@ -53,4 +53,5 @@ group :development do
   gem 'rails_layout'
   gem 'reek'
   gem 'rubocop'
+  gem 'seed_dump'
 end
