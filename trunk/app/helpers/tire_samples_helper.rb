@@ -1,5 +1,5 @@
 # $Id$
 # $(c)$
 
-module TireSampleHelper
+module TireSamplesHelper
 end
