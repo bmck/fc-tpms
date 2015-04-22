@@ -13,7 +13,7 @@
     %tbody
       - smart_listing.collection.each do |user|
         %tr.editable{data: {id: user.id}}
-          = smart_listing.render object: user, partial: 'users/user', locals: {user: user}
+          = smart_listing.render object: user, partial: 'users/user', locals: {object: user}
     %tfoot
       = smart_listing.item_new colspan: 5, link: new_user_path
 
@@ -25,4 +25,4 @@
 - else
   %p
   %table
-     = smart_listing.item_new colspan: 1, link: new_user_path
+    = smart_listing.item_new colspan: 1, link: new_user_path

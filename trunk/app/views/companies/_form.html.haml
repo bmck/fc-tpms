@@ -9,18 +9,18 @@
           .field
             = f.label :company_name
             \&nbsp;
-            = f.text_field :first_name, :size => 40, :autofocus => true
+            = f.text_field :company_name, :size => 40, :autofocus => true
       %tr
         %td
           .field
             = f.label :start_service_date
             \&nbsp;
-            = f.date_select :start_service_date, :autofocus => true
+            = f.date_select :start_service, :autofocus => true
         %td
           .field
             = f.label :end_service_date
             \&nbsp;
-            = f.date_select :end_service_date, :autofocus => true
+            = f.date_select :end_service, :autofocus => true
       %tr
         %td{:colspan => 2}
           .field
@@ -32,14 +32,14 @@
           .field
             = f.label :contact_street_address
             \&nbsp;
-            = f.text_field :contact_street_address, :size => 64, :autofocus => true
+            = f.text_field :contact_address, :size => 64, :autofocus => true
       %tr
         %td{:colspan => 2}
           .field
-            = f.label :contact_city_st_zip
+            = f.label 'Contact City, State, and Zip'
             \&nbsp;
             = f.text_field :contact_city, :size => 40, :autofocus => true
-            , \&nbsp;
+            , &nbsp;
             = f.text_field :contact_state, :size => 4, :autofocus => true
             \&nbsp;
             = f.text_field :contact_zip, :size => 10, :autofocus => true
@@ -48,7 +48,7 @@
           .field
             = f.label :email_domain_name
             \&nbsp;
-            = f.text_field :email_domain_name, :size => 32, :autofocus => true
+            = f.text_field :domain_name, :size => 32, :autofocus => true
       %tr
         %td{colspan:2}
           = f.submit "Save", class: "btn btn-primary"
