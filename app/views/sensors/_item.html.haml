@@ -2,7 +2,7 @@
 - # $(c): Copyright 2015 by Newco $
 
 %td= object.name
-%td= object.type
+%td= object.sensor_type
 %td.actions= smart_listing_item_actions [ |
  {name: :edit,    url: edit_sensor_path(object)}, |
  {name: :destroy, url: sensor_path(object), confirmation: "Are you sure you want to delete this sensor?"} |

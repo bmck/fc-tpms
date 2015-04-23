@@ -5,6 +5,7 @@ class ReceiversController < ApplicationController
   include SmartListing::Helper::ControllerExtensions
   helper  SmartListing::Helper
 
+  before_action :find_receiver, except: [:index, :new, :create]
   before_action :authenticate_user!
 
   def index
@@ -51,6 +52,6 @@ class ReceiversController < ApplicationController
   end
 
   def receiver_params
-    params.require(:receiver).permit(:type, :serial)
+    params.require(:receiver).permit(:receiver_type, :serial)
   end
 end

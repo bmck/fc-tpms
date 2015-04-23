@@ -4,14 +4,14 @@
 - if user_signed_in?
   - if can? :index, :companies
     %li= link_to 'Companies', companies_path
+  - if can? :index, :sensors
+    %li= link_to 'Sensors', sensors_path
+  - if can? :index, :receivers
+    %li= link_to 'Receivers', receivers_path
   - if can? :index, :tire_types
     %li= link_to 'Tire Types', tire_types_path
   - if can? :index, :tires
     %li= link_to 'Tires', tires_path
-  - if can? :index, :sensors
-    %li= link_to 'Sensors', tires_path
-  - if can? :index, :receivers
-    %li= link_to 'Receivers', tires_path
   - if can? :index, :tire_samples
     %li= link_to 'Tire Samples', tire_samples_path
   - if can? :index, :tire_sample_report

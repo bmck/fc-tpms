@@ -13,6 +13,7 @@ class TireSamplesController < ApplicationController
 
   def new
     @tire_sample = TireSample.new
+    @tire_sample.sample_time = DateTime.now
   end
 
   def create

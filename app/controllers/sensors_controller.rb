@@ -5,6 +5,7 @@ class SensorsController < ApplicationController
   include SmartListing::Helper::ControllerExtensions
   helper  SmartListing::Helper
 
+  before_action :find_sensor, except: [:index, :new, :create]
   before_action :authenticate_user!
 
   def index
@@ -51,6 +52,6 @@ class SensorsController < ApplicationController
   end
 
   def sensor_params
-    params.require(:sensor).permit(:type, :serial)
+    params.require(:sensor).permit(:sensor_type, :serial)
   end
 end

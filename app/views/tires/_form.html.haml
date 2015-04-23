@@ -4,9 +4,13 @@
 %td{colspan: 4}
   = form_for object, url: object.new_record? ? tires_path : tire_path(object), remote: true, html: {class: "form-horizontal"} do |f|
     .field
-      = f.label :sensor_id
+      = f.label :serial_number
       \&nbsp;
-      = f.text_field :sensor_id, :size => 15, :autofocus => true
+      = f.text_field :serial, :size => 15, :autofocus => true
+    .field
+      = f.label :sensor_serial_number
+      \&nbsp;
+      = f.text_field :sensor_serial, :size => 15, :autofocus => true
     .field
       = f.label :tire_type
       \&nbsp;
@@ -14,6 +18,7 @@
     .field
       = f.label :company
       \&nbsp;
-      = f.collection_select :company_id, Company.all.select { |c| !c.name.nil? }, :id, :name, :include_blank => 'No Company Specified', autofocus: true
+      = f.collection_select :company_id, Company.all, :id, :name, :include_blank => 'No Company Specified', autofocus: true
+
     = f.submit "Save", class: "btn btn-primary"
     %button.btn.btn-link.cancel Cancel

@@ -5,16 +5,17 @@
   %table.table.table-striped
     %thead
       %tr
-        %th= smart_listing.sortable "Sensor ID", :sensor_id
+        %th= smart_listing.sortable "Tire Serial", :serial
+        %th= smart_listing.sortable "Sensor Serial", :sensor_serial
         %th= smart_listing.sortable "Tire Type", :tire_type
-        %th= smart_listing.sortable "Company", :company
+        %th= smart_listing.sortable "Company", :company_name
         %th
     %tbody
       - smart_listing.collection.each do |tire|
         %tr.editable{data: {id: tire.id}}
           = smart_listing.render object: tire, partial: 'tires/item', locals: {object: tire}
     %tfoot
-      = smart_listing.item_new colspan: 4, link: new_tire_path
+      = smart_listing.item_new colspan: 5, link: new_tire_path
 
   -# Render nice pagination links fitted for Bootstrap 3 by default
   .text-center

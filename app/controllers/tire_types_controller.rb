@@ -5,6 +5,7 @@ class TireTypesController < ApplicationController
   include SmartListing::Helper::ControllerExtensions
   helper  SmartListing::Helper
 
+  before_action :find_tire_type, except: [:index, :new, :create]
   before_action :authenticate_user!
 
   def index

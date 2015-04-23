@@ -2,7 +2,7 @@
 - # $(c): Copyright 2015 by Newco $
 
 %td= object.name
-%td= object.type
+%td= object.receiver_type
 %td.actions= smart_listing_item_actions [ |
  {name: :edit,    url: edit_receiver_path(object)}, |
  {name: :destroy, url: receiver_path(object), confirmation: "Are you sure you want to delete this receiver?"} |
