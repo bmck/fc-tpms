@@ -8,7 +8,7 @@ class TireSamplesController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @tire_samples = smart_listing_create partial: 'tire_sample/list'
+    @tire_samples = smart_listing_create partial: 'tire_samples/list'
   end
 
   def new
@@ -36,7 +36,7 @@ class TireSamplesController < ApplicationController
   helper_method :smart_listing_resource
 
   def smart_listing_collection
-    scoped_tire_samples = TireSample.all_tire_samples
+    scoped_tire_samples = TireSample.all_samples
 
     scoped_tire_samples = scoped_tire_samples.contains(params[:filter]) if params[:filter]
 

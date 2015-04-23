@@ -11,8 +11,6 @@ class ApplicationController < ActionController::Base
   before_action \
     :authorize_action
 
-  after_action :cache_request_data_in_flash
-
   cattr_reader :screened_param_keys do
     %w(
       authenticity_token

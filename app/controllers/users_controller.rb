@@ -5,6 +5,7 @@ class UsersController < ApplicationController
   include SmartListing::Helper::ControllerExtensions
   helper  SmartListing::Helper
 
+  before_action :find_user, except: [:index, :new, :create]
   before_action :authenticate_user!
 
   def index
@@ -23,11 +24,12 @@ class UsersController < ApplicationController
   end
 
   def update
-    smart_listing_resource.update_attributes(user_params)
+    smart_listing_update partial: 'users/list'
+    # @user.update_attributes(user_params)
   end
 
   def destroy
-    smart_listing_resource.destroy
+    @user.destroy
   end
 
   def smart_listing_resource
@@ -47,9 +49,7 @@ class UsersController < ApplicationController
     # Apply the search control filter.
     scoped_users = scoped_users.contains(params[:filter]) if params[:filter]
 
-    @users = scoped_users
-    Rails.logger.verbose { "@users = #{@users.inspect}" }
-    @users
+    @users ||= scoped_users
   end
 
   private

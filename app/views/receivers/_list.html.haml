@@ -1,0 +1,26 @@
+- # $Id: _list.html.haml 33 2015-04-22 14:35:24Z bmck_newco $
+- # $(c): Copyright 2015 by Newco $
+
+- unless smart_listing.empty?
+  %table.table.table-striped
+    %thead
+      %tr
+        %th= smart_listing.sortable "Serial Number", :serial
+        %th= smart_listing.sortable "Receiver Type", :type
+        %th
+    %tbody
+      - smart_listing.collection.each do |receiver|
+        %tr.editable{data: {id: receiver.id}}
+          = smart_listing.render object: receiver, partial: 'receivers/item', locals: {object: receiver}
+    %tfoot
+      = smart_listing.item_new colspan: 3, link: new_receiver_path
+
+  -# Render nice pagination links fitted for Bootstrap 3 by default
+  .text-center
+    = smart_listing.paginate
+    = smart_listing.pagination_per_page_links
+
+- else
+  %p
+  %table.table
+    = smart_listing.item_new colspan: 1, link: new_receiver_path

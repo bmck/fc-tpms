@@ -59,11 +59,12 @@ ActiveRecord::Schema.define(version: 20150417172500) do
   end
 
   create_table "tires", force: :cascade do |t|
-    t.integer  "sensor_id",    limit: 4, null: false
-    t.integer  "tire_type_id", limit: 4
-    t.integer  "company_id",   limit: 4
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.integer  "sensor_id",    limit: 4,   null: false
+    t.integer  "tire_type_id", limit: 4,   null: false
+    t.integer  "company_id",   limit: 4,   null: false
+    t.string   "serial",       limit: 255
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
   end
 
   create_table "users", force: :cascade do |t|
