@@ -3,24 +3,33 @@
 
 %td
   = form_for object, url: object.new_record? ? tire_samples_path : tire_sample_path(object), remote: true, html: {class: "form-horizontal"} do |f|
-    .field
-      = f.label :sensor
-      \&nbsp;
-      = f.collection_select :sensor, Sensor.all, :id, :name, autofocus: true
-    .field
-      = f.label :receiver
-      \&nbsp;
-      = f.collection_select :receiver, Receiver.all, :id, :name, autofocus: true
-    .field
-      = f.label :value
-      \&nbsp;
-      = f.number_field :value, :size => 12, :autofocus => true
-    .field
-      = f.label :sample_time
-      \&nbsp;
-      = f.datetime_local_field :sample_time, :size => 64, :autofocus => true
+    %table.table
+      %tr
+        %td
+          .field
+            = f.label :tire
+            \&nbsp;
+            = f.collection_select :sensor_id, Sensor.all, :id, :tire_name, autofocus: true
+        %td
+          .field
+            = f.label :receiver
+            \&nbsp;
+            = f.collection_select :receiver_id, Receiver.all, :id, :name, autofocus: true
 
-    = f.hidden_field(:current_tire_sample, value: current_tire_sample.email)
+      %tr{colspan: 2}
+        %td
+
+      %tr
+        %td
+          .field
+            = f.label :value
+            \&nbsp;
+            = f.number_field :value, :size => 12, :autofocus => true, step: 0.0001
+        %td
+          .field
+            = f.label :sample_time
+            \&nbsp;
+            = f.datetime_local_field :sample_time, :size => 12, :autofocus => true
 
     = f.submit "Save", class: "btn btn-primary", id: :submit_tire_sample
     %button.btn.btn-link.cancel Cancel

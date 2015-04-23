@@ -1,6 +1,8 @@
 - # $Id: index.html.haml 28 2015-04-20 20:15:46Z bmck_newco $
 - # $(c): Copyright 2015 by Newco $
 
+%h2 Sensors
+
 = smart_listing_controls_for(:sensors, {class: "form-inline text-right"}) do
   .form-group.filter.input-append
     = text_field_tag :filter, '', class: "search form-control", placeholder: "Search...", autocomplete: :off

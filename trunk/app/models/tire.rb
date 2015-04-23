@@ -4,6 +4,7 @@
 class Tire < ActiveRecord::Base
   belongs_to :tire_type
   belongs_to :company
+  belongs_to :sensor
 
   scope :all_tires, -> {}
 
@@ -19,5 +20,9 @@ class Tire < ActiveRecord::Base
 
   def company_name
     company.name
+  end
+
+  def sensor_serial
+    sensor.serial
   end
 end

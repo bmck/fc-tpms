@@ -6,7 +6,7 @@
     %thead
       %tr
         %th= smart_listing.sortable "Serial Number", :serial
-        %th= smart_listing.sortable "Receiver Type", :type
+        %th= smart_listing.sortable "Receiver Type", :receiver_type
         %th
     %tbody
       - smart_listing.collection.each do |receiver|

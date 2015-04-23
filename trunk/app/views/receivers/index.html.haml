@@ -1,12 +1,14 @@
 - # $Id: index.html.haml 28 2015-04-20 20:15:46Z bmck_newco $
 - # $(c): Copyright 2015 by Newco $
 
-= smart_listing_controls_for(:tires, {class: "form-inline text-right"}) do
+%h2 Receivers
+
+= smart_listing_controls_for(:receivers, {class: "form-inline text-right"}) do
   .form-group.filter.input-append
     = text_field_tag :filter, '', class: "search form-control", placeholder: "Search...", autocomplete: :off
 
   %button.btn.btn-primary.disabled{type: :submit}
     %span.glyphicon.glyphicon-search
 
-= smart_listing_render :tires
+= smart_listing_render :receivers
 

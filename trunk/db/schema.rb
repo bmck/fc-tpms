@@ -30,17 +30,17 @@ ActiveRecord::Schema.define(version: 20150417172500) do
   end
 
   create_table "receivers", force: :cascade do |t|
-    t.string   "serial",     limit: 255, null: false
-    t.string   "type",       limit: 255
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.string   "serial",        limit: 255, null: false
+    t.string   "receiver_type", limit: 255
+    t.datetime "created_at",                null: false
+    t.datetime "updated_at",                null: false
   end
 
   create_table "sensors", force: :cascade do |t|
-    t.string   "serial",     limit: 255, null: false
-    t.string   "type",       limit: 255
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.string   "serial",      limit: 255, null: false
+    t.string   "sensor_type", limit: 255
+    t.datetime "created_at",              null: false
+    t.datetime "updated_at",              null: false
   end
 
   create_table "tire_samples", force: :cascade do |t|
