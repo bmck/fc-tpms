@@ -20,7 +20,7 @@
       \&nbsp;
       = f.datetime_local_field :sample_time, :size => 64, :autofocus => true
 
-    = f.hidden_field(:current_user, value: current_user.email)
+    = f.hidden_field(:current_tire_sample, value: current_tire_sample.email)
 
     = f.submit "Save", class: "btn btn-primary", id: :submit_tire_sample
     %button.btn.btn-link.cancel Cancel

@@ -5,8 +5,8 @@ class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable, \
-         :recoverable, :rememberable, :trackable, :validatable, \
-         :confirmable, :timeoutable
+    :recoverable, :rememberable, :trackable, :validatable, \
+    :confirmable, :timeoutable
 
   after_update :send_password_change_email, if: :needs_password_change_email?
 
@@ -40,8 +40,12 @@ class User < ActiveRecord::Base
   end
 
   def company
-    return 'No Company Specified' unless company_id
-    Company.find(company_id) rescue 'Unknown company'
+    return nil unless company_id
+    Company.try(:find, company_id)
+  end
+
+  def company_name
+    company.try(:name) || 'No Company Specified'
   end
 
   private

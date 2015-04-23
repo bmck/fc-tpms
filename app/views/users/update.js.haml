@@ -1,0 +1,5 @@
+- # $Id: index.html.haml 28 2015-04-20 20:15:46Z bmck_newco $
+- # $(c): Copyright 2015 by Newco $
+
+- Rails.logger.verbose { "@user = #{@user.inspect}" }
+= smart_listing_item :users, :update, @user, (@user.valid? ? "users/item" : "users/form")

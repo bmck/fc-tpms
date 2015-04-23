@@ -16,7 +16,7 @@
           .field
             = f.label :company
             \&nbsp;
-            = f.collection_select :role, Company.all.select { |c| !c.name.nil? }, :id, :name, :include_blank => 'No Company Specified', autofocus: true
+            = f.collection_select :company_id, Company.all.to_a, :id, :name, {:include_blank => 'No Company Specified', autofocus: true}
         %td
           .field
             = f.label :email
