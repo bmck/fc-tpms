@@ -8,7 +8,7 @@ class TireSamplesController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @tire_samples = smart_listing_create partial: 'tire_samples/list'
+    smart_listing_create partial: 'tire_samples/list'
   end
 
   def new
@@ -23,11 +23,11 @@ class TireSamplesController < ApplicationController
   end
 
   def update
-    smart_listing_resource.update_attributes(tire_sample_params)
+    @tire_sample.update_attributes(tire_sample_params)
   end
 
   def destroy
-    smart_listing_resource.destroy
+    @tire_sample.destroy
   end
 
   def smart_listing_resource
@@ -40,7 +40,7 @@ class TireSamplesController < ApplicationController
 
     scoped_tire_samples = scoped_tire_samples.contains(params[:filter]) if params[:filter]
 
-    @tire_samples = scoped_tire_samples
+    @tire_samples ||= scoped_tire_samples
   end
   helper_method :smart_listing_collection
 

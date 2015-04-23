@@ -8,7 +8,7 @@ class CompaniesController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @companies = smart_listing_create partial: 'companies/list'
+    smart_listing_create partial: 'companies/list'
   end
 
   def new
@@ -23,11 +23,11 @@ class CompaniesController < ApplicationController
   end
 
   def update
-    smart_listing_resource.update_attributes(company_params)
+    @company.update(company_params)
   end
 
   def destroy
-    smart_listing_resource.destroy
+    @company.destroy
   end
 
   def smart_listing_resource

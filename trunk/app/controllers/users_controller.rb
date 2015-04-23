@@ -24,8 +24,11 @@ class UsersController < ApplicationController
   end
 
   def update
-    smart_listing_update partial: 'users/list'
-    # @user.update_attributes(user_params)
+    u_parms = user_params.deep_dup
+    u_parms.except!(:password, :password_confirmation) if u_parms[:password].blank? ||
+      u_parms[:password_confirmation] != u_parms[:password]
+
+    @user.update(u_parms)
   end
 
   def destroy
@@ -59,7 +62,7 @@ class UsersController < ApplicationController
   end
 
   def user_params
-    params.require(:user).permit(:first_name, :last_name, :company, :email,
+    params.require(:user).permit(:first_name, :last_name, :company_id, :email,
                                  :session_id, :role, :password, :password_confirmation)
   end
 end

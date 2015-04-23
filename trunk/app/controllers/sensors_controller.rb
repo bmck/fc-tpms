@@ -8,7 +8,7 @@ class SensorsController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @sensors = smart_listing_create partial: 'sensors/list'
+    smart_listing_create partial: 'sensors/list'
   end
 
   def new
@@ -23,11 +23,11 @@ class SensorsController < ApplicationController
   end
 
   def update
-    smart_listing_resource.update_attributes(sensor_params)
+    @sensor.update(sensor_params)
   end
 
   def destroy
-    smart_listing_resource.destroy
+    @sensor.destroy
   end
 
   def smart_listing_resource
@@ -40,7 +40,7 @@ class SensorsController < ApplicationController
 
     scoped_sensors = scoped_sensors.contains(params[:filter]) if params[:filter]
 
-    @sensors = scoped_sensors
+    @sensors ||= scoped_sensors
   end
   helper_method :smart_listing_collection
 
@@ -53,6 +53,4 @@ class SensorsController < ApplicationController
   def sensor_params
     params.require(:sensor).permit(:type, :serial)
   end
-end
-class SensorsController < ApplicationController
 end

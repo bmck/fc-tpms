@@ -8,7 +8,7 @@ class TireTypesController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @tire_types = smart_listing_create partial: 'tire_types/list'
+    smart_listing_create partial: 'tire_types/list'
   end
 
   def new
@@ -23,11 +23,11 @@ class TireTypesController < ApplicationController
   end
 
   def update
-    smart_listing_resource.update_attributes(tire_type_params)
+    @tire_type.update(tire_type_params)
   end
 
   def destroy
-    smart_listing_resource.destroy
+    @tire_type.destroy
   end
 
   def smart_listing_resource
@@ -40,7 +40,7 @@ class TireTypesController < ApplicationController
 
     scoped_tire_types = scoped_tire_types.contains(params[:filter]) if params[:filter]
 
-    @tire_types = scoped_tire_types
+    @tire_types ||= scoped_tire_types
   end
   helper_method :smart_listing_collection
 

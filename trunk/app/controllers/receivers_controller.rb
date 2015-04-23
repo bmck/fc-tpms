@@ -8,7 +8,7 @@ class ReceiversController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    @receivers = smart_listing_create partial: 'receivers/list'
+    smart_listing_create partial: 'receivers/list'
   end
 
   def new
@@ -23,11 +23,11 @@ class ReceiversController < ApplicationController
   end
 
   def update
-    smart_listing_resource.update_attributes(receiver_params)
+    @receiver.update(receiver_params)
   end
 
   def destroy
-    smart_listing_resource.destroy
+    @receiver.destroy
   end
 
   def smart_listing_resource
@@ -40,7 +40,7 @@ class ReceiversController < ApplicationController
 
     scoped_receivers = scoped_receivers.contains(params[:filter]) if params[:filter]
 
-    @receivers = scoped_receivers
+    @receivers ||= scoped_receivers
   end
   helper_method :smart_listing_collection
 
