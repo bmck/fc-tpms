@@ -44,9 +44,9 @@ class CompaniesController < ApplicationController
     end
 
     # Apply the search control filter.
-    scoped_companies = scoped_users.contains(params[:filter]) if params[:filter]
+    scoped_companies = scoped_companies.contains(params[:filter]) if params[:filter]
 
-    @companies = scoped_companies
+    @companies ||= scoped_companies
   end
   helper_method :smart_listing_collection
 

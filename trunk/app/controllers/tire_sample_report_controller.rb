@@ -12,10 +12,10 @@ class TireSampleReportController < ApplicationController
       Sensor.all_company_sensors(current_user.company_id)
     end
     @receivers = Receiver.all_receivers
-    @being_time_range = nil
-    @end_time_range = nil
-    @lo_val = nil
-    @hi_val = nil
+    @start_service = Date.today - 1.year
+    @end_service = Date.today
+
+    @object = TireSampleReport.new({ })
   end
 
   def new
@@ -23,5 +23,15 @@ class TireSampleReportController < ApplicationController
   end
 
   def create
+    rpt = TireSampleReport.new(report_params)
   end
+
+  private
+
+  def report_params
+    params.require(:tire_sample_report).permit(:sensors, :receivers,
+                                               :"start_service(1i)", :"start_service(2i)", :"start_service(3i)",
+                                               :"end_service(1i)", :"end_service(2i)", :"end_service(3i)")
+  end
+
 end

@@ -47,10 +47,10 @@ class Ability
     can [:destroy], :"user/sessions"
     can [:edit], :'user/registrations'
 
-    can :manage, :tire
-    can :manage, :tire_sample
+    can :manage, :tires
+    can :manage, :tire_samples
     can :read, :tire_sample_report
-    can :new, :tire_type
+    can :new, :tire_types
 
     can :main, :all
   end

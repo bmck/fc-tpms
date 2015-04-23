@@ -21,7 +21,7 @@ Rails.application.routes.draw do
   resources :companies, :users
   resources :sensors, :receivers
   resources :tires, :tire_types, :tire_samples
-  resource  :tire_sample_report, only: [:index, :new, :create]
+  resources :tire_sample_report, only: [:index, :new, :create]
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

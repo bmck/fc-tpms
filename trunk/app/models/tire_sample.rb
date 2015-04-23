@@ -13,6 +13,8 @@ class TireSample < ActiveRecord::Base
   scope :all_samples_for_sensor, -> sensor_id { where("#{sensor_id} == sensor_id") }
   scope :all_samples_for_receiver, -> receiver_id { where("#{receiver_id} == receiver_id") }
 
+  scope :contains, -> x { where("locate(\"#{x}\", name) > 0") }
+
   delegate :tire, to: :sensor
   delegate :company, :tire_type, to: :tire
 

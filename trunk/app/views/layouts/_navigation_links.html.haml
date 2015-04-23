@@ -2,20 +2,24 @@
 - # $(c)$
 
 - if user_signed_in?
-  - if can? :index, :company
-    %li= link_to 'List/Edit Companies', companies_path
-  - if can? :index, :tire_type
-    %li= link_to 'List/Edit Tire Types', tire_types_path
-  - if can? :index, :tire
-    %li= link_to 'List/Edit Tires', tires_path
-  - if can? :index, :tire_sample
-    %li= link_to 'List/Edit Tire Samples', tire_samples_path
+  - if can? :index, :companies
+    %li= link_to 'Companies', companies_path
+  - if can? :index, :tire_types
+    %li= link_to 'Tire Types', tire_types_path
+  - if can? :index, :tires
+    %li= link_to 'Tires', tires_path
+  - if can? :index, :sensors
+    %li= link_to 'Sensors', tires_path
+  - if can? :index, :receivers
+    %li= link_to 'Receivers', tires_path
+  - if can? :index, :tire_samples
+    %li= link_to 'Tire Samples', tire_samples_path
   - if can? :index, :tire_sample_report
-    %li= link_to 'View/Chart Tire Samples', tire_sample_reports_path
+    %li= link_to 'Chart Tire Samples', tire_sample_report_index_path
   - if can? :index, :user
-    %li= link_to 'List/Edit Users', users_path
-  %li= link_to 'Edit account', edit_user_registration_path
-  %li= link_to 'Sign out', destroy_user_session_path, :method=>'delete'
+    %li= link_to 'Users', users_path
+  %li= link_to 'Edit Account', edit_user_registration_path
+  %li= link_to 'Sign Out', destroy_user_session_path, :method=>'delete'
 - else
   %li= link_to 'Sign in', new_user_session_path
   %li= link_to 'Sign up', new_user_registration_path

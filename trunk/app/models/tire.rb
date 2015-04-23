@@ -7,6 +7,8 @@ class Tire < ActiveRecord::Base
 
   scope :all_tires, -> {}
 
+  scope :contains, -> x { where("locate(\"#{x}\", name) > 0") }
+
   def name
     serial
   end
@@ -15,7 +17,7 @@ class Tire < ActiveRecord::Base
     tire_type.name
   end
 
-  def name
+  def company_name
     company.name
   end
 end
