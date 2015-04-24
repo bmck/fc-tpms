@@ -2,6 +2,8 @@
 # $(c)$
 
 class Company < ActiveRecord::Base
+  include Loggable
+
   has_many :users
 
   scope :all_companies, -> {}

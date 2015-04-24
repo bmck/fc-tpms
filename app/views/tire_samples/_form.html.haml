@@ -1,7 +1,7 @@
-- # $Id: _form.html.haml 29 2015-04-21 01:59:10Z bmck_newco $
-- # $(c): Copyright 2015 by Newco $
+- # $Id$
+- # $(c)$
 
-%td
+%td{colspan: 5}
   = form_for object, url: object.new_record? ? tire_samples_path : tire_sample_path(object), remote: true, html: {class: "form-horizontal"} do |f|
     %table.table
       %tr

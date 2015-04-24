@@ -1,5 +1,5 @@
-# $Id: active-record-query-trace.rb 5671 2015-04-06 15:06:43Z bmck $
-# $(c): Copyright 2008-2015 by Capitalytics $
+# $Id$
+# $(c)$
 
 if defined? ActiveRecordQueryTrace
   ActiveRecordQueryTrace.enabled = false

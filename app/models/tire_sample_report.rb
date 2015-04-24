@@ -48,11 +48,11 @@ class TireSampleReport
       @samples[sensor] = @samples[sensor].where(condition_hsh) unless condition_hsh.keys.empty?
       @samples[sensor] = @samples[sensor].where(condition_str.join(' and ')) unless condition_str.empty?
       @samples[sensor] = @samples[sensor].order('sample_time asc').select('*')
-      # Rails.logger.verbose { "sensor.id = #{sensor.id}" }
-      # Rails.logger.verbose { "@samples[sensor] = #{@samples[sensor].to_sql}"}
+      Rails.logger.verbose { "sensor.id = #{sensor.id}" }
+      Rails.logger.verbose { "@samples[sensor] = #{@samples[sensor].to_sql}"}
       @samples[sensor] = @samples[sensor].to_a
     end
-    # Rails.logger.verbose { "@samples = #{@samples.inspect}" }
+    Rails.logger.verbose { "@samples = #{@samples.inspect}" }
     @samples
   end
 

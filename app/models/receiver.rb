@@ -2,6 +2,7 @@
 # $(c)$
 
 class Receiver < ActiveRecord::Base
+  include Loggable
 
   scope :all_receivers, -> {}
 

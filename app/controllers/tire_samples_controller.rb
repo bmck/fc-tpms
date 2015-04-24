@@ -62,7 +62,7 @@ class TireSamplesController < ApplicationController
   end
 
   def tire_sample_params
-    params.require(:tire_sample).permit(:sensor_id, :receiver_id, :value, :sample_time, :verify, :current_user)
+    params.require(:tire_sample).permit(:sensor_id, :receiver_id, :value, :sample_time, :verify)
   end
 
   def confirm_verify_value

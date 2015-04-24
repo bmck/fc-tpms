@@ -2,6 +2,8 @@
 # $(c)$
 
 class Sensor < ActiveRecord::Base
+  include Loggable
+
   has_one :tire
 
   scope :all_sensors, -> { joins('join tires on tires.sensor_id = sensors.id') }
