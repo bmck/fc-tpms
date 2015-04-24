@@ -4,7 +4,7 @@
 if defined? ActiveRecordQueryTrace
   ActiveRecordQueryTrace.enabled = false
   if Rails.env.development?
-    ActiveRecordQueryTrace.enabled = true
+    ActiveRecordQueryTrace.enabled = false
     ActiveRecordQueryTrace.level = :app # default
     ActiveRecordQueryTrace.lines = 10
   end
