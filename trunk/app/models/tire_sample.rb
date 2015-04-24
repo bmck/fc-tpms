@@ -13,7 +13,13 @@ class TireSample < ActiveRecord::Base
   scope :all_samples_for_sensor, -> sensor_id { where("#{sensor_id} == sensor_id") }
   scope :all_samples_for_receiver, -> receiver_id { where("#{receiver_id} == receiver_id") }
 
-  scope :contains, -> x { where("locate(\"#{x}\", name) > 0") }
+  scope :contains, -> x { joins('LEFT JOIN (`tires`,`sensors`,`receivers`) ' \
+                                'ON receivers.id = tire_samples.receiver_id and sensors.id = tire_samples.sensor_id and ' \
+                                'tires.sensor_id = sensors.id')
+                          .where("locate(\"#{x}\", tires.serial) > 0 or " \
+                                 "locate(\"#{x}\", receivers.serial) > 0 or " \
+                                 "locate(\"#{x}\", value) > 0 or " \
+                                 "locate(\"#{x}\", sample_time) > 0") }
 
   delegate :tire, to: :sensor
   delegate :company, :tire_type, to: :tire
