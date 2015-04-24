@@ -3,5 +3,8 @@
 
 %p
   Welcome #{@email}!
-%p Please confirm your Newco account by clicking the link below:
+%p
+  Please confirm your Newco account by clicking the link below.
+  After you confirm your account, you should click on the "Edit Your Account"
+  menu option to change your password.
 %p= link_to 'Confirm my account', confirmation_url(@resource, confirmation_token: @token)
