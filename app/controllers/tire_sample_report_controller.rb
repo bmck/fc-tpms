@@ -4,7 +4,7 @@
 class TireSampleReportController < ApplicationController
   before_action :authenticate_user!
 
-  def index
+  def new
     @sensors = \
     if current_user.global_admin? || current_user.company_id.nil?
       Sensor.all_sensors
@@ -18,20 +18,16 @@ class TireSampleReportController < ApplicationController
     @object = TireSampleReport.new({ })
   end
 
-  def new
-    redirect_to :create and return
-  end
-
   def create
-    rpt = TireSampleReport.new(report_params)
+    @report = TireSampleReport.new(report_params)
   end
 
   private
 
   def report_params
-    params.require(:tire_sample_report).permit(:sensors, :receivers,
-                                               :"start_service(1i)", :"start_service(2i)", :"start_service(3i)",
-                                               :"end_service(1i)", :"end_service(2i)", :"end_service(3i)")
+    params.require(:tire_sample_report).permit(:"start_service(1i)", :"start_service(2i)", :"start_service(3i)",
+                                               :"end_service(1i)", :"end_service(2i)", :"end_service(3i)",
+                                               sensor_ids: [], receiver_ids: [])
   end
 
 end
