@@ -11,11 +11,13 @@ class TireSampleReport
   def initialize(params)
     sensor_ids = Array(params[:sensor_ids] || [])
     sensor_ids.select! { |sensor_id| !sensor_id.blank? && !Sensor.find(sensor_id).try(:tire).nil? }
-    @sensors = sensor_ids.map { |sensor_id| Sensor.find(sensor_id) }
+    @sensors = sensor_ids.empty? ? Sensor.all_sensors.to_a :
+      sensor_ids.map { |sensor_id| Sensor.find(sensor_id) }
 
     receiver_ids = Array(params[:receiver_ids])
     receiver_ids.select! { |receiver_id| !receiver_id.blank? && Receiver.find(receiver_id) }
-    @receivers = receiver_ids.map { |receiver_id| Receiver.find(receiver_id) }
+    @receivers = receiver_ids.empty? ? Receiver.all.to_a :
+      receiver_ids.map { |receiver_id| Receiver.find(receiver_id) }
 
     @start_service = Date.new(
       params[:"start_service(1i)"],
@@ -45,7 +47,7 @@ class TireSampleReport
       @samples[sensor] = TireSample.where(sensor_id: sensor.id)
       @samples[sensor] = @samples[sensor].where(condition_hsh) unless condition_hsh.keys.empty?
       @samples[sensor] = @samples[sensor].where(condition_str.join(' and ')) unless condition_str.empty?
-      @samples[sensor] = @samples[sensor].select('*')
+      @samples[sensor] = @samples[sensor].order('sample_time asc').select('*')
       # Rails.logger.verbose { "sensor.id = #{sensor.id}" }
       # Rails.logger.verbose { "@samples[sensor] = #{@samples[sensor].to_sql}"}
       @samples[sensor] = @samples[sensor].to_a
