@@ -1,9 +1,9 @@
-- # $Id: _form.html.haml 29 2015-04-21 01:59:10Z bmck_newco $
-- # $(c): Copyright 2015 by Newco $
+- # $Id$
+- # $(c)$
 
 - rpt = @report.samples_per_sensor
 - sensors = rpt.keys
 - data = sensors.map { |sensor| { name: sensor.tire_name, data: rpt[sensor].map { |tire_sample| [ tire_sample[:sample_time], tire_sample[:value]] } } }
-- # Rails.logger.verbose { "data = #{data.inspect}" }
+- Rails.logger.verbose { "data = #{data.inspect}" }
 
 = line_chart data, height: "500px"

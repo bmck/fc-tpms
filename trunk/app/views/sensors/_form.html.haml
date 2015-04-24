@@ -1,5 +1,5 @@
-- # $Id: _form.html.haml 35 2015-04-22 18:03:47Z bmck_newco $
-- # $(c): Copyright 2015 by Newco $
+- # $Id$
+- # $(c)$
 
 %td{colspan: 3}
   = form_for object, url: object.new_record? ? sensors_path : sensor_path(object), remote: true, html: {class: "form-horizontal"} do |f|

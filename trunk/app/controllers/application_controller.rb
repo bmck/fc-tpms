@@ -9,6 +9,7 @@ class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
 
   before_action \
+    :assign_current_user,
     :authorize_action
 
   cattr_reader :screened_param_keys do
@@ -38,6 +39,29 @@ class ApplicationController < ActionController::Base
       error_message: 'Unpermitted Parameters',
       parameters: { parameters: params, exception: exception }
     )
+  end
+
+  protected
+
+  def rescue_action_in_public(exception)
+    notify_airbrake exception
+  end
+
+  def authorize_action
+    authorize!(params[:action].to_sym, params[:controller].to_sym)
+  end
+
+  alias_method :logged_in?, :current_user
+
+  delegate :global_admin?, to: :current_user, allow_nil: true
+  helper_method :logged_in?, :global_admin?
+
+  def self.error_msg_prefix
+    'ERROR: '
+  end
+
+  def assign_current_user
+    Thread.current[:current_user] = current_user
   end
 
   private
@@ -70,27 +94,6 @@ class ApplicationController < ActionController::Base
     @exception = exception
     render template: 'errors/permission_denied', formats: [:html], status: 550 and return
   end
-
-  protected
-
-  def rescue_action_in_public(exception)
-    notify_airbrake exception
-  end
-
-  def authorize_action
-    authorize!(params[:action].to_sym, params[:controller].to_sym)
-  end
-
-  alias_method :logged_in?, :current_user
-
-  delegate :global_admin?, to: :current_user, allow_nil: true
-  helper_method :logged_in?, :global_admin?
-
-  def self.error_msg_prefix
-    'ERROR: '
-  end
-
-  private
 
   # recursive function that hides sensitive params prior to logging
   def hide_sensitive_params(params_hash, hide_keys = %w(password password_confirmation))

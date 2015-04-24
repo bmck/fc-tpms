@@ -2,6 +2,8 @@
 # $(c)$
 
 class Tire < ActiveRecord::Base
+  include Loggable
+
   belongs_to :tire_type
   belongs_to :company
   belongs_to :sensor

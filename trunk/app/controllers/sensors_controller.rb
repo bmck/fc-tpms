@@ -1,5 +1,5 @@
-# $Id: sensors_controller.rb 38 2015-04-22 20:54:09Z bmck_newco $
-# $(c): Copyright 2015 by Newco $
+# $Id$
+# $(c)$
 
 class SensorsController < ApplicationController
   include SmartListing::Helper::ControllerExtensions

@@ -2,6 +2,8 @@
 # $(c)$
 
 class TireSample < ActiveRecord::Base
+  include Loggable
+
   belongs_to :sensor
   belongs_to :receiver
 

@@ -1,5 +1,5 @@
-- # $Id: _item.html.haml 30 2015-04-21 02:45:24Z bmck_newco $
-- # $(c): Copyright 2015 by Newco $
+- # $Id$
+- # $(c)$
 
 %td= object.tire_name
 %td= object.receiver_name
@@ -7,5 +7,6 @@
 %td= object.sample_time
 
 %td.actions= smart_listing_item_actions [ |
+ {name: :edit,    url: edit_tire_sample_path(object)}, |
  {name: :destroy, url: tire_sample_path(object), confirmation: "Are you sure you want to delete this tire sample?"} |
  ] |
