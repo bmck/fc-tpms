@@ -5,7 +5,7 @@ class TireSamplesController < ApplicationController
   include SmartListing::Helper::ControllerExtensions
   helper  SmartListing::Helper
 
-  before_action :authenticate_user!
+  before_action :authenticate_user!, except: [:create]
 
   def index
     smart_listing_create partial: 'tire_samples/list'
@@ -17,6 +17,7 @@ class TireSamplesController < ApplicationController
   end
 
   def create
+    return unless current_user.global_admin? || confirm_verify_value
     @tire_sample = TireSample.create(tire_sample_params)
   end
 
@@ -65,7 +66,6 @@ class TireSamplesController < ApplicationController
   end
 
   def confirm_verify_value
-    generate_verify_value(tire_sample_params) == tire_sample_params[:verify] ||
-      tire_sample_params[:current_user] == current_user.email
+    generate_verify_value(tire_sample_params) == tire_sample_params[:verify]
   end
 end
