@@ -2,6 +2,9 @@
 - # $(c)$
 
 %h2 Change your password
+%p
+  Enter and confirm your new password below.
+
 = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f|
   = devise_error_messages!
   = f.hidden_field :reset_password_token
@@ -9,6 +12,7 @@
     = f.label :password, "New password"
     %br/
     = f.password_field :password, autofocus: true, autocomplete: "off"
+  %br/
   .field
     = f.label :password_confirmation, "Confirm new password"
     %br/
