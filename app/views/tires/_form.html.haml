@@ -16,9 +16,13 @@
       \&nbsp;
       = f.collection_select :tire_type_id, TireType.all, :id, :name, :include_blank => 'No Tire Type Specified', autofocus: true
     .field
-      = f.label :company
+      = f.label :owning_company
       \&nbsp;
-      = f.collection_select :company_id, Company.all, :id, :name, :include_blank => 'No Company Specified', autofocus: true
+      = f.collection_select :owning_company_id, Company.all, :id, :name, :include_blank => 'No Company Specified', autofocus: true
+    .field
+      = f.label :using_company
+      \&nbsp;
+      = f.collection_select :using_company_id, Company.all, :id, :name, :include_blank => 'No Company Specified', autofocus: true
 
     = f.submit "Save", class: "btn btn-primary"
     %button.btn.btn-link.cancel Cancel
