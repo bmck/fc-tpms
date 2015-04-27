@@ -1,0 +1,52 @@
+- # $Id$
+- # $(c)$
+
+:javascript
+  AmCharts.makeChart("#{div_name}",
+    {
+      "type": "serial",
+      "export": {
+        "enabled": true,
+        "filename": "#{controller.controller_name.humanize.html_safe}",
+        "libs": { "autoLoad": false }
+        },
+      "pathToImages": "http://cdn.amcharts.com/lib/3/images/",
+      "categoryField": "#{report.serial_xaxis_name.to_s.html_safe}",
+      "dataDateFormat": "YYYY-MM-DD HH:NN:SS",
+      "creditsPosition": "bottom-right",
+      "colors": #{report.colors.html_safe},
+      "theme": "light",
+      "categoryAxis": {
+        "minPeriod": "ss",
+        "parseDates": true
+      },
+      "chartCursor": {
+        "categoryBalloonDateFormat": "JJ:NN:SS"
+      },
+      "chartScrollbar": {},
+      "trendLines": [],
+      "graphs": #{report.serial_graphs.html_safe},
+      "guides": [],
+      "valueAxes": [
+        {
+          "id": "ValueAxis-1",
+          "title": "#{report.try(:yaxis_title) || ''}"
+        }
+      ],
+      "allLabels": [],
+      "balloon": {},
+      "legend": {
+        "useGraphSettings": true,
+        "valueAlign": "left",
+        "valueWidth": 100
+      },
+      "titles": [
+        {
+          "id": "Title-1",
+          "size": 18,
+          "text": "#{(report.title || "Chart Title").html_safe}"
+        }
+      ],
+      "dataProvider": #{report.serial_data.html_safe}
+    }
+  )

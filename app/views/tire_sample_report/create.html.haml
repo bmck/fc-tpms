@@ -1,9 +1,6 @@
 - # $Id$
 - # $(c)$
 
-- rpt = @report.samples_per_sensor
-- sensors = rpt.keys
-- data = sensors.map { |sensor| { name: sensor.tire_name, data: rpt[sensor].map { |tire_sample| [ tire_sample[:sample_time], tire_sample[:value]] } } }
-- Rails.logger.verbose { "data = #{data.inspect}" }
+%div#tire_sample_report{style:"width:800px;height:600px;background-color:#FFFFFF;"}
 
-= line_chart data, height: "500px"
+= render partial: 'amcharts/line_chart', formats: [:js], layout: false, locals: { div_name: 'tire_sample_report', report: @report, controller: controller }
