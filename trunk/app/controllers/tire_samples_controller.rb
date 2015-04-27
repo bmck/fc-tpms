@@ -17,7 +17,9 @@ class TireSamplesController < ApplicationController
   end
 
   def create
-    return unless current_user.global_admin? || confirm_verify_value
+    fail NewcoError::VerificationError.new(request) unless
+    current_user.global_admin? || confirm_verify_value
+
     @tire_sample = TireSample.create(tire_sample_params)
   end
 
