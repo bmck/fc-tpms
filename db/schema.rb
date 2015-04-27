@@ -11,17 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150424173705) do
-
-  create_table "action_logs", force: :cascade do |t|
-    t.string   "klass",      limit: 255
-    t.string   "action",     limit: 255
-    t.text     "old_state",  limit: 65535
-    t.text     "new_state",  limit: 65535
-    t.string   "user_email", limit: 255
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
-  end
+ActiveRecord::Schema.define(version: 20150425022654) do
 
   create_table "companies", force: :cascade do |t|
     t.string   "name",            limit: 64,  null: false
@@ -69,12 +59,13 @@ ActiveRecord::Schema.define(version: 20150424173705) do
   end
 
   create_table "tires", force: :cascade do |t|
-    t.integer  "sensor_id",    limit: 4,   null: false
-    t.integer  "tire_type_id", limit: 4,   null: false
-    t.integer  "company_id",   limit: 4,   null: false
-    t.string   "serial",       limit: 255
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.integer  "sensor_id",         limit: 4,   null: false
+    t.integer  "tire_type_id",      limit: 4,   null: false
+    t.integer  "using_company_id",  limit: 4,   null: false
+    t.integer  "owning_company_id", limit: 4,   null: false
+    t.string   "serial",            limit: 255
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -107,5 +98,16 @@ ActiveRecord::Schema.define(version: 20150424173705) do
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["unlock_token"], name: "index_users_on_unlock_token", unique: true, using: :btree
+
+  create_table "versions", force: :cascade do |t|
+    t.string   "item_type",  limit: 255,   null: false
+    t.integer  "item_id",    limit: 4,     null: false
+    t.string   "event",      limit: 255,   null: false
+    t.string   "whodunnit",  limit: 255
+    t.text     "object",     limit: 65535
+    t.datetime "created_at"
+  end
+
+  add_index "versions", ["item_type", "item_id"], name: "index_versions_on_item_type_and_item_id", using: :btree
 
 end
