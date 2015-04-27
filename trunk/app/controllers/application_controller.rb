@@ -23,6 +23,10 @@ class ApplicationController < ActionController::Base
     )
   end
 
+  rescue_from NewcoError::VerificationError do |exception|
+    render_403(exception)
+  end
+
   rescue_from CanCan::AccessDenied do |exception|
     Rails.logger.debug "Access denied on #{exception.action} #{exception.subject.inspect}"
     Rails.logger.debug "\n\n#{caller.join("\n")}\n\n"
@@ -65,6 +69,11 @@ class ApplicationController < ActionController::Base
   end
 
   private
+
+  def render_403(exception)
+    @exception = exception
+    render status: 403 and return
+  end
 
   def render_404(exception)
     @exception = exception
