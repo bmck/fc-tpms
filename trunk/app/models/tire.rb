@@ -2,10 +2,11 @@
 # $(c)$
 
 class Tire < ActiveRecord::Base
-  include Loggable
+  has_paper_trail
 
   belongs_to :tire_type
-  belongs_to :company
+  belongs_to :using_company
+  belongs_to :owning_company
   belongs_to :sensor
 
   scope :all_tires, -> {}
@@ -20,8 +21,12 @@ class Tire < ActiveRecord::Base
     tire_type.name
   end
 
-  def company_name
-    company.name
+  def using_company_name
+    using_company.name
+  end
+
+  def owning_company_name
+    owning_company.name
   end
 
   def sensor_serial

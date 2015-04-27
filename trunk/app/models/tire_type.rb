@@ -2,8 +2,7 @@
 # $(c)$
 
 class TireType < ActiveRecord::Base
-  include Loggable
-
+  has_paper_trail
   has_many :tires
 
   scope :all_tire_types, -> {}

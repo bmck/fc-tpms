@@ -2,7 +2,7 @@
 # $(c)$
 
 class Receiver < ActiveRecord::Base
-  include Loggable
+  has_paper_trail
 
   scope :all_receivers, -> {}
 

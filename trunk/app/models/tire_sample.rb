@@ -2,7 +2,7 @@
 # $(c)$
 
 class TireSample < ActiveRecord::Base
-  include Loggable
+  has_paper_trail
 
   belongs_to :sensor
   belongs_to :receiver
@@ -45,4 +45,18 @@ class TireSample < ActiveRecord::Base
   def receiver_name
     receiver.name
   end
+
+  # def to_h
+  #   {
+  #     id: id,
+  #     sensor_id: sensor_id,
+  #     receiver_id: receiver_id,
+  #     value: value.to_f,
+  #     sample_time: sample_time.to_s(:db),
+  #     created_at: created_at,
+  #     updated_at: updated_at
+  #   }
+  # end
+
+  # alias_method :to_hash, :to_h
 end
