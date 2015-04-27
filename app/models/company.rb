@@ -2,7 +2,7 @@
 # $(c)$
 
 class Company < ActiveRecord::Base
-  include Loggable
+  has_paper_trail
 
   has_many :users
 

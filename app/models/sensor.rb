@@ -2,7 +2,7 @@
 # $(c)$
 
 class Sensor < ActiveRecord::Base
-  include Loggable
+  has_paper_trail
 
   has_one :tire
 

@@ -2,7 +2,7 @@
 # $(c)$
 
 class User < ActiveRecord::Base
-  include Loggable
+  has_paper_trail
 
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
