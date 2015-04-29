@@ -8,10 +8,15 @@ class Tire < ActiveRecord::Base
   belongs_to :using_company
   belongs_to :owning_company
   belongs_to :sensor
+  belongs_to :tire_location
 
   scope :all_tires, -> {}
+  scope :company_tires, -> company_id { where("using_company_id = #{company_id} or " \
+                                              "owning_company_id = #{company_id}") }
 
   scope :contains, -> x { where("locate(\"#{x}\", name) > 0") }
+
+  delegate :trucks, :trailers, :in_storage, to: :tire_location
 
   def name
     serial

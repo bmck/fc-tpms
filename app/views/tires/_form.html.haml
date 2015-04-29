@@ -1,7 +1,7 @@
 - # $Id$
 - # $(c)$
 
-%td{colspan: 4}
+%td{colspan: 6}
   = form_for object, url: object.new_record? ? tires_path : tire_path(object), remote: true, html: {class: "form-horizontal"} do |f|
     .field
       = f.label :serial_number

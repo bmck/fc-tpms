@@ -1,0 +1,29 @@
+- # $Id: _list.html.haml 56 2015-04-24 19:38:00Z bmck_newco $
+- # $(c): Copyright 2015 by Newco $
+
+- unless smart_listing.empty?
+  %table.table.table-striped
+    %thead
+      %tr
+        %th= smart_listing.sortable "Storage Name", :storage_name
+        %th Address
+        %th City
+        %th State
+        %th In-storage Location
+        %th
+    %tbody
+      - smart_listing.collection.each do |storage|
+        %tr.editable{data: {id: storage.id}}
+          = smart_listing.render object: storage, partial: 'storages/item', locals: {object: storage}
+    %tfoot
+      = smart_listing.item_new colspan: 6, link: new_storage_path
+
+  -# Render nice pagination links fitted for Bootstrap 3 by default
+  .text-center
+    = smart_listing.paginate
+    = smart_listing.pagination_per_page_links
+
+- else
+  %p
+  %table.table
+    = smart_listing.item_new colspan: 1, link: new_storage_path

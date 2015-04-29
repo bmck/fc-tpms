@@ -27,6 +27,10 @@ class ApplicationController < ActionController::Base
     render_403(exception)
   end
 
+  rescue_from NewcoError::AbstractMethodError do |exception|
+    render_500(exception)
+  end
+
   rescue_from CanCan::AccessDenied do |exception|
     Rails.logger.debug "Access denied on #{exception.action} #{exception.subject.inspect}"
     Rails.logger.debug "\n\n#{caller.join("\n")}\n\n"

@@ -1,11 +1,14 @@
 - # $Id$
 - # $(c)$
 
+- actions = []
+- if can? :edit, object
+  - actions << {name: :edit,    url: edit_user_path(object)}
+- if can? :destroy, object
+  - actions << {name: :destroy, url: user_path(object), confirmation: "Are you sure you want to delete this user?"}
+
 %td= object.first_last
 %td= object.email
 %td= object.company_name
 %td= object.role
-%td.actions= smart_listing_item_actions [ |
- {name: :edit,    url: edit_user_path(object)}, |
- {name: :destroy, url: user_path(object), confirmation: "Are you sure you want to delete this user?"} |
- ] |
+%td.actions= smart_listing_item_actions [ *actions ]

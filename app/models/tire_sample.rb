@@ -24,7 +24,7 @@ class TireSample < ActiveRecord::Base
                                  "locate(\"#{x}\", sample_time) > 0") }
 
   delegate :tire, to: :sensor
-  delegate :company, :tire_type, to: :tire
+  delegate :company, :tire_type, :company_id, to: :tire
 
   def company_name
     company.name

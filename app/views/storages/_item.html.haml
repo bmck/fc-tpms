@@ -1,0 +1,15 @@
+- # $Id: _item.html.haml 56 2015-04-24 19:38:00Z bmck_newco $
+- # $(c): Copyright 2015 by Newco $
+
+- actions = []
+- if can? :edit, object
+  - actions << {name: :edit,    url: edit_storage_path(object)}
+- if can? :destroy, object
+  - actions << {name: :destroy, url: storage_path(object), confirmation: "Are you sure you want to delete this storage facility?"}
+
+%td= object.name
+%td= object.storage_address
+%td= object.storage_city
+%td= object.storage_state
+%td= object.in_storage_location
+%td.actions= smart_listing_item_actions [ *actions ]
