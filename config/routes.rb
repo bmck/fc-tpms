@@ -21,6 +21,7 @@ Rails.application.routes.draw do
   resources :companies, :users
   resources :sensors, :receivers
   resources :tires, :tire_types, :tire_samples
+  resources :trailers, :trucks, :storages
   resources :tire_sample_report, only: [:new, :create]
 
   # Example of regular route:
