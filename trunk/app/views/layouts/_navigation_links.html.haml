@@ -12,6 +12,12 @@
     %li= link_to 'Tire Types', tire_types_path
   - if can? :index, :tires
     %li= link_to 'Tires', tires_path
+  - if can? :index, :trucks
+    %li= link_to 'Trucks', trucks_path
+  - if can? :index, :trailers
+    %li= link_to 'Trailers', trailers_path
+  - if can? :index, :storages
+    %li= link_to 'Storage Facilities', storages_path
   - if can? :index, :tire_samples
     %li= link_to 'Tire Samples', tire_samples_path
   - if can? :index, :tire_sample_report

@@ -1,0 +1,36 @@
+- # $Id: _form.html.haml 56 2015-04-24 19:38:00Z bmck_newco $
+- # $(c): Copyright 2015 by Newco $
+
+%td{colspan: 6}
+  = form_for object, url: object.new_record? ? storages_path : storage_path(object), remote: true, html: {class: "form-horizontal"} do |f|
+    %table.table
+      %tr
+        %td{colspan:2}
+          .field
+            = f.label :storage_facility_name
+            \&nbsp;
+            = f.text_field :storage_name, :size => 25, :autofocus => true
+      %tr
+        %td{colspan:2}
+          .field
+            = f.label :street_address
+            \&nbsp;
+            = f.text_field :storage_address, :size => 40, :autofocus => true
+      %tr
+        %td{colspan: 2}
+          .field
+            = f.label 'City and State'
+            \&nbsp;
+            = f.text_field :storage_city, :size => 40, :autofocus => true
+            , &nbsp;
+            = f.text_field :storage_state, :size => 4, :autofocus => true
+      %tr
+        %td{colspan: 2}
+          .field
+            = f.label 'In-storage Location'
+            \&nbsp;
+            = f.text_field :in_storage_location, :size => 64, :autofocus => true
+      %tr
+        %td{:colspan: 2}
+          = f.submit "Save", class: "btn btn-primary"
+          %button.btn.btn-link.cancel Cancel

@@ -1,0 +1,25 @@
+- # $Id: _list.html.haml 56 2015-04-24 19:38:00Z bmck_newco $
+- # $(c): Copyright 2015 by Newco $
+
+- unless smart_listing.empty?
+  %table.table.table-striped
+    %thead
+      %tr
+        %th= smart_listing.sortable "Truck Serial Number", :serial
+        %th
+    %tbody
+      - smart_listing.collection.each do |truck|
+        %tr.editable{data: {id: truck.id}}
+          = smart_listing.render object: truck, partial: 'trucks/item', locals: {object: truck}
+    %tfoot
+      = smart_listing.item_new colspan: 2, link: new_truck_path
+
+  -# Render nice pagination links fitted for Bootstrap 3 by default
+  .text-center
+    = smart_listing.paginate
+    = smart_listing.pagination_per_page_links
+
+- else
+  %p
+  %table.table
+    = smart_listing.item_new colspan: 1, link: new_truck_path

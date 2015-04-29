@@ -14,14 +14,6 @@ class Ability
     alias_action :update, :destroy, to: :modify
     # alias_action :show, :to => :read
 
-    # Rails.logger.verbose do
-    #   if user.nil?
-    #     "I don\'t know who you are."
-    #   else
-    #     "You are #{user.first_last}, a #{user.role}."
-    #   end
-    # end
-
     if user.try(:global_admin?) == true
       can :manage, :all
       return
@@ -38,7 +30,13 @@ class Ability
   end
 
   def setup_abilities(user)
-    can :manage, :user, company: { id: user.company_id } if user.company_admin?
+    if user.company_admin?
+      can :manage, :user, company: { id: user.company_id }
+      can :manage, :trucks, company: { id: truck.company_id }
+      can :manage, :trailers, company: { id: trailer.company_id }
+      can :manage, :storages, company: { id: storage.company_id }
+      can :manage, :tire_samples, company: { id: tire_sample.company_id }
+    end
 
     setup_basic_user_abilities(user)
   end
@@ -47,24 +45,14 @@ class Ability
     can [:destroy], :"user/sessions"
     can [:edit], :'user/registrations'
 
-    can :manage, :tires
-    can :manage, :tire_samples
+    can :manage, :tires, company: { id: tire.company_id }
+    can :read, :tire_samples, company: { id: tire_sample.company_id }
+    can :read, :trailers, company: { id: trailer.company_id }
+    can :read, :trucks, company: { id: truck.company_id }
+    can :read, :storages, company: { id: storage.company_id }
     can :read, :tire_sample_report
     can :new, :tire_types
 
     can :main, :all
   end
 end
-
-# Dir.glob(Rails.root.join('config', 'policies', 'ability', '*.rb')).each do |ability_file|
-#   require ability_file.to_s
-#   module_name = Pathname.new(ability_file).basename.sub_ext('').to_s
-#   module_suffix = module_name[-1] == 's' ? 's' : ''
-#   module_name = module_name.classify + module_suffix
-
-#   module_name = '::Ability::' + module_name
-#   mod = module_name.safe_constantize
-#   next unless mod
-
-#   Ability.send(:include, mod)
-# end

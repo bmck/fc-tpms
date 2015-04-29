@@ -1,8 +1,11 @@
 - # $Id$
 - # $(c)$
 
+- actions = []
+- if can? :edit, object
+  - actions << {name: :edit,    url: edit_tire_type_path(object)}
+- if can? :destroy, object
+  - actions << {name: :destroy, url: tire_type_path(object), confirmation: "Are you sure you want to delete this tire type?"}
+
 %td= object.name
-%td.actions= smart_listing_item_actions [ |
- {name: :edit,    url: edit_tire_type_path(object)}, |
- {name: :destroy, url: tire_type_path(object), confirmation: "Are you sure you want to delete this tire type?"} |
- ] |
+%td.actions= smart_listing_item_actions [ *actions ]

@@ -1,0 +1,11 @@
+- # $Id: _form.html.haml 56 2015-04-24 19:38:00Z bmck_newco $
+- # $(c): Copyright 2015 by Newco $
+
+%td{colspan: 2}
+  = form_for object, url: object.new_record? ? trucks_path : truck_path(object), remote: true, html: {class: "form-horizontal"} do |f|
+    .field
+      = f.label :truck_serial
+      \&nbsp;
+      = f.text_field :truck_serial, :size => 15, :autofocus => true
+    = f.submit "Save", class: "btn btn-primary"
+    %button.btn.btn-link.cancel Cancel

@@ -40,7 +40,12 @@ class TireSamplesController < ApplicationController
   helper_method :smart_listing_resource
 
   def smart_listing_collection
-    scoped_tire_samples = TireSample.all_samples
+    scoped_tire_samples = \
+    if current_user.global_admin?
+      TireSample.all_tire_samples
+    else
+      TireSample.all_samples_for_company(current_user.company_id)
+    end
 
     scoped_tire_samples = scoped_tire_samples.contains(params[:filter]) if params[:filter]
 
