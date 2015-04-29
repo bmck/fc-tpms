@@ -57,6 +57,6 @@ class TiresController < ApplicationController
   end
 
   def tire_params
-    params.require(:tire).permit(:sensor_id, :using_company_id, :owning_company_id, :tire_type_id)
+    params.require(:tire).permit(:sensor_id, :using_company_id, :owning_company_id, :tire_type_id, :location_notation)
   end
 end

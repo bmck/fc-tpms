@@ -7,6 +7,6 @@ class Storage < TireLocation
   scope :company_storage, -> company_id { where(company_id: company_id) }
 
   def name
-    "Stored at #{storage_name} facility; in-storage location: #{in_storage_location}"
+    "Stored at #{storage_name} facility"
   end
 end

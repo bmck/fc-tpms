@@ -77,6 +77,17 @@ ActiveRecord::Schema.define(version: 20150425022654) do
     t.integer  "tire_type_id",      limit: 4,   null: false
     t.integer  "using_company_id",  limit: 4,   null: false
     t.integer  "owning_company_id", limit: 4,   null: false
+    t.integer  "tire_location_id",  limit: 4,   null: false
+    t.string   "serial",            limit: 255
+    t.datetime "created_at",                    null: false
+    t.datetime "updated_at",                    null: false
+  end
+
+  create_table "tires_bak", force: :cascade do |t|
+    t.integer  "sensor_id",         limit: 4,   null: false
+    t.integer  "tire_type_id",      limit: 4,   null: false
+    t.integer  "using_company_id",  limit: 4,   null: false
+    t.integer  "owning_company_id", limit: 4,   null: false
     t.string   "serial",            limit: 255
     t.datetime "created_at",                    null: false
     t.datetime "updated_at",                    null: false
