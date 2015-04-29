@@ -43,6 +43,20 @@ ActiveRecord::Schema.define(version: 20150425022654) do
     t.datetime "updated_at",              null: false
   end
 
+  create_table "tire_locations", force: :cascade do |t|
+    t.string   "type",                limit: 255, null: false
+    t.integer  "company_id",          limit: 4,   null: false
+    t.string   "truck_serial",        limit: 255
+    t.string   "trailer_serial",      limit: 255
+    t.string   "storage_name",        limit: 255
+    t.string   "storage_address",     limit: 255
+    t.string   "storage_city",        limit: 255
+    t.string   "storage_state",       limit: 255
+    t.string   "in_storage_location", limit: 255
+    t.datetime "created_at",                      null: false
+    t.datetime "updated_at",                      null: false
+  end
+
   create_table "tire_samples", force: :cascade do |t|
     t.integer  "sensor_id",   limit: 4,                          null: false
     t.integer  "receiver_id", limit: 4,                          null: false
