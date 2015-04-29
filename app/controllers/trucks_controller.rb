@@ -57,6 +57,6 @@ class TrucksController < ApplicationController
   end
 
   def truck_params
-    params.require(:truck).permit(:truck_serial)
+    params.require(:truck).permit(:company_id, :truck_serial)
   end
 end

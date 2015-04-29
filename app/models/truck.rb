@@ -3,6 +3,7 @@
 
 class Truck < TireLocation
 
+  scope :all_trucks, -> { }
   scope :company_trucks, -> company_id { where(company_id: company_id) }
 
   def name
