@@ -1,5 +1,14 @@
+PaperTrail::Version.create!([
+  {item_type: "User", item_id: 1, event: "update", whodunnit: nil, object: "---\nid: 1\nfirst_name: Bill\nlast_name: McKinnon\nrole: global_admin\ncompany_id: \ncreated_at: 2015-04-23 02:32:32.000000000 Z\nupdated_at: 2015-04-24 18:54:30.000000000 Z\nemail: bmck@bmck.org\nencrypted_password: \"$2a$10$DoqRoKkLOrA5XNj6eHwInuB.y5AHi5y1D.3A.itCL6dn5dAz.2uVy\"\nreset_password_token: \nreset_password_sent_at: \nremember_created_at: \nsign_in_count: 4\ncurrent_sign_in_at: 2015-04-24 18:54:30.000000000 Z\nlast_sign_in_at: 2015-04-24 15:51:27.000000000 Z\ncurrent_sign_in_ip: 127.0.0.1\nlast_sign_in_ip: 127.0.0.1\nconfirmation_token: \nconfirmed_at: 2015-04-23 02:32:51.000000000 Z\nconfirmation_sent_at: 2015-04-23 02:32:33.000000000 Z\nunconfirmed_email: \nfailed_attempts: 0\nunlock_token: \nlocked_at: \n"},
+  {item_type: "User", item_id: 1, event: "update", whodunnit: nil, object: "---\nid: 1\nfirst_name: Bill\nlast_name: McKinnon\nrole: global_admin\ncompany_id: \ncreated_at: 2015-04-23 02:32:32.000000000 Z\nupdated_at: 2015-04-25 20:58:10.000000000 Z\nemail: bmck@bmck.org\nencrypted_password: \"$2a$10$DoqRoKkLOrA5XNj6eHwInuB.y5AHi5y1D.3A.itCL6dn5dAz.2uVy\"\nreset_password_token: \nreset_password_sent_at: \nremember_created_at: \nsign_in_count: 5\ncurrent_sign_in_at: 2015-04-25 20:58:10.000000000 Z\nlast_sign_in_at: 2015-04-24 18:54:30.000000000 Z\ncurrent_sign_in_ip: 127.0.0.1\nlast_sign_in_ip: 127.0.0.1\nconfirmation_token: \nconfirmed_at: 2015-04-23 02:32:51.000000000 Z\nconfirmation_sent_at: 2015-04-23 02:32:33.000000000 Z\nunconfirmed_email: \nfailed_attempts: 0\nunlock_token: \nlocked_at: \n"},
+  {item_type: "User", item_id: 1, event: "update", whodunnit: nil, object: "---\nid: 1\nfirst_name: Bill\nlast_name: McKinnon\nrole: global_admin\ncompany_id: \ncreated_at: 2015-04-23 02:32:32.000000000 Z\nupdated_at: 2015-04-26 01:57:49.000000000 Z\nemail: bmck@bmck.org\nencrypted_password: \"$2a$10$DoqRoKkLOrA5XNj6eHwInuB.y5AHi5y1D.3A.itCL6dn5dAz.2uVy\"\nreset_password_token: \nreset_password_sent_at: \nremember_created_at: \nsign_in_count: 6\ncurrent_sign_in_at: 2015-04-26 01:57:49.000000000 Z\nlast_sign_in_at: 2015-04-25 20:58:10.000000000 Z\ncurrent_sign_in_ip: 127.0.0.1\nlast_sign_in_ip: 127.0.0.1\nconfirmation_token: \nconfirmed_at: 2015-04-23 02:32:51.000000000 Z\nconfirmation_sent_at: 2015-04-23 02:32:33.000000000 Z\nunconfirmed_email: \nfailed_attempts: 0\nunlock_token: \nlocked_at: \n"},
+  {item_type: "User", item_id: 1, event: "update", whodunnit: nil, object: "---\nid: 1\nfirst_name: Bill\nlast_name: McKinnon\nrole: global_admin\ncompany_id: \ncreated_at: 2015-04-23 02:32:32.000000000 Z\nupdated_at: 2015-04-26 14:19:50.000000000 Z\nemail: bmck@bmck.org\nencrypted_password: \"$2a$10$DoqRoKkLOrA5XNj6eHwInuB.y5AHi5y1D.3A.itCL6dn5dAz.2uVy\"\nreset_password_token: \nreset_password_sent_at: \nremember_created_at: \nsign_in_count: 7\ncurrent_sign_in_at: 2015-04-26 14:19:50.000000000 Z\nlast_sign_in_at: 2015-04-26 01:57:49.000000000 Z\ncurrent_sign_in_ip: 127.0.0.1\nlast_sign_in_ip: 127.0.0.1\nconfirmation_token: \nconfirmed_at: 2015-04-23 02:32:51.000000000 Z\nconfirmation_sent_at: 2015-04-23 02:32:33.000000000 Z\nunconfirmed_email: \nfailed_attempts: 0\nunlock_token: \nlocked_at: \n"},
+  {item_type: "User", item_id: 1, event: "update", whodunnit: nil, object: "---\nid: 1\nfirst_name: Bill\nlast_name: McKinnon\nrole: global_admin\ncompany_id: \ncreated_at: 2015-04-23 02:32:32.000000000 Z\nupdated_at: 2015-04-26 21:15:50.000000000 Z\nemail: bmck@bmck.org\nencrypted_password: \"$2a$10$DoqRoKkLOrA5XNj6eHwInuB.y5AHi5y1D.3A.itCL6dn5dAz.2uVy\"\nreset_password_token: \nreset_password_sent_at: \nremember_created_at: \nsign_in_count: 8\ncurrent_sign_in_at: 2015-04-26 21:15:50.000000000 Z\nlast_sign_in_at: 2015-04-26 14:19:50.000000000 Z\ncurrent_sign_in_ip: 127.0.0.1\nlast_sign_in_ip: 127.0.0.1\nconfirmation_token: \nconfirmed_at: 2015-04-23 02:32:51.000000000 Z\nconfirmation_sent_at: 2015-04-23 02:32:33.000000000 Z\nunconfirmed_email: \nfailed_attempts: 0\nunlock_token: \nlocked_at: \n"},
+  {item_type: "User", item_id: 1, event: "update", whodunnit: nil, object: "---\nid: 1\nfirst_name: Bill\nlast_name: McKinnon\nrole: global_admin\ncompany_id: \ncreated_at: 2015-04-23 02:32:32.000000000 Z\nupdated_at: 2015-04-27 03:29:26.000000000 Z\nemail: bmck@bmck.org\nencrypted_password: \"$2a$10$DoqRoKkLOrA5XNj6eHwInuB.y5AHi5y1D.3A.itCL6dn5dAz.2uVy\"\nreset_password_token: \nreset_password_sent_at: \nremember_created_at: \nsign_in_count: 9\ncurrent_sign_in_at: 2015-04-27 03:29:26.000000000 Z\nlast_sign_in_at: 2015-04-26 21:15:50.000000000 Z\ncurrent_sign_in_ip: 127.0.0.1\nlast_sign_in_ip: 127.0.0.1\nconfirmation_token: \nconfirmed_at: 2015-04-23 02:32:51.000000000 Z\nconfirmation_sent_at: 2015-04-23 02:32:33.000000000 Z\nunconfirmed_email: \nfailed_attempts: 0\nunlock_token: \nlocked_at: \n"},
+  {item_type: "User", item_id: 1, event: "update", whodunnit: nil, object: "---\nid: 1\nfirst_name: Bill\nlast_name: McKinnon\nrole: global_admin\ncompany_id: \ncreated_at: 2015-04-23 02:32:32.000000000 Z\nupdated_at: 2015-04-28 01:36:24.000000000 Z\nemail: bmck@bmck.org\nencrypted_password: \"$2a$10$DoqRoKkLOrA5XNj6eHwInuB.y5AHi5y1D.3A.itCL6dn5dAz.2uVy\"\nreset_password_token: \nreset_password_sent_at: \nremember_created_at: \nsign_in_count: 10\ncurrent_sign_in_at: 2015-04-28 01:36:24.000000000 Z\nlast_sign_in_at: 2015-04-27 03:29:26.000000000 Z\ncurrent_sign_in_ip: 127.0.0.1\nlast_sign_in_ip: 127.0.0.1\nconfirmation_token: \nconfirmed_at: 2015-04-23 02:32:51.000000000 Z\nconfirmation_sent_at: 2015-04-23 02:32:33.000000000 Z\nunconfirmed_email: \nfailed_attempts: 0\nunlock_token: \nlocked_at: \n"}
+])
 User.create!([
-  {first_name: "Bill", last_name: "McKinnon", role: "global_admin", company_id: nil, email: "bmck@bmck.org", encrypted_password: "$2a$10$DoqRoKkLOrA5XNj6eHwInuB.y5AHi5y1D.3A.itCL6dn5dAz.2uVy", reset_password_token: nil, reset_password_sent_at: nil, remember_created_at: nil, sign_in_count: 2, current_sign_in_at: "2015-04-23 14:42:43", last_sign_in_at: "2015-04-23 02:33:01", current_sign_in_ip: "127.0.0.1", last_sign_in_ip: "127.0.0.1", confirmation_token: nil, confirmed_at: "2015-04-23 02:32:51", confirmation_sent_at: "2015-04-23 02:32:33", unconfirmed_email: nil, failed_attempts: 0, unlock_token: nil, locked_at: nil},
+  {first_name: "Bill", last_name: "McKinnon", role: "global_admin", company_id: nil, email: "bmck@bmck.org", encrypted_password: "$2a$10$DoqRoKkLOrA5XNj6eHwInuB.y5AHi5y1D.3A.itCL6dn5dAz.2uVy", reset_password_token: nil, reset_password_sent_at: nil, remember_created_at: nil, sign_in_count: 11, current_sign_in_at: "2015-04-29 01:54:21", last_sign_in_at: "2015-04-28 01:36:24", current_sign_in_ip: "127.0.0.1", last_sign_in_ip: "127.0.0.1", confirmation_token: nil, confirmed_at: "2015-04-23 02:32:51", confirmation_sent_at: "2015-04-23 02:32:33", unconfirmed_email: nil, failed_attempts: 0, unlock_token: nil, locked_at: nil},
   {first_name: "Martin", last_name: "McKinnon", role: "company_admin", company_id: 1, email: "bill@bmck.org", encrypted_password: "$2a$10$ZnFDvtr6KHvApKgBOEfEQOOaIGgnED3u.msFZghTDWL79upo5esBm", reset_password_token: nil, reset_password_sent_at: nil, remember_created_at: nil, sign_in_count: 0, current_sign_in_at: nil, last_sign_in_at: nil, current_sign_in_ip: nil, last_sign_in_ip: nil, confirmation_token: "c305d92ae9c47b8e092f6641fc9825f9f26579a34cdbbacf9b200731a5776813", confirmed_at: nil, confirmation_sent_at: "2015-04-23 14:56:20", unconfirmed_email: nil, failed_attempts: 0, unlock_token: nil, locked_at: nil}
 ])
 Company.create!([
@@ -50,27 +59,37 @@ Sensor.create!([
   {serial: "S100042", sensor_type: "TPS1"},
   {serial: "S100043", sensor_type: "TPS1"}
 ])
+TireLocation.create!([
+  {type: "Storage", company_id: 1, truck_serial: nil, trailer_serial: nil, storage_name: "Timbuktu", storage_address: "333 Main St.", storage_city: "Montreal ", storage_state: "ON", in_storage_location: "Row 33, Shelf 4"},
+  {type: "Truck", company_id: 1, truck_serial: "E4R-T32", trailer_serial: nil, storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil, in_storage_location: nil},
+  {type: "Truck", company_id: 1, truck_serial: "4R3-008", trailer_serial: nil, storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil, in_storage_location: nil},
+  {type: "Trailer", company_id: 1, truck_serial: nil, trailer_serial: "22W3E", storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil, in_storage_location: nil},
+  {type: "Trailer", company_id: 1, truck_serial: nil, trailer_serial: "22W45", storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil, in_storage_location: nil},
+  {type: "Trailer", company_id: 2, truck_serial: nil, trailer_serial: "4R5T6Y7", storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil, in_storage_location: nil},
+  {type: "Truck", company_id: 2, truck_serial: "Q2W3E4R", trailer_serial: nil, storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil, in_storage_location: nil},
+  {type: "Storage", company_id: 2, truck_serial: nil, trailer_serial: nil, storage_name: "ATL3", storage_address: "250 North Ave.", storage_city: "Atlanta", storage_state: "GA", in_storage_location: "Rack 17, Shelf B"}
+])
 Tire.create!([
-  {sensor_id: 1, tire_type_id: 1, company_id: 1, serial: "T100001"},
-  {sensor_id: 2, tire_type_id: 1, company_id: 1, serial: "T100002"},
-  {sensor_id: 3, tire_type_id: 1, company_id: 1, serial: "T100003"},
-  {sensor_id: 4, tire_type_id: 2, company_id: 1, serial: "T100004"},
-  {sensor_id: 28, tire_type_id: 2, company_id: 1, serial: "T100005"},
-  {sensor_id: 6, tire_type_id: 3, company_id: 1, serial: "T100006"},
-  {sensor_id: 7, tire_type_id: 3, company_id: 1, serial: "T100007"},
-  {sensor_id: 8, tire_type_id: 3, company_id: 1, serial: "T100008"},
-  {sensor_id: 9, tire_type_id: 4, company_id: 1, serial: "T100009"},
-  {sensor_id: 29, tire_type_id: 5, company_id: 1, serial: "T100010"},
-  {sensor_id: 30, tire_type_id: 1, company_id: 2, serial: "T100011"},
-  {sensor_id: 31, tire_type_id: 1, company_id: 2, serial: "T100012"},
-  {sensor_id: 13, tire_type_id: 1, company_id: 2, serial: "T100013"},
-  {sensor_id: 14, tire_type_id: 2, company_id: 2, serial: "T100014"},
-  {sensor_id: 15, tire_type_id: 2, company_id: 2, serial: "T100015"},
-  {sensor_id: 16, tire_type_id: 3, company_id: 2, serial: "T100016"},
-  {sensor_id: 17, tire_type_id: 3, company_id: 2, serial: "T100017"},
-  {sensor_id: 18, tire_type_id: 3, company_id: 2, serial: "T100018"},
-  {sensor_id: 19, tire_type_id: 4, company_id: 2, serial: "T100019"},
-  {sensor_id: 20, tire_type_id: 5, company_id: 2, serial: "T100020"}
+  {sensor_id: 1, tire_type_id: 1, using_company_id: 1, owning_company_id: 1, serial: "T100001"},
+  {sensor_id: 2, tire_type_id: 1, using_company_id: 1, owning_company_id: 1, serial: "T100002"},
+  {sensor_id: 3, tire_type_id: 1, using_company_id: 1, owning_company_id: 1, serial: "T100003"},
+  {sensor_id: 4, tire_type_id: 2, using_company_id: 1, owning_company_id: 1, serial: "T100004"},
+  {sensor_id: 28, tire_type_id: 2, using_company_id: 1, owning_company_id: 1, serial: "T100005"},
+  {sensor_id: 6, tire_type_id: 3, using_company_id: 1, owning_company_id: 1, serial: "T100006"},
+  {sensor_id: 7, tire_type_id: 3, using_company_id: 1, owning_company_id: 1, serial: "T100007"},
+  {sensor_id: 8, tire_type_id: 3, using_company_id: 1, owning_company_id: 1, serial: "T100008"},
+  {sensor_id: 9, tire_type_id: 4, using_company_id: 1, owning_company_id: 1, serial: "T100009"},
+  {sensor_id: 29, tire_type_id: 5, using_company_id: 1, owning_company_id: 1, serial: "T100010"},
+  {sensor_id: 30, tire_type_id: 1, using_company_id: 2, owning_company_id: 2, serial: "T100011"},
+  {sensor_id: 31, tire_type_id: 1, using_company_id: 2, owning_company_id: 2, serial: "T100012"},
+  {sensor_id: 13, tire_type_id: 1, using_company_id: 2, owning_company_id: 2, serial: "T100013"},
+  {sensor_id: 14, tire_type_id: 2, using_company_id: 2, owning_company_id: 2, serial: "T100014"},
+  {sensor_id: 15, tire_type_id: 2, using_company_id: 2, owning_company_id: 2, serial: "T100015"},
+  {sensor_id: 16, tire_type_id: 3, using_company_id: 2, owning_company_id: 2, serial: "T100016"},
+  {sensor_id: 17, tire_type_id: 3, using_company_id: 2, owning_company_id: 2, serial: "T100017"},
+  {sensor_id: 18, tire_type_id: 3, using_company_id: 2, owning_company_id: 2, serial: "T100018"},
+  {sensor_id: 19, tire_type_id: 4, using_company_id: 2, owning_company_id: 2, serial: "T100019"},
+  {sensor_id: 20, tire_type_id: 5, using_company_id: 2, owning_company_id: 2, serial: "T100020"}
 ])
 TireSample.create!([
   {sensor_id: 1, receiver_id: 1, value: "32.07", sample_time: "2015-04-23 15:34:55"},
@@ -132,7 +151,15 @@ TireSample.create!([
   {sensor_id: 1, receiver_id: 2, value: "30.078984", sample_time: "2015-04-23 16:50:26"},
   {sensor_id: 1, receiver_id: 2, value: "31.569413", sample_time: "2015-04-23 16:53:49"},
   {sensor_id: 1, receiver_id: 2, value: "30.108002", sample_time: "2015-04-23 16:41:01"},
-  {sensor_id: 1, receiver_id: 2, value: "29.927318", sample_time: "2015-04-23 16:55:47"}
+  {sensor_id: 1, receiver_id: 2, value: "29.927318", sample_time: "2015-04-23 16:55:47"},
+  {sensor_id: 1, receiver_id: 1, value: "37.2", sample_time: "2015-04-24 18:54:45"},
+  {sensor_id: 1, receiver_id: 1, value: "39.9", sample_time: "2015-04-24 18:59:17"},
+  {sensor_id: 1, receiver_id: 1, value: "39.9", sample_time: "2015-04-24 19:02:17"},
+  {sensor_id: 1, receiver_id: 1, value: "39.9", sample_time: "2015-04-24 19:03:17"},
+  {sensor_id: 1, receiver_id: 1, value: "39.9", sample_time: "2015-04-24 19:03:17"},
+  {sensor_id: 1, receiver_id: 1, value: "39.9", sample_time: "2015-04-24 19:03:17"},
+  {sensor_id: 1, receiver_id: 1, value: "39.9", sample_time: "2015-04-24 19:23:17"},
+  {sensor_id: 1, receiver_id: 1, value: "39.9", sample_time: "2015-04-24 19:25:17"}
 ])
 TireType.create!([
   {name: "Michelin Big Ass Tire"},
@@ -140,4 +167,18 @@ TireType.create!([
   {name: "Monster Tires Plus 1"},
   {name: "Fordham Freakin Huge Tire"},
   {name: "Petereeza Truck Tire mod 2"}
+])
+Storage.create!([
+  {type: "Storage", company_id: 1, truck_serial: nil, trailer_serial: nil, storage_name: "Timbuktu", storage_address: "333 Main St.", storage_city: "Montreal ", storage_state: "ON", in_storage_location: "Row 33, Shelf 4"},
+  {type: "Storage", company_id: 2, truck_serial: nil, trailer_serial: nil, storage_name: "ATL3", storage_address: "250 North Ave.", storage_city: "Atlanta", storage_state: "GA", in_storage_location: "Rack 17, Shelf B"}
+])
+Trailer.create!([
+  {type: "Trailer", company_id: 1, truck_serial: nil, trailer_serial: "22W3E", storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil, in_storage_location: nil},
+  {type: "Trailer", company_id: 1, truck_serial: nil, trailer_serial: "22W45", storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil, in_storage_location: nil},
+  {type: "Trailer", company_id: 2, truck_serial: nil, trailer_serial: "4R5T6Y7", storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil, in_storage_location: nil}
+])
+Truck.create!([
+  {type: "Truck", company_id: 1, truck_serial: "E4R-T32", trailer_serial: nil, storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil, in_storage_location: nil},
+  {type: "Truck", company_id: 1, truck_serial: "4R3-008", trailer_serial: nil, storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil, in_storage_location: nil},
+  {type: "Truck", company_id: 2, truck_serial: "Q2W3E4R", trailer_serial: nil, storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil, in_storage_location: nil}
 ])
