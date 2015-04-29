@@ -57,6 +57,6 @@ class TrailersController < ApplicationController
   end
 
   def trailer_params
-    params.require(:trailer).permit(:trailer_serial)
+    params.require(:trailer).permit(:company_id, :trailer_serial)
   end
 end

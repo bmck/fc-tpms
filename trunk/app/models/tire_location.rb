@@ -2,6 +2,7 @@
 # $(c): Copyright 2015 by Newco $
 
 class TireLocation < ActiveRecord::Base
+  belongs_to :company
   has_many :tires
 
   scope :trucks, -> { where(type: 'Truck') }
@@ -15,5 +16,9 @@ class TireLocation < ActiveRecord::Base
 
   def name
     raise NewcoError::AbstractMethodError.new
+  end
+
+  def company_name
+    company.name
   end
 end
