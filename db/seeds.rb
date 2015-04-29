@@ -60,36 +60,36 @@ Sensor.create!([
   {serial: "S100043", sensor_type: "TPS1"}
 ])
 TireLocation.create!([
-  {type: "Storage", company_id: 1, truck_serial: nil, trailer_serial: nil, storage_name: "Timbuktu", storage_address: "333 Main St.", storage_city: "Montreal ", storage_state: "ON", in_storage_location: "Row 33, Shelf 4"},
-  {type: "Truck", company_id: 1, truck_serial: "E4R-T32", trailer_serial: nil, storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil, in_storage_location: nil},
-  {type: "Truck", company_id: 1, truck_serial: "4R3-008", trailer_serial: nil, storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil, in_storage_location: nil},
-  {type: "Trailer", company_id: 1, truck_serial: nil, trailer_serial: "22W3E", storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil, in_storage_location: nil},
-  {type: "Trailer", company_id: 1, truck_serial: nil, trailer_serial: "22W45", storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil, in_storage_location: nil},
-  {type: "Trailer", company_id: 2, truck_serial: nil, trailer_serial: "4R5T6Y7", storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil, in_storage_location: nil},
-  {type: "Truck", company_id: 2, truck_serial: "Q2W3E4R", trailer_serial: nil, storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil, in_storage_location: nil},
-  {type: "Storage", company_id: 2, truck_serial: nil, trailer_serial: nil, storage_name: "ATL3", storage_address: "250 North Ave.", storage_city: "Atlanta", storage_state: "GA", in_storage_location: "Rack 17, Shelf B"}
+  {type: "Storage", company_id: 1, truck_serial: nil, trailer_serial: nil, storage_name: "Timbuktu", storage_address: "333 Main St.", storage_city: "Montreal ", storage_state: "ON"},
+  {type: "Truck", company_id: 1, truck_serial: "E4R-T32", trailer_serial: nil, storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil},
+  {type: "Truck", company_id: 1, truck_serial: "4R3-008", trailer_serial: nil, storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil},
+  {type: "Trailer", company_id: 1, truck_serial: nil, trailer_serial: "22W3E", storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil},
+  {type: "Trailer", company_id: 1, truck_serial: nil, trailer_serial: "22W45", storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil},
+  {type: "Trailer", company_id: 2, truck_serial: nil, trailer_serial: "4R5T6Y7", storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil},
+  {type: "Truck", company_id: 2, truck_serial: "Q2W3E4R", trailer_serial: nil, storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil},
+  {type: "Storage", company_id: 2, truck_serial: nil, trailer_serial: nil, storage_name: "ATL3", storage_address: "250 North Ave.", storage_city: "Atlanta", storage_state: "GA"}
 ])
 Tire.create!([
-  {sensor_id: 1, tire_type_id: 1, using_company_id: 1, owning_company_id: 1, serial: "T100001"},
-  {sensor_id: 2, tire_type_id: 1, using_company_id: 1, owning_company_id: 1, serial: "T100002"},
-  {sensor_id: 3, tire_type_id: 1, using_company_id: 1, owning_company_id: 1, serial: "T100003"},
-  {sensor_id: 4, tire_type_id: 2, using_company_id: 1, owning_company_id: 1, serial: "T100004"},
-  {sensor_id: 28, tire_type_id: 2, using_company_id: 1, owning_company_id: 1, serial: "T100005"},
-  {sensor_id: 6, tire_type_id: 3, using_company_id: 1, owning_company_id: 1, serial: "T100006"},
-  {sensor_id: 7, tire_type_id: 3, using_company_id: 1, owning_company_id: 1, serial: "T100007"},
-  {sensor_id: 8, tire_type_id: 3, using_company_id: 1, owning_company_id: 1, serial: "T100008"},
-  {sensor_id: 9, tire_type_id: 4, using_company_id: 1, owning_company_id: 1, serial: "T100009"},
-  {sensor_id: 29, tire_type_id: 5, using_company_id: 1, owning_company_id: 1, serial: "T100010"},
-  {sensor_id: 30, tire_type_id: 1, using_company_id: 2, owning_company_id: 2, serial: "T100011"},
-  {sensor_id: 31, tire_type_id: 1, using_company_id: 2, owning_company_id: 2, serial: "T100012"},
-  {sensor_id: 13, tire_type_id: 1, using_company_id: 2, owning_company_id: 2, serial: "T100013"},
-  {sensor_id: 14, tire_type_id: 2, using_company_id: 2, owning_company_id: 2, serial: "T100014"},
-  {sensor_id: 15, tire_type_id: 2, using_company_id: 2, owning_company_id: 2, serial: "T100015"},
-  {sensor_id: 16, tire_type_id: 3, using_company_id: 2, owning_company_id: 2, serial: "T100016"},
-  {sensor_id: 17, tire_type_id: 3, using_company_id: 2, owning_company_id: 2, serial: "T100017"},
-  {sensor_id: 18, tire_type_id: 3, using_company_id: 2, owning_company_id: 2, serial: "T100018"},
-  {sensor_id: 19, tire_type_id: 4, using_company_id: 2, owning_company_id: 2, serial: "T100019"},
-  {sensor_id: 20, tire_type_id: 5, using_company_id: 2, owning_company_id: 2, serial: "T100020"}
+  {sensor_id: 1, tire_type_id: 1, using_company_id: 1, owning_company_id: 1, tire_location_id: 1, serial: "T100001", location_notation: nil},
+  {sensor_id: 2, tire_type_id: 1, using_company_id: 1, owning_company_id: 1, tire_location_id: 1, serial: "T100002", location_notation: nil},
+  {sensor_id: 3, tire_type_id: 1, using_company_id: 1, owning_company_id: 1, tire_location_id: 1, serial: "T100003", location_notation: nil},
+  {sensor_id: 4, tire_type_id: 2, using_company_id: 1, owning_company_id: 1, tire_location_id: 1, serial: "T100004", location_notation: nil},
+  {sensor_id: 28, tire_type_id: 2, using_company_id: 1, owning_company_id: 1, tire_location_id: 1, serial: "T100005", location_notation: nil},
+  {sensor_id: 6, tire_type_id: 3, using_company_id: 1, owning_company_id: 1, tire_location_id: 1, serial: "T100006", location_notation: nil},
+  {sensor_id: 7, tire_type_id: 3, using_company_id: 1, owning_company_id: 1, tire_location_id: 1, serial: "T100007", location_notation: nil},
+  {sensor_id: 8, tire_type_id: 3, using_company_id: 1, owning_company_id: 1, tire_location_id: 1, serial: "T100008", location_notation: nil},
+  {sensor_id: 9, tire_type_id: 4, using_company_id: 1, owning_company_id: 1, tire_location_id: 1, serial: "T100009", location_notation: nil},
+  {sensor_id: 29, tire_type_id: 5, using_company_id: 1, owning_company_id: 1, tire_location_id: 1, serial: "T100010", location_notation: nil},
+  {sensor_id: 30, tire_type_id: 1, using_company_id: 2, owning_company_id: 2, tire_location_id: 8, serial: "T100011", location_notation: nil},
+  {sensor_id: 31, tire_type_id: 1, using_company_id: 2, owning_company_id: 2, tire_location_id: 8, serial: "T100012", location_notation: nil},
+  {sensor_id: 13, tire_type_id: 1, using_company_id: 2, owning_company_id: 2, tire_location_id: 8, serial: "T100013", location_notation: nil},
+  {sensor_id: 14, tire_type_id: 2, using_company_id: 2, owning_company_id: 2, tire_location_id: 8, serial: "T100014", location_notation: nil},
+  {sensor_id: 15, tire_type_id: 2, using_company_id: 2, owning_company_id: 2, tire_location_id: 8, serial: "T100015", location_notation: nil},
+  {sensor_id: 16, tire_type_id: 3, using_company_id: 2, owning_company_id: 2, tire_location_id: 8, serial: "T100016", location_notation: nil},
+  {sensor_id: 17, tire_type_id: 3, using_company_id: 2, owning_company_id: 2, tire_location_id: 8, serial: "T100017", location_notation: nil},
+  {sensor_id: 18, tire_type_id: 3, using_company_id: 2, owning_company_id: 2, tire_location_id: 8, serial: "T100018", location_notation: nil},
+  {sensor_id: 19, tire_type_id: 4, using_company_id: 2, owning_company_id: 2, tire_location_id: 8, serial: "T100019", location_notation: nil},
+  {sensor_id: 20, tire_type_id: 5, using_company_id: 2, owning_company_id: 2, tire_location_id: 8, serial: "T100020", location_notation: nil}
 ])
 TireSample.create!([
   {sensor_id: 1, receiver_id: 1, value: "32.07", sample_time: "2015-04-23 15:34:55"},
@@ -169,16 +169,16 @@ TireType.create!([
   {name: "Petereeza Truck Tire mod 2"}
 ])
 Storage.create!([
-  {type: "Storage", company_id: 1, truck_serial: nil, trailer_serial: nil, storage_name: "Timbuktu", storage_address: "333 Main St.", storage_city: "Montreal ", storage_state: "ON", in_storage_location: "Row 33, Shelf 4"},
-  {type: "Storage", company_id: 2, truck_serial: nil, trailer_serial: nil, storage_name: "ATL3", storage_address: "250 North Ave.", storage_city: "Atlanta", storage_state: "GA", in_storage_location: "Rack 17, Shelf B"}
+  {type: "Storage", company_id: 1, truck_serial: nil, trailer_serial: nil, storage_name: "Timbuktu", storage_address: "333 Main St.", storage_city: "Montreal ", storage_state: "ON"},
+  {type: "Storage", company_id: 2, truck_serial: nil, trailer_serial: nil, storage_name: "ATL3", storage_address: "250 North Ave.", storage_city: "Atlanta", storage_state: "GA"}
 ])
 Trailer.create!([
-  {type: "Trailer", company_id: 1, truck_serial: nil, trailer_serial: "22W3E", storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil, in_storage_location: nil},
-  {type: "Trailer", company_id: 1, truck_serial: nil, trailer_serial: "22W45", storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil, in_storage_location: nil},
-  {type: "Trailer", company_id: 2, truck_serial: nil, trailer_serial: "4R5T6Y7", storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil, in_storage_location: nil}
+  {type: "Trailer", company_id: 1, truck_serial: nil, trailer_serial: "22W3E", storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil},
+  {type: "Trailer", company_id: 1, truck_serial: nil, trailer_serial: "22W45", storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil},
+  {type: "Trailer", company_id: 2, truck_serial: nil, trailer_serial: "4R5T6Y7", storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil}
 ])
 Truck.create!([
-  {type: "Truck", company_id: 1, truck_serial: "E4R-T32", trailer_serial: nil, storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil, in_storage_location: nil},
-  {type: "Truck", company_id: 1, truck_serial: "4R3-008", trailer_serial: nil, storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil, in_storage_location: nil},
-  {type: "Truck", company_id: 2, truck_serial: "Q2W3E4R", trailer_serial: nil, storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil, in_storage_location: nil}
+  {type: "Truck", company_id: 1, truck_serial: "E4R-T32", trailer_serial: nil, storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil},
+  {type: "Truck", company_id: 1, truck_serial: "4R3-008", trailer_serial: nil, storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil},
+  {type: "Truck", company_id: 2, truck_serial: "Q2W3E4R", trailer_serial: nil, storage_name: nil, storage_address: nil, storage_city: nil, storage_state: nil}
 ])

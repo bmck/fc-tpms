@@ -1,3 +1,6 @@
+# $Id$
+# $(c)$
+
 class CreateTireLocations < ActiveRecord::Migration
   def change
     create_table :tire_locations do |t|
@@ -9,7 +12,6 @@ class CreateTireLocations < ActiveRecord::Migration
       t.string  :storage_address
       t.string  :storage_city
       t.string  :storage_state
-      t.string  :in_storage_location
 
       t.timestamps null: false
     end

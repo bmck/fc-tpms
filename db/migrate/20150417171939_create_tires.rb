@@ -9,6 +9,7 @@ class CreateTires < ActiveRecord::Migration
       t.integer     :using_company_id, null: false
       t.integer     :owning_company_id, null: false
       t.integer     :tire_location_id, null: false
+      t.string      :location_notation
       t.string      :serial
 
       t.timestamps null: false

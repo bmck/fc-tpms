@@ -57,6 +57,6 @@ class StoragesController < ApplicationController
   end
 
   def storage_params
-    params.require(:storage).permit(:company_id, :storage_name, :storage_address, :storage_city, :storage_state, :in_storage_location)
+    params.require(:storage).permit(:company_id, :storage_name, :storage_address, :storage_city, :storage_state)
   end
 end

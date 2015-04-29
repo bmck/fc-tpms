@@ -1,7 +1,7 @@
 - # $Id: _form.html.haml 56 2015-04-24 19:38:00Z bmck_newco $
 - # $(c): Copyright 2015 by Newco $
 
-%td{colspan: 7}
+%td{colspan: 6}
   = form_for object, url: object.new_record? ? storages_path : storage_path(object), remote: true, html: {class: "form-horizontal"} do |f|
     %table.table
       - if current_user.global_admin?
@@ -33,12 +33,6 @@
             = f.text_field :storage_city, :size => 40, :autofocus => true
             , &nbsp;
             = f.text_field :storage_state, :size => 4, :autofocus => true
-      %tr
-        %td{colspan: 2}
-          .field
-            = f.label 'In-storage Location'
-            \&nbsp;
-            = f.text_field :in_storage_location, :size => 64, :autofocus => true
       %tr
         %td{colspan: 2}
           = f.submit "Save", class: "btn btn-primary"

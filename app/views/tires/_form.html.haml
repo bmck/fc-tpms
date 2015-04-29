@@ -1,7 +1,7 @@
 - # $Id$
 - # $(c)$
 
-%td{colspan: 6}
+%td{colspan: 7}
   = form_for object, url: object.new_record? ? tires_path : tire_path(object), remote: true, html: {class: "form-horizontal"} do |f|
     .field
       = f.label :serial_number
@@ -23,6 +23,10 @@
       = f.label :using_company
       \&nbsp;
       = f.collection_select :using_company_id, Company.all, :id, :name, :include_blank => 'No Company Specified', autofocus: true
+    .field
+      = f.label :location_notation
+      \&nbsp;
+      = f.text_field :location_notation, :size => 25, :autofocus => true
 
     = f.submit "Save", class: "btn btn-primary"
     %button.btn.btn-link.cancel Cancel
