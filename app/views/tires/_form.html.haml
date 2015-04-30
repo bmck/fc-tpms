@@ -1,7 +1,10 @@
 - # $Id$
 - # $(c)$
 
-%td{colspan: 7}
+- locations = current_user.global_admin? ? TireLocation.all_locations : TireLocation.company_locations(current_user.company_id)
+
+%td{colspan: 8}
+  = render partial: 'components/form_error', formats: [:html], layout: false, locals: { object: object }
   = form_for object, url: object.new_record? ? tires_path : tire_path(object), remote: true, html: {class: "form-horizontal"} do |f|
     .field
       = f.label :serial_number
@@ -23,6 +26,10 @@
       = f.label :using_company
       \&nbsp;
       = f.collection_select :using_company_id, Company.all, :id, :name, :include_blank => 'No Company Specified', autofocus: true
+    .field
+      = f.label :tire_location
+      \&nbsp;
+      = f.collection_select :tire_location_id, locations, :id, :name, :include_blank => 'No Location Specified', autofocus: true
     .field
       = f.label :location_notation
       \&nbsp;

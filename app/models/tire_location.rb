@@ -9,13 +9,15 @@ class TireLocation < ActiveRecord::Base
   scope :trailers, -> { where(type: 'Trailer') }
   scope :in_storage, -> { where(type: 'Storage') }
 
+  scope :all_locations, -> {}
+
   scope :company_locations, -> company_id { where(company_id: company_id) }
   scope :company_trucks, -> company_id { trucks.company_locations(company_id) }
   scope :company_trailers, -> company_id { trailers.company_locations(company_id) }
   scope :company_storage, -> company_id { storage.company_locations(company_id) }
 
   def name
-    raise NewcoError::AbstractMethodError.new
+    fail NewcoError::AbstractMethodError.new
   end
 
   def company_name

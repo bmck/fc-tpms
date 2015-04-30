@@ -10,5 +10,4 @@ class TireType < ActiveRecord::Base
                                                   .where("tires.company_id = #{company_id}") }
 
   scope :contains, -> x { where("locate(\"#{x}\", name) > 0") }
-
 end

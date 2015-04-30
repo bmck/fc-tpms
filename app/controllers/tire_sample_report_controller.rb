@@ -15,7 +15,7 @@ class TireSampleReportController < ApplicationController
     @start_service = Date.today - 1.year
     @end_service = Date.today
 
-    @object = TireSampleReport.new({ })
+    @object = TireSampleReport.new({})
   end
 
   def create
@@ -32,5 +32,4 @@ class TireSampleReportController < ApplicationController
                                                :"end_service(1i)", :"end_service(2i)", :"end_service(3i)",
                                                sensor_ids: [], receiver_ids: [])
   end
-
 end

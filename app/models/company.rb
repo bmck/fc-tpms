@@ -12,5 +12,4 @@ class Company < ActiveRecord::Base
   scope :my_company, -> company_id { where(id: company_id) }
 
   scope :contains, -> x { where("locate(\"#{x}\", name) > 0") }
-
 end

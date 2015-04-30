@@ -59,7 +59,7 @@ class TireSampleReport
     graph_bullets = chart_bullets(num_graphs)
 
     '[' +
-    (0..(num_graphs-1)).to_a.map { |sensor_ndex|
+    (0..(num_graphs - 1)).to_a.map { |sensor_ndex|
       sensor = sensors[sensor_ndex]
       '{' +
       '"bullet": "' + graph_bullets[sensor_ndex] + '",' \
@@ -109,7 +109,7 @@ class TireSampleReport
     sensor_samples = sensor_samples.values.map(&:to_s).join(",\n")
     .gsub(/:([^, ]*?)=\>/, '\1: ')
     .gsub(/([^, ]*?)=\>/, '\1: ')
-    .gsub("sample_time", '"sample_time"')
+    .gsub('sample_time', '"sample_time"')
     serial_string << sensor_samples
 
     # Rails.logger.verbose { "serial_string = #{serial_string.inspect}" }
@@ -150,5 +150,4 @@ class TireSampleReport
     # Rails.logger.verbose { "@samples = #{@samples.inspect}" }
     @samples
   end
-
 end

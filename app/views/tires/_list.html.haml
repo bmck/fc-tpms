@@ -10,6 +10,7 @@
         %th= smart_listing.sortable "Tire Type", :tire_type
         %th= smart_listing.sortable "Owning Company", :owning_company_name
         %th= smart_listing.sortable "Using Company", :using_company_name
+        %th= smart_listing.sortable "Tire Location", :location_name
         %th Location Notation
         %th
     %tbody
@@ -17,7 +18,7 @@
         %tr.editable{data: {id: tire.id}}
           = smart_listing.render object: tire, partial: 'tires/item', locals: {object: tire}
     %tfoot
-      = smart_listing.item_new colspan: 7, link: new_tire_path
+      = smart_listing.item_new colspan: 8, link: new_tire_path
 
   -# Render nice pagination links fitted for Bootstrap 3 by default
   .text-center

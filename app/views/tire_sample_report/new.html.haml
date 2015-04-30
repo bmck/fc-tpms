@@ -4,6 +4,7 @@
 %h2 Tire Sample Report
 
 = form_for @object, url: tire_sample_report_index_path, html: {class: "form-horizontal"} do |f|
+  = render partial: 'components/form_error', formats: [:html], layout: false, locals: { object: @object }
   %table.table
     %tr
       %td

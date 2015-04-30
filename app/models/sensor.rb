@@ -8,7 +8,7 @@ class Sensor < ActiveRecord::Base
 
   scope :all_sensors, -> { joins('join tires on tires.sensor_id = sensors.id') }
   scope :all_company_sensors, -> company_id {
-    joins("join tires on tires.sensor_id = sensors.id")
+    joins('join tires on tires.sensor_id = sensors.id')
     .where("tires.company_id = #{company_id}")
   }
 
