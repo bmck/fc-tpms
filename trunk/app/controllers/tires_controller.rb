@@ -24,7 +24,9 @@ class TiresController < ApplicationController
   end
 
   def update
-    @tire.update(tire_params)
+    @tire.transaction do
+      @tire.update(tire_params)
+    end
   end
 
   def destroy
@@ -57,6 +59,16 @@ class TiresController < ApplicationController
   end
 
   def tire_params
-    params.require(:tire).permit(:sensor_id, :using_company_id, :owning_company_id, :tire_type_id, :location_notation)
+    tp = params.require(:tire).permit(
+      :sensor_serial, :sensor_id, :using_company_id, :owning_company_id,
+      :tire_type_id, :tire_location_id, :serial, :location_notation
+    )
+
+    if tp[:sensor_serial]
+      tp[:sensor_id] = Sensor.find_by_serial(tp[:sensor_serial]).try(:id)
+      tp.delete(:sensor_serial)
+    end
+
+    tp
   end
 end

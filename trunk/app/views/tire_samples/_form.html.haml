@@ -2,6 +2,7 @@
 - # $(c)$
 
 %td{colspan: 5}
+  = render partial: 'components/form_error', formats: [:html], layout: false, locals: { object: object }
   = form_for object, url: object.new_record? ? tire_samples_path : tire_sample_path(object), remote: true, html: {class: "form-horizontal"} do |f|
     %table.table
       %tr

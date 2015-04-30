@@ -2,11 +2,10 @@
 # $(c): Copyright 2015 by Newco $
 
 class Truck < TireLocation
-
-  scope :all_trucks, -> { }
+  scope :all_trucks, -> {}
   scope :company_trucks, -> company_id { where(company_id: company_id) }
 
   def name
-    "Truck Number #{truck_serial}"
+    "Truck #{truck_serial} (#{company_name})"
   end
 end

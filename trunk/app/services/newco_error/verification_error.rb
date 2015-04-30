@@ -3,7 +3,6 @@
 
 module NewcoError
   class VerificationError < ::StandardError
-
     def initialize(request)
       @url, @whence = request.original_url, DateTime.now
       bad_fn = Rails.root.join('etc', Settings.bad_samples_file)

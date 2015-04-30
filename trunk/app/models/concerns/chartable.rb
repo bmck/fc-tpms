@@ -37,5 +37,4 @@ module Chartable
     num.times { cols << color_maker.create_hex }
     @chart_colors = cols
   end
-
 end

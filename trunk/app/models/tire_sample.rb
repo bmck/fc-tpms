@@ -8,9 +8,9 @@ class TireSample < ActiveRecord::Base
   belongs_to :receiver
 
   scope :all_samples, -> {}
-  scope :all_samples_for_company, -> company_id { joins("(sensors, tires) " \
-                                                        "on tire_samples.sensor_id = sensors.id " \
-                                                        "and sensors.tire_id = tires.id")
+  scope :all_samples_for_company, -> company_id { joins('(sensors, tires) ' \
+                                                        'on tire_samples.sensor_id = sensors.id ' \
+                                                        'and sensors.tire_id = tires.id')
                                                   .where("#{company_id} == tires.company_id") }
   scope :all_samples_for_sensor, -> sensor_id { where("#{sensor_id} == sensor_id") }
   scope :all_samples_for_receiver, -> receiver_id { where("#{receiver_id} == receiver_id") }

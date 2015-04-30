@@ -2,6 +2,7 @@
 - # $(c)$
 
 %td{colspan: 2}
+  = render partial: 'components/form_error', formats: [:html], layout: false, locals: { object: object }
   = form_for object, url: object.new_record? ? tire_types_path : tire_type_path(object), remote: true, html: {class: "form-horizontal"} do |f|
     .field
       = f.label :name

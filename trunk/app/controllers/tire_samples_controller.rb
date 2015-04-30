@@ -56,7 +56,7 @@ class TireSamplesController < ApplicationController
   def self.generate_verify_value(tmp_params)
     tmp_tire_sample_params = tmp_params[:tire_sample].slice(:sensor_id, :receiver_id, :value, :sample_time)
     tire_param_str = tmp_tire_sample_params.values.map { |val| val.to_s }.sort.join('_')
-    verify_val = BCrypt::Password.create(tire_param_str, :cost => 10)
+    verify_val = BCrypt::Password.create(tire_param_str, cost: 10)
   end
 
   delegate :generate_verify_value, to: :class
