@@ -1,7 +1,7 @@
 - # $Id$
 - # $(c)$
 
-%nav.navbar.navbar-inverse.navbar-fixed-top
+%nav.navbar.navbar-fixed-top
   .container
     .navbar-header
       %button.navbar-toggle{"data-target" => ".navbar-collapse", "data-toggle" => "collapse", :type => "button"}
@@ -9,7 +9,29 @@
         %span.icon-bar
         %span.icon-bar
         %span.icon-bar
-      = link_to 'Home', root_path, class: 'navbar-brand'
-    .collapse.navbar-collapse
-      %ul.nav.navbar-nav
-        = render 'layouts/navigation_links'
+      = link_to 'Newco', root_path, class: 'navbar-brand'
+    .collapse.navbar-collapse.navbar-ex1-collapse
+      - if user_signed_in?
+        %ul.nav.navbar-right.navbar-top-links
+          %li.active.dropdown
+            %a.dropdown-toggle{href:"#", :"data-toggle" => "dropdown", :"data-target" => "#user_session", :"data-hover" => "dropdown", :"data-delay" => "200", :"data-close-others" => "true"}
+              %i.fa.fa-user.fa-fw
+              = "#{current_user.first_last}"
+              %i.fa.fa-fw.fa-caret-down
+
+            %ul.collapse.dropdown-menu.dropdown-user#user_session
+              %li.active
+                %a{href: edit_user_registration_path}
+                  %i.fa.fa-user.fa-fw
+                    User Profile
+              %li.divider
+              %li.active
+                %a{href: destroy_user_session_path, :method=>'delete'}
+                  %i.fa.fa-sign-out.fa-fw
+                  Logout
+
+        %ul.nav.navbar-right.side-nav
+          = render 'layouts/navigation_links'
+      - else
+        %ul.nav.navbar-right.top-nav
+          = render 'layouts/navigation_links'
