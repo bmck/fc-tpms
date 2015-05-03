@@ -42,12 +42,22 @@ class TireSamplesController < ApplicationController
   def smart_listing_collection
     scoped_tire_samples = \
     if current_user.global_admin?
-      TireSample.all_tire_samples
+      TireSample.all_samples
     else
       TireSample.all_samples_for_company(current_user.company_id)
     end
 
     scoped_tire_samples = scoped_tire_samples.contains(params[:filter]) if params[:filter]
+
+    scoped_tire_samples = scoped_tire_samples.where("value <= ?", params[:max_val]) if \
+      params[:max_val] && !params[:max_val].blank?
+    scoped_tire_samples = scoped_tire_samples.where("value >= ?", params[:min_val]) if \
+      params[:min_val] && !params[:min_val].blank?
+
+    scoped_tire_samples = scoped_tire_samples.where("sample_time <= ?", params[:max_dt]) if \
+      params[:max_dt] && !params[:max_dt].blank?
+    scoped_tire_samples = scoped_tire_samples.where("sample_time >= ?", params[:min_dt]) if \
+      params[:min_dt] && !params[:min_dt].blank?
 
     @tire_samples ||= scoped_tire_samples
   end

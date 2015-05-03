@@ -16,6 +16,8 @@
 //= require jquery
 //= require jquery_ujs
 //= require turbolinks
+//= require bootstrap
 //= require bootstrap-sprockets
+//= require bootstrap-hover-dropdown
 //= require smart_listing
 //= require_tree .

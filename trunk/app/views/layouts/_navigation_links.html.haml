@@ -2,30 +2,76 @@
 - # $(c)$
 
 - if user_signed_in?
-  - if can? :index, :companies
-    %li= link_to 'Companies', companies_path
+  %li.active.dropdown
+    %a.dropdown-toggle{href:"#", :"data-toggle" => "dropdown", :"data-target" => "#company", :"data-hover" => "dropdown", :"data-delay" => "200", :"data-close-others" => "true"}
+      %i.fa.fa-bank
+      Company Info
+      %i.fa.fa-fw.fa-caret-down
+
+    %ul#company.collapse.dropdown-menu
+      - if can? :index, :companies
+        %li.active
+          %a{ href: companies_path }
+            %i.fa.fa-phone
+            Company Contacts
+      - if can? :index, :tires
+        %li.active
+          %a{ href: tires_path }
+            %i.fa.fa-circle-o
+            Tires
+      - if can? :index, :trucks
+        %li.active
+          %a{ href: trucks_path }
+            %i.fa.fa-car
+            Trucks
+      - if can? :index, :trailers
+        %li.active
+          %a{ href: trailers_path }
+            %i.fa.fa-truck
+            Trailers
+      - if can? :index, :storages
+        %li.active
+          %a{ href: storages_path }
+            %i.fa.fa-building-o
+            Storage Facilities
+
   - if can? :index, :sensors
-    %li= link_to 'Sensors', sensors_path
+    %li.active
+      %a{ href: sensors_path }
+        %i.fa.fa-sign-out
+        Sensors
   - if can? :index, :receivers
-    %li= link_to 'Receivers', receivers_path
+    %li.active
+      %a{ href: receivers_path }
+        %i.fa.fa-sign-in
+        Receivers
   - if can? :index, :tire_types
-    %li= link_to 'Tire Types', tire_types_path
-  - if can? :index, :tires
-    %li= link_to 'Tires', tires_path
-  - if can? :index, :trucks
-    %li= link_to 'Trucks', trucks_path
-  - if can? :index, :trailers
-    %li= link_to 'Trailers', trailers_path
-  - if can? :index, :storages
-    %li= link_to 'Storage Facilities', storages_path
+    %li.active
+      %a{ href: tire_types_path }
+        %i.fa.fa-info-circle
+        Tire Types
   - if can? :index, :tire_samples
-    %li= link_to 'Tire Samples', tire_samples_path
+    %li.active
+      %a{ href: tire_samples_path }
+        %i.fa.fa-eyedropper
+        Tire Samples
   - if can? :index, :tire_sample_report
-    %li= link_to 'Chart Tire Samples', new_tire_sample_report_path
+    %li.active
+      %a{ href: new_tire_sample_report_path }
+        %i.fa.fa-area-chart
+        Chart Tire Samples
   - if can? :index, :user
-    %li= link_to 'Users', users_path
-  %li= link_to 'Edit Account', edit_user_registration_path
-  %li= link_to 'Sign Out', destroy_user_session_path, :method=>'delete'
+    %li.active
+      %a{ href: users_path }
+        %i.fa.fa-users
+        Users
+
 - else
-  %li= link_to 'Sign in', new_user_session_path
-  %li= link_to 'Sign up', new_user_registration_path
+  %li.active
+    %a{ href: new_user_session_path }
+      %i.fa.fa-sign-in
+      Sign in
+  %li.active
+    %a{ href: new_user_registration_path }
+      %i.fa.fa-user-plus
+      Sign up
