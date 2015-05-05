@@ -20,9 +20,6 @@ class TireSampleReportController < ApplicationController
 
   def create
     @report = TireSampleReport.new(report_params)
-
-    # amchart_debug = render_to_string(partial: 'amcharts/line_chart', formats: [:js], layout: false, locals: { div_name: 'tire_sample_report', report: @report, controller: self })
-    # Rails.logger.verbose { "amchart_debug = #{amchart_debug}" }
   end
 
   private

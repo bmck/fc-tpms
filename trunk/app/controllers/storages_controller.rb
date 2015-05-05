@@ -37,12 +37,10 @@ class StoragesController < ApplicationController
   helper_method :smart_listing_resource
 
   def smart_listing_collection
-    scoped_storages = \
-    if current_user.global_admin?
-      Storage.all_storages
-    else
-      Storage.company_storage(current_user.company_id)
-    end
+    scoped_storages = Storage.all_storages
+
+    scoped_storages = scoped_storages.company(current_user.company_id) unless \
+      current_user.global_admin?
 
     scoped_storages = scoped_storages.contains(params[:filter]) unless params[:filter].blank?
 

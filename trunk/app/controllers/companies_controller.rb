@@ -36,14 +36,10 @@ class CompaniesController < ApplicationController
   helper_method :smart_listing_resource
 
   def smart_listing_collection
-    scoped_companies = \
-    if current_user.global_admin?
-      Company.all_companies
-    else
-      Company.my_company
-    end
+    scoped_companies = Company.all_companies
 
-    # Apply the search control filter.
+    scoped_companies = scoped_companies.my_company unless current_user.global_admin?
+
     scoped_companies = scoped_companies.contains(params[:filter]) unless params[:filter].blank?
 
     @companies ||= scoped_companies

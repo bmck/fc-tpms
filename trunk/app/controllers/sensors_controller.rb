@@ -37,12 +37,10 @@ class SensorsController < ApplicationController
   helper_method :smart_listing_resource
 
   def smart_listing_collection
-    scoped_sensors = \
-    if current_user.global_admin?
-      Sensor.all_sensors
-    else
-      Sensor.all_company_sensors(current_user.company_id)
-    end
+    scoped_sensors = Sensor.all_sensors
+
+    scoped_sensors = scoped_sensors.company(current_user.company_id) unless \
+      current_user.global_admin?
 
     scoped_sensors = scoped_sensors.contains(params[:filter]) unless params[:filter].blank?
 

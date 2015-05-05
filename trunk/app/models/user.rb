@@ -7,20 +7,23 @@ class User < ActiveRecord::Base
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable, \
-         :recoverable, :rememberable, :trackable, :validatable, \
-         :confirmable, :timeoutable
+    :recoverable, :rememberable, :trackable, :validatable, \
+    :confirmable, :timeoutable
 
   after_update :send_password_change_email, if: :needs_password_change_email?
 
   scope :myself, -> user_id { where(id: user_id) }
   scope :same_company, -> user_company_id { where(company_id: user_company_id) }
-  scope :all_users, -> {}
+  scope :all_users, -> {
+    joins('LEFT JOIN `companies` ON users.company_id = companies.id')
+  }
 
-  scope :contains, -> x { joins('LEFT JOIN `companies` ON users.company_id = companies.id')
-                          .where("locate(\"#{x}\", first_name) > 0 or " \
-                                 "locate(\"#{x}\", last_name) > 0 or " \
-                                 "locate(\"#{x}\", email) > 0 or " \
-                                 "locate(\"#{x}\", name) > 0") }
+  scope :contains, -> x {
+    where("locate(\"#{x}\", first_name) > 0 or " \
+          "locate(\"#{x}\", last_name) > 0 or " \
+          "locate(\"#{x}\", email) > 0 or " \
+          "locate(\"#{x}\", name) > 0")
+  }
 
   belongs_to :company
 
