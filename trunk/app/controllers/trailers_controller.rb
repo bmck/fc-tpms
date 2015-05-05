@@ -9,7 +9,8 @@ class TrailersController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    smart_listing_create partial: 'trailers/list'
+    smart_listing_create partial: 'trailers/list',
+      sort_attributes: [[:company_name, "companies.name"], [:serial, :truck_serial]]
   end
 
   def new
