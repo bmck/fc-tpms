@@ -9,7 +9,8 @@ class StoragesController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    smart_listing_create partial: 'storages/list'
+    smart_listing_create partial: 'storages/list',
+      sort_attributes: [[:company_name, "companies.name"], [:name, :storage_name]]
   end
 
   def new

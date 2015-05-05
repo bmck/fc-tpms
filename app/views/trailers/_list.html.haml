@@ -5,8 +5,8 @@
   %table.table.table-striped
     %thead
       %tr
-        %th= smart_listing.sortable "Company", :company
-        %th= smart_listing.sortable "Trailer Serial Number", :trailer_serial
+        %th= smart_listing.sortable "Company", :company_name
+        %th= smart_listing.sortable "Trailer Serial Number", :serial
         %th
     %tbody
       - smart_listing.collection.each do |trailer|

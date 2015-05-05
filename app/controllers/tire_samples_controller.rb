@@ -9,8 +9,10 @@ class TireSamplesController < ApplicationController
   before_action :authenticate_user!, except: [:create]
 
   def index
-    smart_listing_create partial: 'tire_samples/list'
-  end
+    smart_listing_create partial: 'tire_samples/list',
+      sort_attributes: [[:tire_name, "tires.serial"], [:receiver_name, "receivers.serial"],
+                        [:val, :value], [:samptime, :sample_time]]
+      end
 
   def new
     @tire_sample = TireSample.new
@@ -41,7 +43,7 @@ class TireSamplesController < ApplicationController
   helper_method :smart_listing_resource
 
   def smart_listing_collection
-    scoped_tire_samples = TireSample.all_samples.ordered_samples
+    scoped_tire_samples = TireSample.all_samples #.ordered_samples
 
     scoped_tire_samples = scoped_tire_samples.company(current_user.company_id) unless \
       current_user.global_admin?
