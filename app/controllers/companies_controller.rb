@@ -44,7 +44,7 @@ class CompaniesController < ApplicationController
     end
 
     # Apply the search control filter.
-    scoped_companies = scoped_companies.contains(params[:filter]) if params[:filter]
+    scoped_companies = scoped_companies.contains(params[:filter]) unless params[:filter].blank?
 
     @companies ||= scoped_companies
   end

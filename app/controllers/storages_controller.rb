@@ -44,7 +44,7 @@ class StoragesController < ApplicationController
       Storage.company_storage(current_user.company_id)
     end
 
-    scoped_storages = scoped_storages.contains(params[:filter]) if params[:filter]
+    scoped_storages = scoped_storages.contains(params[:filter]) unless params[:filter].blank?
 
     @storages ||= scoped_storages
   end

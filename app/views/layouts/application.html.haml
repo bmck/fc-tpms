@@ -10,7 +10,6 @@
     %meta{:content => "#{content_for?(:description) ? yield(:description) : "Newco"}", :name => "description"}/
     = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true
     -# = stylesheet_link_tag controller_name
-    = javascript_include_tag 'http://www.google.com/jsapi', "chartkick"
     = javascript_include_tag 'application', 'data-turbolinks-track' => true
     -# = javascript_include_tag controller_name
     = csrf_meta_tags

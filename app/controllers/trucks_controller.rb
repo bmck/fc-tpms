@@ -44,7 +44,7 @@ class TrucksController < ApplicationController
       Truck.company_trucks(current_user.company_id)
     end
 
-    scoped_trucks = scoped_trucks.contains(params[:filter]) if params[:filter]
+    scoped_trucks = scoped_trucks.contains(params[:filter]) unless params[:filter].blank?
 
     @trucks ||= scoped_trucks
   end

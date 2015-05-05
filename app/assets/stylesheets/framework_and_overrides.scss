@@ -41,7 +41,7 @@ main {
   background-color: #eee;
   padding-bottom: 80px;
   // width: 100%;
-  margin-top: 51px; // accommodate the navbar
+  // margin-top: 51px; // accommodate the navbar
   margin-left: 226px; // accommodate the navbar
   }
 section {
@@ -98,14 +98,7 @@ section {
 /* Global Styles */
 
 body {
-    margin-top: 100px;
     background-color: #eee;
-}
-
-@media(min-width:768px) {
-    body {
-        margin-top: 50px;
-    }
 }
 
 #wrapper {
@@ -216,6 +209,7 @@ ul.alert-dropdown {
         background-color: #eee;
         bottom: 0;
         overflow-x: hidden;
+        padding-top: 40px;
         padding-bottom: 40px;
     }
 
@@ -232,7 +226,7 @@ ul.alert-dropdown {
 }
 
 .side-nav > li > ul {
-    padding: 0;
+    padding: 0px;
 }
 
 .dropdown-menu > .active > a {
@@ -244,4 +238,21 @@ ul.alert-dropdown {
   background-color: #337ab7;
   color: #fff;
   text-decoration: underline;
+}
+
+.navbar-brand {
+  padding-top: -10px;
+  padding-left: 85px;
+}
+
+.navbar-static-top {
+  padding-top: 20px;
+}
+
+.navbar-right {
+  padding-right: 55px;
+}
+
+.navbar-right > li > a {
+  padding-top: 15px;
 }
