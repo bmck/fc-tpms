@@ -3,12 +3,12 @@
 
 - if user_signed_in?
   %li.active.dropdown
-    %a.dropdown-toggle{href:"#", :"data-toggle" => "dropdown", :"data-target" => "#company", :"data-hover" => "dropdown", :"data-delay" => "200", :"data-close-others" => "true"}
+    %a.dropdown-toggle{href:"javascript:;", :"data-toggle" => "dropdown", :"data-target" => "#company_ddown", :"data-hover" => "dropdown", :"data-delay" => "200", :"data-close-others" => "true"}
       %i.fa.fa-bank
       Company Info
       %i.fa.fa-fw.fa-caret-down
 
-    %ul#company.collapse.dropdown-menu
+    %ul#company_ddown.collapse.dropdown-menu
       - if can? :index, :companies
         %li.active
           %a{ href: companies_path }
@@ -52,14 +52,22 @@
         Tire Types
   - if can? :index, :tire_samples
     %li.active
-      %a{ href: tire_samples_path }
+      %a.dropdown-toggle{ href: "javascript:;", :"data-toggle" => "dropdown", :"data-target" => "#tire_sample_ddown", :"data-hover" => "dropdown", :"data-delay" => "200", :"data-close-others" => "true"}
         %i.fa.fa-eyedropper
         Tire Samples
-  - if can? :index, :tire_sample_report
-    %li.active
-      %a{ href: new_tire_sample_report_path }
-        %i.fa.fa-area-chart
-        Chart Tire Samples
+        %i.fa.fa-fw.fa-caret-down
+
+      %ul#tire_sample_ddown.collapse.dropdown-menu
+        - if can? :index, :tire_samples
+          %li.active
+            %a{ href: tire_samples_path }
+              %i.fa.fa-database
+              View/Edit
+        - if can? :index, :tire_sample_report
+          %li.active
+            %a{ href: new_tire_sample_report_path }
+              %i.fa.fa-area-chart
+              Chart
   - if can? :index, :user
     %li.active
       %a{ href: users_path }

@@ -5,17 +5,15 @@
 
 = smart_listing_controls_for(:tire_samples, {class: "form-inline text-right"}) do
   .form-group.filter.input-append
-    = text_field_tag :filter, '', class: "search form-control", placeholder: "Search...", autocomplete: :off
-
-  %button.btn.btn-primary.disabled{type: :submit}
-    %span.glyphicon.glyphicon-search
-
-= smart_listing_controls_for(:tire_samples, {class: "form-inline text-right"}) do
-  .form-group.filter.input-append
     = label_tag 'Filter Values:'
-    = number_field_tag :min_val, '', class: "search form-control", autocomplete: :off, step: 0.001
+    = number_field_tag :min_val, '', class: " form-control", step: 0.001, maxlength: 7
     &mdash;
-    = number_field_tag :max_val, '', class: "search form-control", autocomplete: :off, step: 0.001
+    = number_field_tag :max_val, '', class: " form-control", step: 0.001, maxlength: 7
+
+    &nbsp; &nbsp; &nbsp; &nbsp;
+
+    = label_tag 'Filter Strings:'
+    = text_field_tag :filter, '', class: "search form-control", placeholder: "Search...", autocomplete: :off
 
   %button.btn.btn-primary.disabled{type: :submit}
     %span.glyphicon.glyphicon-search

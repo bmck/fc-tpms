@@ -39,7 +39,7 @@ class TireTypesController < ApplicationController
   def smart_listing_collection
     scoped_tire_types = TireType.all_tire_types
 
-    scoped_tire_types = scoped_tire_types.contains(params[:filter]) if params[:filter]
+    scoped_tire_types = scoped_tire_types.contains(params[:filter]) unless params[:filter].blank?
 
     @tire_types ||= scoped_tire_types
   end

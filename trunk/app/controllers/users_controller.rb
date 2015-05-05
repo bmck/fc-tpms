@@ -50,7 +50,7 @@ class UsersController < ApplicationController
     end
 
     # Apply the search control filter.
-    scoped_users = scoped_users.contains(params[:filter]) if params[:filter]
+    scoped_users = scoped_users.contains(params[:filter]) unless params[:filter].blank?
 
     @users ||= scoped_users
   end

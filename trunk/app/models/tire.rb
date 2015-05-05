@@ -10,15 +10,43 @@ class Tire < ActiveRecord::Base
   belongs_to :sensor
   belongs_to :tire_location
 
-  scope :all_tires, -> {}
-  scope :company_tires, -> company_id { where("using_company_id = #{company_id} or " \
-                                              "owning_company_id = #{company_id}") }
+  validate :tire_location_must_belong_to_using_company
 
-  scope :contains, -> x { where("locate(\"#{x}\", name) > 0") }
+  scope :all_tires, -> {
+    joins(
+      'left join (sensors, tire_types, companies as using_company, companies as owning_company) ' \
+      'on (' +
+      [
+        'tires.sensor_id = sensors.id',
+        'tires.tire_type_id = tire_types.id',
+        'using_company.id = tires.using_company_id',
+        'owning_company.id = tires.owning_company_id'
+      ].join(' and ') +
+      ')'
+    )
+  }
+
+  scope :company, -> company_id {
+    where(
+      [
+        "using_company_id = #{company_id}",
+        "owning_company_id = #{company_id}"
+      ].join(' or ')
+    )
+  }
+  scope :contains, -> x {
+    where(
+      [
+        "locate(\"#{x}\", tires.serial) > 0",
+        "locate(\"#{x}\", sensors.serial) > 0",
+        "locate(\"#{x}\", using_company.name) > 0",
+        "locate(\"#{x}\", owning_company.name) > 0",
+        "locate(\"#{x}\", tire_types.name) > 0"
+      ].join(' or ')
+    )
+  }
 
   delegate :trucks, :trailers, :in_storage, to: :tire_location
-
-  validate :tire_location_must_belong_to_using_company
 
   def name
     serial

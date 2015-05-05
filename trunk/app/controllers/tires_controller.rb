@@ -39,14 +39,13 @@ class TiresController < ApplicationController
   helper_method :smart_listing_resource
 
   def smart_listing_collection
-    scoped_tires = \
-    if current_user.global_admin?
-      Tire.all_tires
-    else
-      Tire.company_tires(current_user.company_id)
-    end
+    scoped_tires = Tire.all_tires
 
-    scoped_tires = scoped_tires.contains(params[:filter]) if params[:filter]
+    scoped_tires = scoped_tires.company(current_user.company_id) unless \
+      current_user.global_admin?
+
+    scoped_tires = scoped_tires.contains(params[:filter]) unless \
+      params[:filter].blank?
 
     @tires ||= scoped_tires
   end

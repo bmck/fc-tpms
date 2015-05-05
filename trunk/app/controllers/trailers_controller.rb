@@ -44,7 +44,7 @@ class TrailersController < ApplicationController
       Trailer.company_trailers(current_user.company_id)
     end
 
-    scoped_trailers = scoped_trailers.contains(params[:filter]) if params[:filter]
+    scoped_trailers = scoped_trailers.contains(params[:filter]) unless params[:filter].blank?
 
     @trailers ||= scoped_trailers
   end

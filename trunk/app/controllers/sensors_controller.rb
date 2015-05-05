@@ -44,7 +44,7 @@ class SensorsController < ApplicationController
       Sensor.all_company_sensors(current_user.company_id)
     end
 
-    scoped_sensors = scoped_sensors.contains(params[:filter]) if params[:filter]
+    scoped_sensors = scoped_sensors.contains(params[:filter]) unless params[:filter].blank?
 
     @sensors ||= scoped_sensors
   end

@@ -5,6 +5,19 @@ class Trailer < TireLocation
   scope :all_trailers, -> {}
   scope :company_trailer, -> company_id { where(company_id: company_id) }
 
+  scope :contains, -> x {
+    joins(
+      'left join (companies) ' \
+      'on (companies.id = company_id)'
+    )
+    .where(
+      [
+        "locate(\"#{x}\", companies.name) > 0",
+        "locate(\"#{x}\", trailer_serial) > 0"
+      ].join(' or ')
+    )
+  }
+
   def name
     "Trailer #{trailer_serial} (#{company_name})"
   end

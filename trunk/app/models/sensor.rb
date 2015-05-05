@@ -12,7 +12,7 @@ class Sensor < ActiveRecord::Base
     .where("tires.company_id = #{company_id}")
   }
 
-  scope :contains, -> x { where("locate(\"#{x}\", name) > 0") }
+  scope :contains, -> x { where("locate(\"#{x}\", sensors.serial) > 0") }
 
   def name
     serial

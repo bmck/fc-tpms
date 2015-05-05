@@ -5,6 +5,22 @@ class Storage < TireLocation
   scope :all_storages, -> {}
   scope :company_storage, -> company_id { where(company_id: company_id) }
 
+  scope :contains, -> x {
+    joins(
+      'left join (companies) ' \
+      'on (companies.id = company_id)'
+    )
+    .where(
+      [
+        "locate(\"#{x}\", companies.name) > 0",
+        "locate(\"#{x}\", storage_name) > 0",
+        "locate(\"#{x}\", storage_address) > 0",
+        "locate(\"#{x}\", storage_city) > 0",
+        "locate(\"#{x}\", storage_state) > 0"
+      ].join(' or ')
+    )
+  }
+
   def name
     "#{storage_name} Storage Facility (#{company_name})"
   end

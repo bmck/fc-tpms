@@ -39,7 +39,7 @@ class ReceiversController < ApplicationController
   def smart_listing_collection
     scoped_receivers = Receiver.all_receivers
 
-    scoped_receivers = scoped_receivers.contains(params[:filter]) if params[:filter]
+    scoped_receivers = scoped_receivers.contains(params[:filter]) unless params[:filter].blank?
 
     @receivers ||= scoped_receivers
   end
