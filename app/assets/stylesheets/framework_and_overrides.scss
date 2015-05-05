@@ -256,3 +256,9 @@ ul.alert-dropdown {
 .navbar-right > li > a {
   padding-top: 15px;
 }
+
+@media (min-width: 768px) {
+  .dropdown:hover .dropdown-menu {
+    display: block;
+  }
+}
