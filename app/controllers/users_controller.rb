@@ -40,13 +40,12 @@ class UsersController < ApplicationController
   end
 
   def smart_listing_collection
-    scoped_users = \
-    if current_user.global_admin?
-      User.all_users
-    elsif current_user.company_admin?
-      User.same_company(current_user.company_id)
-    else
-      User.myself(current_user.id)
+    scoped_users = User.all_users
+
+    if current_user.company_admin?
+      scoped_users = scoped_users.same_company(current_user.company_id)
+    elsif current_user.basic_user?
+      scoped_users = scoped_users.myself(current_user.id)
     end
 
     # Apply the search control filter.

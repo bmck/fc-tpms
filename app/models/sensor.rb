@@ -6,13 +6,16 @@ class Sensor < ActiveRecord::Base
 
   has_one :tire
 
-  scope :all_sensors, -> { joins('join tires on tires.sensor_id = sensors.id') }
-  scope :all_company_sensors, -> company_id {
+  scope :all_sensors, -> {
     joins('join tires on tires.sensor_id = sensors.id')
-    .where("tires.company_id = #{company_id}")
+  }
+  scope :company, -> company_id {
+    where("tires.company_id = #{company_id}")
   }
 
-  scope :contains, -> x { where("locate(\"#{x}\", sensors.serial) > 0") }
+  scope :contains, -> x {
+    where("locate(\"#{x}\", sensors.serial) > 0")
+  }
 
   def name
     serial

@@ -6,7 +6,9 @@ class Receiver < ActiveRecord::Base
 
   scope :all_receivers, -> {}
 
-  scope :contains, -> x { where("locate(\"#{x}\", serial) > 0") }
+  scope :contains, -> x {
+    where("locate(\"#{x}\", serial) > 0")
+  }
 
   def name
     serial

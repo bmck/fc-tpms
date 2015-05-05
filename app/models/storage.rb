@@ -2,15 +2,18 @@
 # $(c): Copyright 2015 by Newco $
 
 class Storage < TireLocation
-  scope :all_storages, -> {}
-  scope :company_storage, -> company_id { where(company_id: company_id) }
-
-  scope :contains, -> x {
+  scope :all_storages, -> {
     joins(
       'left join (companies) ' \
       'on (companies.id = company_id)'
     )
-    .where(
+  }
+  scope :company, -> company_id {
+    where(company_id: company_id)
+  }
+
+  scope :contains, -> x {
+    where(
       [
         "locate(\"#{x}\", companies.name) > 0",
         "locate(\"#{x}\", storage_name) > 0",

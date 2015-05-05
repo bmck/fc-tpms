@@ -2,15 +2,16 @@
 # $(c): Copyright 2015 by Newco $
 
 class Truck < TireLocation
-  scope :all_trucks, -> {}
-  scope :company_trucks, -> company_id { where(company_id: company_id) }
-
-  scope :contains, -> x {
+  scope :all_trucks, -> {
     joins(
       'left join (companies) ' \
       'on (companies.id = company_id)'
     )
-    .where(
+  }
+  scope :company, -> company_id { where(company_id: company_id) }
+
+  scope :contains, -> x {
+    where(
       [
         "locate(\"#{x}\", companies.name) > 0",
         "locate(\"#{x}\", truck_serial) > 0"

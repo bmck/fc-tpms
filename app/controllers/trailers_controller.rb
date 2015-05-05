@@ -37,12 +37,9 @@ class TrailersController < ApplicationController
   helper_method :smart_listing_resource
 
   def smart_listing_collection
-    scoped_trailers = \
-    if current_user.global_admin?
-      Trailer.all_trailers
-    else
-      Trailer.company_trailers(current_user.company_id)
-    end
+    scoped_trailers = Trailer.all_trailers
+
+    scoped_trailers = scoped_trailers.company(current_user.company_id) unless current_user.global_admin?
 
     scoped_trailers = scoped_trailers.contains(params[:filter]) unless params[:filter].blank?
 
