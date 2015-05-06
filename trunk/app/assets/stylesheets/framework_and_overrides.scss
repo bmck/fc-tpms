@@ -89,7 +89,7 @@ section {
   // font-family: Arial, Helvetica, sans-serif;
   font-size: 1.0em;
   color: black;
-  margin: 0 auto;
+  margin: 0; // auto;
   margin-top: 10px;
   max-width: 800px;
   width: 800px;
@@ -126,46 +126,53 @@ body {
     }
 }
 
+$newco-default-font-color:              #337ab7 !default;
+$newco-default-bg-color:                #eee    !default;
+$newco-default-bg2-color:               #fff    !default;
+$newco-default-hilite-color:            #337ab7 !default;
+$newco-default-hilit2-color:            #3fbe2d !default;
+
+
+
 /* Top Navigation */
 
 .top-nav {
     padding: 0 15px;
 }
 
-.top-nav>li {
+.top-nav > li {
     display: inline-block;
     float: left;
 }
 
-.top-nav>li>a {
+.top-nav > li > a {
     padding-top: 15px;
     padding-bottom: 15px;
     line-height: 20px;
-//    color: #999;
 }
 
-.top-nav>li>a:hover,
-.top-nav>li>a:focus,
-.top-nav>.open>a,
-.top-nav>.open>a:hover,
-.top-nav>.open>a:focus {
+.top-nav > li > a:hover,
+.top-nav > li > a:focus,
+.top-nav > .open > a,
+.top-nav > .open > a:hover,
+.top-nav > .open > a:focus {
     color: #000;
-    background-color: #fff;
+    background-color: $newco-default-bg2-color;
 }
 
-.top-nav>.open>.dropdown-menu {
+.top-nav > .open > .dropdown-menu {
     float: left;
     position: absolute;
     margin-top: 0;
     border: 1px solid rgba(0,0,0,.15);
     border-top-left-radius: 0;
     border-top-right-radius: 0;
-    background-color: #eee;
+    background-color: $newco-default-bg-color;
     -webkit-box-shadow: 0 6px 12px rgba(0,0,0,.175);
     box-shadow: 0 6px 12px rgba(0,0,0,.175);
 }
 
-.top-nav>.open>.dropdown-menu>li>a {
+.top-nav > .open > .dropdown-menu > li > a {
     white-space: normal;
 }
 
@@ -196,57 +203,80 @@ ul.alert-dropdown {
 
 /* Side Navigation */
 
-@media(min-width:768px) {
-    .side-nav {
-        position: fixed;
-        top: 51px;
-        left: 225px;
-        width: 225px;
-        margin-left: -225px;
-        border: none;
-        border-radius: 0;
-        overflow-y: auto;
-        background-color: #eee;
-        bottom: 0;
-        overflow-x: hidden;
-        padding-top: 40px;
-        padding-bottom: 40px;
-    }
-
-    .side-nav > li > a {
-        width: 225px;
-        padding-left: 55px;
-    }
-
-    .side-nav > li > a:hover,
-    .side-nav > li > a:focus {
-        outline: none;
-        background-color: #fff !important;
-    }
+.navbar-collapse {
+  margin-top: 50px;
 }
+
+.navbar-default .navbar-nav > li > a,
+.navbar-default .navbar-nav > li > ul > li > a {
+    background-color: $newco-default-bg2-color !important;
+    color: $newco-default-font-color;
+}
+
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > li > a:focus,
+.navbar-default .navbar-nav > li > ul > li > a:hover,
+.navbar-default .navbar-nav > li > ul > li > a:focus {
+    outline: none;
+    background-color: $newco-default-hilite-color !important;
+    color: $newco-default-bg2-color;
+    text-decoration: underline;
+}
+
+/* make sidebar nav vertical */
+@media (min-width: 768px) {
+  .sidebar-nav .navbar .navbar-collapse {
+    padding: 0;
+    max-height: none;
+  }
+  .sidebar-nav .navbar ul {
+    float: none;
+  }
+  .sidebar-nav .navbar ul:not {
+    display: block;
+  }
+  .sidebar-nav .navbar li {
+    float: none;
+    display: block;
+    //padding-top: 15px;
+  }
+  .sidebar-nav .navbar li a {
+    padding-top: 12px;
+    padding-bottom: 12px;
+  }
+}
+
+@media (min-width: 768px) {
+  /* uncomment if you would like the menu to be fixed */
+  /* .navbar {
+    position: fixed;
+    width: 170px;
+    z-index: 2;
+  } */
+}
+@media (min-width: 992px) {
+  .navbar {
+    width: 212px;
+  }
+}
+@media (min-width: 1200px) {
+  .navbar {
+    width: 262px;
+  }
+}
+.sidebar-nav .navbar-header{ float: none; }
 
 .side-nav > li > ul {
-    padding: 0px;
-}
-
-.dropdown-menu > .active > a {
-  background-color: #fff;
-  color: #337ab7;
-}
-
-.dropdown-menu > .active > a:hover, .dropdown-menu > .active > a:focus {
-  background-color: #337ab7;
-  color: #fff;
-  text-decoration: underline;
+  padding: 0px;
 }
 
 .navbar-brand {
-  padding-top: -10px;
-  padding-left: 85px;
+  padding-left: 205px;
 }
 
 .navbar-static-top {
-  padding-top: 20px;
+  padding-top: 35px;
+  padding-bottom: 35px;
 }
 
 .navbar-right {
@@ -255,10 +285,4 @@ ul.alert-dropdown {
 
 .navbar-right > li > a {
   padding-top: 15px;
-}
-
-@media (min-width: 768px) {
-  .dropdown:hover .dropdown-menu {
-    display: block;
-  }
 }

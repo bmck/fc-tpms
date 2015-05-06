@@ -9,8 +9,12 @@ class TiresController < ApplicationController
   before_action :authenticate_user!
 
   def index
-    smart_listing_create partial: 'tires/list'
-  end
+    smart_listing_create partial: 'tires/list',
+      sort_attributes: [[:name, :serial], [:sensor_name, "sensors.serial"],
+                        [:tire_type_name, "tire_types.name"], [:owning_company_name, "owning_company.name"],
+                        [:using_company_name, "using_company.name"],
+                        [:tire_location, "tire_locations.location_name" ]]
+      end
 
   def new
     @tire = Tire.new

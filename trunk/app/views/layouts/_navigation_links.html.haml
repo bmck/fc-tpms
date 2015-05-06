@@ -1,85 +1,106 @@
 - # $Id$
 - # $(c)$
 
-- if user_signed_in?
-  %li.active.dropdown
-    %a.dropdown-toggle{href:"#", :"data-toggle" => "dropdown", :"data-target" => "#company_ddown", :"data-hover" => "dropdown", :"data-delay" => "200", :"data-close-others" => "true"}
-      %i.fa.fa-bank
-      Company Info
-      %i.fa.fa-fw.fa-caret-down
-
-    %ul#company_ddown.collapse.dropdown-menu
-      - if can? :index, :companies
-        %li.active
-          %a{ href: companies_path }
-            %i.fa.fa-phone
-            Company Contacts
-      - if can? :index, :tires
-        %li.active
-          %a{ href: tires_path }
-            %i.fa.fa-circle-o
-            Tires
-      - if can? :index, :trucks
-        %li.active
-          %a{ href: trucks_path }
-            %i.fa.fa-car
-            Trucks
-      - if can? :index, :trailers
-        %li.active
-          %a{ href: trailers_path }
-            %i.fa.fa-truck
-            Trailers
-      - if can? :index, :storages
-        %li.active
-          %a{ href: storages_path }
-            %i.fa.fa-building-o
-            Storage Facilities
-
-  - if can? :index, :sensors
-    %li.active
-      %a{ href: sensors_path }
-        %i.fa.fa-sign-out
-        Sensors
-  - if can? :index, :receivers
-    %li.active
-      %a{ href: receivers_path }
-        %i.fa.fa-sign-in
-        Receivers
-  - if can? :index, :tire_types
-    %li.active
-      %a{ href: tire_types_path }
-        %i.fa.fa-info-circle
-        Tire Types
-  - if can? :index, :tire_samples
-    %li.active.dropdown
-      %a.dropdown-toggle{ href:"#", :"data-toggle" => "dropdown", :"data-target" => "#tire_sample_ddown", :"data-hover" => "dropdown", :"data-delay" => "200", :"data-close-others" => "true"}
-        %i.fa.fa-eyedropper
-        Tire Samples
+%ul.nav.navbar-nav
+  - if user_signed_in?
+    %li.dropdown
+      %a.dropdown-toggle{href:"#", "data-toggle" => "dropdown"}
+        %i.fa.fa-bank
+        Company Info
         %i.fa.fa-fw.fa-caret-down
 
-      %ul#tire_sample_ddown.collapse.dropdown-menu
-        - if can? :index, :tire_samples
-          %li.active
-            %a{ href: tire_samples_path }
-              %i.fa.fa-database
-              View/Edit
-        - if can? :index, :tire_sample_report
-          %li.active
-            %a{ href: new_tire_sample_report_path }
-              %i.fa.fa-area-chart
-              Chart
-  - if can? :index, :user
-    %li.active
-      %a{ href: users_path }
-        %i.fa.fa-users
-        Users
+      %ul.dropdown-menu
+        - if can? :index, :companies
+          %li
+            %a{ href: companies_path }
+              %i.fa.fa-phone
+              Company Contacts
+        - if can? :index, :tires
+          %li
+            %a{ href: tires_path }
+              %i.fa.fa-circle-o
+              Tires
+        - if can? :index, :trucks
+          %li
+            %a{ href: trucks_path }
+              %i.fa.fa-car
+              Trucks
+        - if can? :index, :trailers
+          %li
+            %a{ href: trailers_path }
+              %i.fa.fa-truck
+              Trailers
+        - if can? :index, :storages
+          %li
+            %a{ href: storages_path }
+              %i.fa.fa-building-o
+              Storage Facilities
 
-- else
-  %li.active
-    %a{ href: new_user_session_path }
-      %i.fa.fa-sign-in
-      Sign in
-  %li.active
-    %a{ href: new_user_registration_path }
-      %i.fa.fa-user-plus
-      Sign up
+    - if can? :index, :sensors
+      %li
+        %a{ href: sensors_path }
+          %i.fa.fa-sign-out
+          Sensors
+    - if can? :index, :receivers
+      %li
+        %a{ href: receivers_path }
+          %i.fa.fa-sign-in
+          Receivers
+    - if can? :index, :tire_types
+      %li
+        %a{ href: tire_types_path }
+          %i.fa.fa-info-circle
+          Tire Types
+    - if can? :index, :tire_samples
+      %li.dropdown
+        %a.dropdown-toggle{ href:"#", "data-toggle" => "dropdown"}
+          %i.fa.fa-eyedropper
+          Tire Samples
+          %i.fa.fa-fw.fa-caret-down
+
+        %ul.dropdown-menu
+          - if can? :index, :tire_samples
+            %li
+              %a{ href: tire_samples_path }
+                %i.fa.fa-database
+                View/Edit
+          - if can? :index, :tire_sample_report
+            %li
+              %a{ href: new_tire_sample_report_path }
+                %i.fa.fa-area-chart
+                Chart
+
+    %li.divider
+
+    %li.dropdown-header
+      %i.fa.fa-user.fa-fw
+      = "Logged in as #{current_user.first_last}"
+
+    %li
+      %a{href: edit_user_registration_path}
+        %i.fa.fa-user.fa-fw
+        Edit User Profile
+
+    - if can? :index, :user
+      %li
+        %a{ href: users_path }
+          %i.fa.fa-users
+          View/Edit Users
+
+    %li.divider
+
+    %li
+      %a{href: destroy_user_session_path, "data-method" => 'delete'}
+        %i.fa.fa-sign-out.fa-fw
+        Logout
+
+
+  - else
+    %li
+      %a{ href: new_user_session_path }
+        %i.fa.fa-sign-in
+        Sign in
+    %li
+      %a{ href: new_user_registration_path }
+        %i.fa.fa-user-plus
+        Sign up
