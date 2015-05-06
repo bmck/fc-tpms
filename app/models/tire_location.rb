@@ -16,11 +16,17 @@ class TireLocation < ActiveRecord::Base
   scope :company_trailers, -> company_id { trailers.company_locations(company_id) }
   scope :company_storage, -> company_id { storage.company_locations(company_id) }
 
+  before_validation :assign_location_name, on: [:create, :update]
+
   def name
     fail NewcoError::AbstractMethodError.new
   end
 
   def company_name
     company.name
+  end
+
+  def assign_location_name
+    self.location_name = name
   end
 end

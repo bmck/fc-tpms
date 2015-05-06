@@ -9,14 +9,16 @@
     %title= content_for?(:title) ? yield(:title) : "Newco"
     %meta{:content => "#{content_for?(:description) ? yield(:description) : "Newco"}", :name => "description"}/
     = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true
-    -# = stylesheet_link_tag controller_name
     = javascript_include_tag 'application', 'data-turbolinks-track' => true
-    -# = javascript_include_tag controller_name
     = csrf_meta_tags
   %body
-    %header
-      = render 'layouts/navigation'
-      %main{:role => "main"}
+    .navbar-static-top.navbar-brand.col-xs-12
+      NEWCO
+    .row
+      .col-xs-1
+      .col-xs-3
+        = render 'layouts/navigation'
+      .col-xs-7{:role => "main"}
         = render 'layouts/messages'
-        .main_content
-          = yield
+        = yield
+      .col-xs-1

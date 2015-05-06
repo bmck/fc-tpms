@@ -5,12 +5,12 @@
   %table.table.table-striped
     %thead
       %tr
-        %th= smart_listing.sortable "Tire Serial", :serial
-        %th= smart_listing.sortable "Sensor Serial", :sensor_serial
-        %th= smart_listing.sortable "Tire Type", :tire_type
+        %th= smart_listing.sortable "Tire Serial", :name
+        %th= smart_listing.sortable "Sensor Serial", :sensor_name
+        %th= smart_listing.sortable "Tire Type", :tire_type_name
         %th= smart_listing.sortable "Owning Company", :owning_company_name
         %th= smart_listing.sortable "Using Company", :using_company_name
-        %th= smart_listing.sortable "Tire Location", :location_name
+        %th= smart_listing.sortable "Tire Location", :tire_location
         %th Location Notation
         %th
     %tbody

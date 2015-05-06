@@ -14,13 +14,14 @@ class Tire < ActiveRecord::Base
 
   scope :all_tires, -> {
     joins(
-      'left join (sensors, tire_types, companies as using_company, companies as owning_company) ' \
+      'left join (sensors, tire_types, companies as using_company, companies as owning_company, tire_locations) ' \
       'on (' +
       [
         'tires.sensor_id = sensors.id',
         'tires.tire_type_id = tire_types.id',
         'using_company.id = tires.using_company_id',
-        'owning_company.id = tires.owning_company_id'
+        'owning_company.id = tires.owning_company_id',
+        'tires.tire_location_id = tire_locations.id'
       ].join(' and ') +
       ')'
     )
