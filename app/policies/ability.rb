@@ -32,11 +32,11 @@ class Ability
 
   def setup_abilities(user)
     if user.company_admin?
-      can :manage, :user, company: { id: user.company_id }
-      can :manage, :trucks, company: { id: truck.company_id }
-      can :manage, :trailers, company: { id: trailer.company_id }
-      can :manage, :storages, company: { id: storage.company_id }
-      can :manage, :tire_samples, company: { id: tire_sample.company_id }
+      can :manage, :user, company: { id: user.try(:company_id) }
+      can :manage, :trucks, company: { id: truck.try(:company_id) }
+      can :manage, :trailers, company: { id: trailer.try(:company_id) }
+      can :manage, :storages, company: { id: storage.try(:company_id) }
+      can :manage, :tire_samples, company: { id: tire_sample.try(:company_id) }
     end
 
     setup_basic_user_abilities(user)
@@ -46,11 +46,11 @@ class Ability
     can [:destroy], :"user/sessions"
     can [:edit], :'user/registrations'
 
-    can :manage, :tires, company: { id: tire.using_company_id }
-    can :read, :tire_samples, company: { id: tire_sample.company_id }
-    can :read, :trailers, company: { id: trailer.company_id }
-    can :read, :trucks, company: { id: truck.company_id }
-    can :read, :storages, company: { id: storage.company_id }
+    can :manage, :tires, company: { id: tire.try(:using_company_id) }
+    can :read, :tire_samples, company: { id: tire_sample.try(:company_id) }
+    can :read, :trailers, company: { id: trailer.try(:company_id) }
+    can :read, :trucks, company: { id: truck.try(:company_id) }
+    can :read, :storages, company: { id: storage.try(:company_id) }
     can :read, :tire_sample_report
     can :new, :tire_types
 
