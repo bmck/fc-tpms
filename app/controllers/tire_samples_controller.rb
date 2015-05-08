@@ -20,8 +20,8 @@ class TireSamplesController < ApplicationController
   end
 
   def create
-    fail NewcoError::VerificationError.new(request) unless \
-      current_user.global_admin? || confirm_verify_value
+    # fail NewcoError::VerificationError.new(request) unless \
+    #   current_user.global_admin? || confirm_verify_value
 
     @tire_sample = TireSample.create(tire_sample_params)
   end
@@ -35,6 +35,9 @@ class TireSamplesController < ApplicationController
 
   def destroy
     @tire_sample.destroy
+  end
+
+  def view_audit
   end
 
   def smart_listing_resource

@@ -2,6 +2,8 @@
 - # $(c): Copyright 2015 by Newco $
 
 - actions = []
+- if can? :view_audit, object
+  - actions << {name: :custom,  icon: "glyphicon glyphicon-book", title: 'View Trailer History', url: view_audit_trailer_path(object)}
 - if can? :edit, object
   - actions << {name: :edit,    url: edit_trailer_path(object)}
 - if can? :destroy, object

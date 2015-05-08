@@ -35,6 +35,9 @@ class UsersController < ApplicationController
     @user.destroy
   end
 
+  def view_audit
+  end
+
   def smart_listing_resource
     @user ||= params[:id] ? User.find(params[:id]) : User.new(params[:user])
   end

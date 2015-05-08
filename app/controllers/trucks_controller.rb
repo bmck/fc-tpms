@@ -32,6 +32,9 @@ class TrucksController < ApplicationController
     @truck.destroy
   end
 
+  def view_audit
+  end
+
   def smart_listing_resource
     @truck ||= params[:id] ? Truck.find(params[:id]) : Truck.new(params[:truck])
   end
