@@ -81,6 +81,4 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   config.active_record.raise_in_transactional_callbacks = true
-
-  config.assets.precompile = config.assets.precompile + %w(*.png *.js *.scss *.coffee *.css *.woff *.ttf *.svg *.eot)
 end
