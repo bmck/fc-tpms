@@ -38,6 +38,7 @@ class TiresController < ApplicationController
   end
 
   def view_audit
+    @tire.touch_with_version if @tire.versions.empty?
   end
 
   def smart_listing_resource

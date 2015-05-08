@@ -1,26 +1,4 @@
 - # $Id$
 - # $(c)$
 
-%h3 History for Tire Type Instance (id = #{@tire_type.id})
-
-- if @tire_type.versions.empty?
-  No history found.
-
-- else
-  - @tire_type.versions.each do |v|
-    Event datetime: #{v.created_at.localtime}
-    %br/
-    - if (u = (v.whodunnit)).nil?
-      Unknown User
-    - else
-      User: #{User.find(u).try(:first_last) || 'Unknown User'}
-    %br/
-    Event type: #{v.event}
-    %br/
-    - r = v.reify
-    Preceding object state: [
-    = (TireType.columns.map{|c| c.name} - ['id','created_at','updated_at']).map {|col_name| "#{col_name} = #{r.send(col_name.to_sym)}"}.join(', ')
-    ]
-    %p/
-    &mdash; &mdash; &mdash;
-    %p/
+= render partial: 'main/view_audit', formats: [:html], layout: false, locals: { object: @tire_type }

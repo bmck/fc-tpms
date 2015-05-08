@@ -1,24 +1,4 @@
 - # $Id$
 - # $(c)$
 
-%h3 History for Tire Sample Instance (id = #{@tire_sample.id})
-
-- if @tire_sample.versions.empty?
-  No history found.
-
-- else
-  - @tire_sample.versions.each do |v|
-    Event datetime: #{v.created_at.localtime}
-    %br/
-    - if (u = (v.whodunnit)).nil?
-      Unknown User
-    - else
-      User: #{User.find(u).try(:first_last) || 'Unknown User'}
-    %br/
-    Event type: #{v.event}
-    %br/
-    - r = v.reify
-    Preceding object state: [ sensor_id = #{r.sensor_id}, receiver_id = #{r.receiver_id}, value = #{r.value.to_f}, sample_time = #{r.sample_time} ]
-    %p/
-    &mdash; &mdash; &mdash;
-    %p/
+= render partial: 'main/view_audit', formats: [:html], layout: false, locals: { object: @tire_sample }

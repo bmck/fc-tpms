@@ -32,6 +32,7 @@ class SensorsController < ApplicationController
   end
 
   def view_audit
+    @sensor.touch_with_version if @sensor.versions.empty?
   end
 
   def smart_listing_resource
