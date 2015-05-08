@@ -24,6 +24,11 @@ class TireSamplesController < ApplicationController
     #   current_user.global_admin? || confirm_verify_value
 
     @tire_sample = TireSample.create(tire_sample_params)
+
+    respond_to do |format|
+      format.html { render nothing: true, status: 200 and return }
+      format.js {  }
+    end
   end
 
   def edit
