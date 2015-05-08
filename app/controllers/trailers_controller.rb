@@ -33,6 +33,7 @@ class TrailersController < ApplicationController
   end
 
   def view_audit
+    @trailer.touch_with_version if @trailer.versions.empty?
   end
 
   def smart_listing_resource

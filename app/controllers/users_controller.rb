@@ -36,6 +36,7 @@ class UsersController < ApplicationController
   end
 
   def view_audit
+    @user.touch_with_version if @user.versions.empty?
   end
 
   def smart_listing_resource

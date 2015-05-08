@@ -32,6 +32,7 @@ class CompaniesController < ApplicationController
   end
 
   def view_audit
+    @company.touch_with_version if @company.versions.empty?
   end
 
   def smart_listing_resource

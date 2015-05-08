@@ -33,6 +33,7 @@ class StoragesController < ApplicationController
   end
 
   def view_audit
+    @storage.touch_with_version if @storage.versions.empty?
   end
 
   def smart_listing_resource

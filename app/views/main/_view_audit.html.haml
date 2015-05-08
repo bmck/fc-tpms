@@ -1,0 +1,35 @@
+- # $Id$
+- # $(c)$
+
+%h3 History for #{object.class.name.titleize} Instance (id = #{object.id})
+
+- if object.versions.empty?
+  No history found.
+
+- else
+  Current State: [
+  = (object.class.columns.map{|c| c.name} - ['id','created_at','updated_at']).map {|col_name| "#{col_name} = #{object.send(col_name.to_sym)}"}.join(', ')
+  ]
+  %br/
+
+  %p/
+  &mdash; &mdash; &mdash;
+  %p/
+
+  - object.versions.each do |v|
+    Event datetime: #{v.created_at.localtime}
+    %br/
+    - if (u = (v.whodunnit)).nil?
+      Unknown User
+    - else
+      User: #{User.find(u).try(:first_last) || 'Unknown User'}
+    %br/
+    Event type: #{v.event}
+    %br/
+    - r = v.reify
+    Preceding object state: [
+    = (object.class.columns.map{|c| c.name} - ['id','created_at','updated_at']).map {|col_name| "#{col_name} = #{r.send(col_name.to_sym)}"}.join(', ')
+    ]
+    %p/
+    &mdash; &mdash; &mdash;
+    %p/

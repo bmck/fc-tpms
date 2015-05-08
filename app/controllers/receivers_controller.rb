@@ -32,6 +32,7 @@ class ReceiversController < ApplicationController
   end
 
   def view_audit
+    @receiver.touch_with_version if @receiver.versions.empty?
   end
 
   def smart_listing_resource

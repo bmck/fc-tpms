@@ -33,6 +33,7 @@ class TrucksController < ApplicationController
   end
 
   def view_audit
+    @truck.touch_with_version if @truck.versions.empty?
   end
 
   def smart_listing_resource
