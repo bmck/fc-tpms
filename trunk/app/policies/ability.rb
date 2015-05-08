@@ -24,6 +24,7 @@ class Ability
     can [:new, :create], :"user/registrations"
     can [:show], :"devise/confirmations"
     can :manage, :main
+    can [:create], :tire_samples
 
     return if user.nil?
 
