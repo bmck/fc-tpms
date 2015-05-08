@@ -31,6 +31,9 @@ class ReceiversController < ApplicationController
     @receiver.destroy
   end
 
+  def view_audit
+  end
+
   def smart_listing_resource
     @receiver ||= params[:id] ? Receiver.find(params[:id]) : Receiver.new(params[:receiver])
   end

@@ -32,6 +32,9 @@ class TrailersController < ApplicationController
     @trailer.destroy
   end
 
+  def view_audit
+  end
+
   def smart_listing_resource
     @trailer ||= params[:id] ? Trailer.find(params[:id]) : Trailer.new(params[:trailer])
   end

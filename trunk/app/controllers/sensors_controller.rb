@@ -31,6 +31,9 @@ class SensorsController < ApplicationController
     @sensor.destroy
   end
 
+  def view_audit
+  end
+
   def smart_listing_resource
     @sensor ||= params[:id] ? Sensor.find(params[:id]) : Sensor.new(params[:sensor])
   end

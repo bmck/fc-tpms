@@ -5,6 +5,7 @@ class CompaniesController < ApplicationController
   include SmartListing::Helper::ControllerExtensions
   helper  SmartListing::Helper
 
+  before_action :find_company, except: [:index, :new, :create]
   before_action :authenticate_user!
 
   def index
@@ -28,6 +29,9 @@ class CompaniesController < ApplicationController
 
   def destroy
     @company.destroy
+  end
+
+  def view_audit
   end
 
   def smart_listing_resource

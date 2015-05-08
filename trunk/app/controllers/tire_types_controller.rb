@@ -31,6 +31,9 @@ class TireTypesController < ApplicationController
     @tire_type.destroy
   end
 
+  def view_audit
+  end
+
   def smart_listing_resource
     @tire_type ||= params[:id] ? TireType.find(params[:id]) : TireType.new(params[:tire_type])
   end

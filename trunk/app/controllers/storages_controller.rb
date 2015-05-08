@@ -32,6 +32,9 @@ class StoragesController < ApplicationController
     @storage.destroy
   end
 
+  def view_audit
+  end
+
   def smart_listing_resource
     @storage ||= params[:id] ? Storage.find(params[:id]) : Storage.new(params[:storage])
   end

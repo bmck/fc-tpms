@@ -18,10 +18,12 @@ Rails.application.routes.draw do
 
   get '/home' => 'main#home'
 
-  resources :companies, :users
-  resources :sensors, :receivers
-  resources :tires, :tire_types, :tire_samples
-  resources :trailers, :trucks, :storages
+  resources :companies, :users, :sensors, :receivers, :tires, :tire_types, :tire_samples, :trailers, :trucks, :storages do
+    member do
+      get 'view_audit'
+    end
+  end
+
   resources :tire_sample_report, only: [:new, :create]
 
   # Example of regular route:
