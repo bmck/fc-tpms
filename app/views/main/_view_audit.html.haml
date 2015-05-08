@@ -16,7 +16,7 @@
   &mdash; &mdash; &mdash;
   %p/
 
-  - object.versions.each do |v|
+  - object.versions.sort { |x,y| y.created_at <=> x.created_at }.each do |v|
     Event datetime: #{v.created_at.localtime}
     %br/
     - if (u = (v.whodunnit)).nil?
@@ -28,7 +28,10 @@
     %br/
     - r = v.reify
     Preceding object state: [
-    = (object.class.columns.map{|c| c.name} - ['id','created_at','updated_at']).map {|col_name| "#{col_name} = #{r.send(col_name.to_sym)}"}.join(', ')
+    - if r.nil?
+      &nbsp;(nil)&nbsp;
+    - else
+      = (object.class.columns.map{|c| c.name} - ['id','created_at','updated_at']).map {|col_name| "#{col_name} = #{r.send(col_name.to_sym)}"}.join(', ')
     ]
     %p/
     &mdash; &mdash; &mdash;
