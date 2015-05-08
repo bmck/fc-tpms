@@ -18,13 +18,13 @@ Rails.application.routes.draw do
 
   get '/home' => 'main#home'
 
+  get '/tire_samples/create' => 'tire_samples#create'
+
   resources :companies, :users, :sensors, :receivers, :tires, :tire_types, :tire_samples, :trailers, :trucks, :storages do
     member do
       get 'view_audit'
     end
   end
-
-  get '/tire_samples/create' => 'tire_samples#create'
 
   resources :tire_sample_report, only: [:new, :create]
 
