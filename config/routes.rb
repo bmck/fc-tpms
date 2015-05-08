@@ -24,6 +24,8 @@ Rails.application.routes.draw do
     end
   end
 
+  get '/tire_samples/create' => 'tire_samples#create'
+
   resources :tire_sample_report, only: [:new, :create]
 
   # Example of regular route:
