@@ -51,6 +51,35 @@ rpm -Uvh http://packages.sw.be/rpmforge-release/rpmforge-release-0.5.2-2.el6.rf.
 
 # EPEL & Remi
 
+cat <<EOM >/etc/yum.repos.d/epel.repo
+[epel]
+name=Extra Packages for Enterprise Linux 6 - \$basearch
+#baseurl=http://download.fedoraproject.org/pub/epel/6/i\$basearch
+mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-6&arch=\$basearch
+failovermethod=priority
+enabled=1
+gpgcheck=1
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6
+
+[epel-debuginfo]
+name=Extra Packages for Enterprise Linux 6 - \$basearch - Debug
+#baseurl=http://download.fedoraproject.org/pub/epel/6/\$basearch/debug
+mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-debug-6&arch=\$basearch
+failovermethod=priority
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6
+gpgcheck=1
+
+[epel-source]
+name=Extra Packages for Enterprise Linux 6 - \$basearch - Source
+#baseurl=http://download.fedoraproject.org/pub/epel/6/SRPMS
+mirrorlist=https://mirrors.fedoraproject.org/metalink?repo=epel-source-6&arch=\$basearch
+failovermethod=priority
+enabled=0
+gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-EPEL-6
+gpgcheck=1
+EOM
+
 # Per http://stackoverflow.com/questions/14016286/how-to-programmatically-install-the-latest-epel-release-rpm-without-knowing-its
 cat <<EOM >/etc/yum.repos.d/epel-bootstrap.repo
 [epel]
@@ -228,23 +257,6 @@ service cups stop; chkconfig cups off
 step_6() {
 
 echo --------------------------------------------- STEP 6
-echo Updating R
-
-./update.R
-
-}
-
-
-
-
-
-
-
-
-
-step_7() {
-
-echo --------------------------------------------- STEP 7
 echo Creating user accounts
 #  Create the "newco" local user account, as well as other accounts required for administrators.
 
@@ -262,9 +274,9 @@ useradd bmck && chmod 700 /home/bmck
 
 
 
-step_8() {
+step_7() {
 
-echo --------------------------------------------- STEP 8
+echo --------------------------------------------- STEP 7
 echo Setup SSH keys
 #   Install the appropriate authorized_keys file for each administrator account, to enable SSH access
 #     without a password.
@@ -302,9 +314,9 @@ Y6dZWZj7a7aLyY7+UUA=
 
 
 
-step_9() {
+step_8() {
 
-echo --------------------------------------------- STEP 9
+echo --------------------------------------------- STEP 8
 echo Setup newco account
 # Configure the "newco" account to run the web application code and configuration files.
 
@@ -317,6 +329,23 @@ mkdir /home/newco/tmp && mkdir /home/newco/tmp/cores && chown -R newco:newco /ho
 
 }
 
+
+
+
+
+
+
+
+
+
+step_9() {
+
+echo --------------------------------------------- STEP 9
+echo Updating R
+
+~newco/src/bin/update.R
+
+}
 
 
 
@@ -427,7 +456,7 @@ echo Configure httpd and passenger
 service httpd stop
 cd /etc/httpd/conf ; mv httpd.conf httpd.conf.old ; ln -s  ~newco/src/etc/httpd/httpd.conf .
 cd /etc/httpd/conf.d ; mv ssl.conf ssl.conf.old ; ln -s  ~newco/src/etc/httpd/ssl.conf .
-/usr/local/rvm/gems/ruby-2.1.4@caplyt/gems/passenger-*/bin/passenger-install-apache2-module  --auto
+/usr/local/rvm/gems/ruby-2.1.4@newco/gems/passenger-*/bin/passenger-install-apache2-module  --auto
 service httpd start; chkconfig httpd on
 
 }
