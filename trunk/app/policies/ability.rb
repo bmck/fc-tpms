@@ -20,6 +20,7 @@ class Ability
     end
 
     can [:new, :create], :"user/sessions"
+    can [:new], :"user/password"
     can [:new, :create], :"user/registrations"
     can [:show], :"devise/confirmations"
     can :manage, :main
@@ -45,7 +46,7 @@ class Ability
     can [:destroy], :"user/sessions"
     can [:edit], :'user/registrations'
 
-    can :manage, :tires, company: { id: tire.company_id }
+    can :manage, :tires, company: { id: tire.using_company_id }
     can :read, :tire_samples, company: { id: tire_sample.company_id }
     can :read, :trailers, company: { id: trailer.company_id }
     can :read, :trucks, company: { id: truck.company_id }
