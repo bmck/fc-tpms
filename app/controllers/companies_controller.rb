@@ -5,12 +5,6 @@ class CompaniesController < ApplicationController
   include SmartListing::Helper::ControllerExtensions
   helper  SmartListing::Helper
 
-  validates_presence_of :name, :contact_name, :contact_address, :contact_phone,
-    :contact_city, :contact_state, :contact_zip,
-    message: 'must be provided'
-  validates_date :start_service, :end_service
-  validates_date :end_service, :after => :start_service, :on_or_before => :today
-
   before_action :find_company, except: [:index, :new, :create]
   before_action :authenticate_user!
 

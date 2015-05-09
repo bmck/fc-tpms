@@ -4,6 +4,10 @@
 class User < ActiveRecord::Base
   has_paper_trail
 
+  validates_presence_of :first_name, :last_name, :email,
+    :role, message: 'must be provided'
+  validates_uniqueness_of :email
+
   # Include default devise modules. Others available are:
   # :confirmable, :lockable, :timeoutable and :omniauthable
   devise :database_authenticatable, :registerable, \
@@ -19,10 +23,14 @@ class User < ActiveRecord::Base
   }
 
   scope :contains, -> x {
-    where("locate(\"#{x}\", first_name) > 0 or " \
-          "locate(\"#{x}\", last_name) > 0 or " \
-          "locate(\"#{x}\", email) > 0 or " \
-          "locate(\"#{x}\", name) > 0")
+    where(
+      [
+        "locate(\"#{x}\", first_name) > 0",
+        "locate(\"#{x}\", last_name) > 0",
+        "locate(\"#{x}\", email) > 0",
+        "locate(\"#{x}\", name) > 0"
+      ].join(' or ')
+    )
   }
 
   belongs_to :company

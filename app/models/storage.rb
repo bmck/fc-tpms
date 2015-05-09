@@ -2,6 +2,11 @@
 # $(c): Copyright 2015 by Newco $
 
 class Storage < TireLocation
+
+  validates_presence_of :company_id, :storage_name, :storage_address, :storage_city,
+    :storage_state, message: 'must be provided'
+  validates_uniqueness_of :storage_name, scope: :company_id
+
   scope :all_storages, -> {
     joins(
       'left join (companies) ' \

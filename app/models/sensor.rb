@@ -4,6 +4,9 @@
 class Sensor < ActiveRecord::Base
   has_paper_trail
 
+  validates_presence_of :sensor_type, :serial, message: 'must be provided'
+  validates_uniqueness_of :serial, scope: :sensor_type
+
   has_one :tire
 
   scope :all_sensors, -> {

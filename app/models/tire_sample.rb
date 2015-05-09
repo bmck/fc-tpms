@@ -4,6 +4,9 @@
 class TireSample < ActiveRecord::Base
   has_paper_trail
 
+  validates_uniqueness_of :sample_time, scope: :sensor_id, message: 'must be unique for a sensor'
+  validates_presence_of :value, :sample_time, message: 'must be provided'
+
   belongs_to :sensor
   belongs_to :receiver
 
