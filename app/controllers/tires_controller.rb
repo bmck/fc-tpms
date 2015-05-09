@@ -5,6 +5,9 @@ class TiresController < ApplicationController
   include SmartListing::Helper::ControllerExtensions
   helper  SmartListing::Helper
 
+  validates_presence_of :using_company_id, :owning_company_id,
+    :tire_type_id, :tire_location_id, :serial, message: 'must be provided'
+
   before_action :find_tire, except: [:index, :new, :create]
   before_action :authenticate_user!
 

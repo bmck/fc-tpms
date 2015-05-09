@@ -5,6 +5,9 @@ class SensorsController < ApplicationController
   include SmartListing::Helper::ControllerExtensions
   helper  SmartListing::Helper
 
+  validates_presence_of :sensor_type, :serial, message: 'must be provided'
+  validates_uniqueness_of :serial, scope: :sensor_type
+
   before_action :find_sensor, except: [:index, :new, :create]
   before_action :authenticate_user!
 
