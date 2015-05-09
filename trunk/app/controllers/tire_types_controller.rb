@@ -5,6 +5,9 @@ class TireTypesController < ApplicationController
   include SmartListing::Helper::ControllerExtensions
   helper  SmartListing::Helper
 
+  validates_presence_of :name, message: 'must be provided'
+  validates_uniqueness_of :name
+
   before_action :find_tire_type, except: [:index, :new, :create]
   before_action :authenticate_user!
 

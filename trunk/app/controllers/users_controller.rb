@@ -5,6 +5,10 @@ class UsersController < ApplicationController
   include SmartListing::Helper::ControllerExtensions
   helper  SmartListing::Helper
 
+  validates_presence_of :first_name, :last_name, :email,
+    :role, message: 'must be provided'
+  validates_uniqueness_of :email
+
   before_action :find_user, except: [:index, :new, :create]
   before_action :authenticate_user!
 

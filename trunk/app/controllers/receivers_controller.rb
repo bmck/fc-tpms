@@ -5,6 +5,9 @@ class ReceiversController < ApplicationController
   include SmartListing::Helper::ControllerExtensions
   helper  SmartListing::Helper
 
+  validates_presence_of :receiver_type, :serial, message: 'must be provided'
+  validates_uniqueness_of :serial, scope: :receiver_type
+
   before_action :find_receiver, except: [:index, :new, :create]
   before_action :authenticate_user!
 
