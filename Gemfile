@@ -18,6 +18,7 @@ gem 'font-awesome-rails', '4.3.0.0'
 gem 'haml', '4.0.6'
 gem 'httpclient', '2.6.0.1'
 gem 'httparty', '0.13.3'
+gem 'jc-validates_timeliness', '3.1.1'
 gem 'jquery-rails', '4.0.3'
 gem 'jquery-ui-rails', '5.0.3'
 gem 'jquery-migrate-rails', '1.2.1' # TODO: can jquery-migrate-rails be removed?
