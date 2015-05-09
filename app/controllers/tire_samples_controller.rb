@@ -5,6 +5,9 @@ class TireSamplesController < ApplicationController
   include SmartListing::Helper::ControllerExtensions
   helper  SmartListing::Helper
 
+  validates_uniqueness_of :sample_time, scope: :sensor_id, message: 'must be unique for a sensor'
+  validates_presence_of :value, :sample_time, message: 'must be provided'
+
   before_action :find_tire_sample, except: [:index, :new, :create]
   before_action :authenticate_user!, except: [:create]
 
