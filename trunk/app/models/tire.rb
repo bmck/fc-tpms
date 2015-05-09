@@ -10,6 +10,8 @@ class Tire < ActiveRecord::Base
   belongs_to :sensor
   belongs_to :tire_location
 
+  validates_presence_of :using_company_id, :owning_company_id,
+    :tire_type_id, :tire_location_id, :serial, message: 'must be provided'
   validate :tire_location_must_belong_to_using_company
 
   scope :all_tires, -> {

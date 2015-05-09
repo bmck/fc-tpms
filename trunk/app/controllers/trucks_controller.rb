@@ -5,9 +5,6 @@ class TrucksController < ApplicationController
   include SmartListing::Helper::ControllerExtensions
   helper  SmartListing::Helper
 
-  validates_presence_of :company_id, :truck_serial, message: 'must be provided'
-  validates_uniqueness_of :truck_serial, scope: :company_id
-
   before_action :find_truck, except: [:index, :new, :create]
   before_action :authenticate_user!
 

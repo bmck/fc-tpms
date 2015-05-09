@@ -2,6 +2,10 @@
 # $(c): Copyright 2015 by Newco $
 
 class Truck < TireLocation
+
+  validates_presence_of :company_id, :truck_serial, message: 'must be provided'
+  validates_uniqueness_of :truck_serial, scope: :company_id
+
   scope :all_trucks, -> {
     joins(
       'left join (companies) ' \

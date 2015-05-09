@@ -6,6 +6,12 @@ class Company < ActiveRecord::Base
 
   has_many :users
 
+  validates_presence_of :name, :contact_name, :contact_address, :contact_phone,
+    :contact_city, :contact_state, :contact_zip,
+    message: 'must be provided'
+  validates_date :start_service, :end_service
+  validates_date :end_service, :after => :start_service, :on_or_before => :today
+
   scope :all_companies, -> {}
   scope :active, -> {
     where('(start_service is null or start_service <= NOW()) and ' \

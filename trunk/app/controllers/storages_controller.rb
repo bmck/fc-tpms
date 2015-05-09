@@ -5,10 +5,6 @@ class StoragesController < ApplicationController
   include SmartListing::Helper::ControllerExtensions
   helper  SmartListing::Helper
 
-  validates_presence_of :company_id, :storage_name, :storage_address, :storage_city,
-    :storage_state, message: 'must be provided'
-  validates_uniqueness_of :storage_name, scope: :company_id
-
   before_action :find_storage, except: [:index, :new, :create]
   before_action :authenticate_user!
 
