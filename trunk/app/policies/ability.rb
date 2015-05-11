@@ -33,29 +33,41 @@ class Ability
 
   def setup_abilities(user)
     if user.company_admin?
-      can :manage, :user, company: { id: user.try(:company_id) }
-      can :manage, :trucks, company: { id: truck.try(:company_id) }
-      can :manage, :trailers, company: { id: trailer.try(:company_id) }
-      can :manage, :storages, company: { id: storage.try(:company_id) }
-      can :manage, :tire_samples, company: { id: tire_sample.try(:company_id) }
+      can :manage, :user, company_id: user.company_id
+
+      can :manage, :trucks, company_id: user.company_id
+      can :manage, :trailers, company_id: user.company_id
+      can :manage, :storages, company_id: user.company_id
+
+      can :create, :tire_types
+      can :create, :tires
+      can :destroy, :tires, owning_company_id: user.company_id
+
+      can :create, :tire_samples
+      can [:read, :update, :destroy], :tire_samples do |tire_sample|
+        tire_sample.company_id == user.company_id
+      end
     end
 
     setup_basic_user_abilities(user)
   end
 
-  def setup_basic_user_abilities(_user)
+  def setup_basic_user_abilities(user)
+    can :main, :all
+
     can [:destroy], :"user/sessions"
     can [:edit], :'user/registrations'
 
-    can :create, :tires
-    can [:read, :update, :destroy], :tires, company: { id: tire.try(:using_company_id) }
-    can :read, :tire_samples, company: { id: tire_sample.try(:company_id) }
-    can :read, :trailers, company: { id: trailer.try(:company_id) }
-    can :read, :trucks, company: { id: truck.try(:company_id) }
-    can :read, :storages, company: { id: storage.try(:company_id) }
+    can :read, :trailers, company_id: user.company_id
+    can :read, :trucks, company_id: user.company_id
+    can :read, :storages, company_id: user.company_id
     can :read, :tire_sample_report
-    can :new, :tire_types
 
-    can :main, :all
+
+    can [:read, :update], :tires, using_company_id: user.company_id
+
+    can :read, :tire_samples do |tire_sample|
+      tire_sample.company_id == user.company_id
+    end
   end
 end
