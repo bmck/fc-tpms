@@ -1,0 +1,47 @@
+- # $Id: _line_chart.js.haml 81 2015-04-29 02:38:21Z bmck_newco $
+- # $(c): Copyright 2015 by Newco $
+
+:javascript
+  AmCharts.makeChart("#{div_name}",
+    {
+      "type": "serial",
+      "export": {
+        "enabled": true,
+        "filename": "#{report.try(:filename) || controller.controller_name.humanize.html_safe}",
+        "libs": { "autoLoad": false }
+        },
+      "path": "http://www.amcharts.com/lib/3/",
+      "pathToImages": "http://cdn.amcharts.com/lib/3/images/",
+      "categoryField": "#{report.serial_xaxis_name.to_s.html_safe}",
+      "creditsPosition": "bottom-right",
+      "dataDateFormat": "YYYY-MM-DD",
+      "startDuration": 1,
+      "categoryAxis": {
+        "gridPosition": "start",
+        "parseDates": true,
+        "startOnAxis": true,
+        "labelRotation": 45.0
+      },
+      "chartCursor": {},
+      "chartScrollbar": {},
+      "trendLines": [],
+      "graphs": #{report.column_chart_graphs.html_safe},
+      "guides": [],
+      "valueAxes": [
+        {
+          "id": "ValueAxis-1",
+          "title": "#{report.try(:yaxis_title) || ''}"
+        }
+      ],
+      "allLabels": [],
+      "balloon": {},
+      "titles": [
+        {
+          "id": "Title-1",
+          "size": 15,
+          "text": "#{(report.title || "Chart Title").html_safe}"
+        }
+      ],
+      "dataProvider": #{report.serial_data.html_safe}
+    }
+  )
