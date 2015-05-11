@@ -13,6 +13,7 @@ class CreateTireLocations < ActiveRecord::Migration
       t.string  :storage_city
       t.string  :storage_state
       t.string  :location_name,     null: false
+      t.boolean :active, default: true, null: false
 
       t.timestamps null: false
     end
