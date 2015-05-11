@@ -15,6 +15,7 @@ class CreateCompanies < ActiveRecord::Migration
       t.string      :contact_phone, limit: 15, null: false
       t.string      :contact_email, limit: 64, null: false
       t.string      :domain_name, limit: 128, null: false
+      t.boolean     :active, default: true, null: false
 
       t.timestamps null: false
     end

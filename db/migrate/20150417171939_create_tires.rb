@@ -11,6 +11,7 @@ class CreateTires < ActiveRecord::Migration
       t.integer     :tire_location_id, null: false
       t.string      :location_notation
       t.string      :serial
+      t.boolean     :active, default: true, null: false
 
       t.timestamps null: false
     end

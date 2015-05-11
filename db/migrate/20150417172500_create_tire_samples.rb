@@ -8,6 +8,7 @@ class CreateTireSamples < ActiveRecord::Migration
       t.integer  :receiver_id, null: false
       t.decimal  :value, precision: 10, scale: 6, null: false
       t.datetime :sample_time
+      t.boolean  :active, default: true, null: false
 
       t.timestamps null: false
     end
