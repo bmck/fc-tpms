@@ -8,7 +8,7 @@ class Ability
     # Duplicated from https://github.com/CanCanCommunity/cancancan/wiki/Action-Aliases
     # so as to be clearly documented
     # clear_aliased_actions
-    # alias_action :index, :show, :to => :read
+    alias_action :index, :show, :view_audit, :to => :read
     # alias_action :new, :to => :create
     # alias_action :edit, :to => :update
     alias_action :update, :destroy, to: :modify
@@ -47,7 +47,8 @@ class Ability
     can [:destroy], :"user/sessions"
     can [:edit], :'user/registrations'
 
-    can :manage, :tires, company: { id: tire.try(:using_company_id) }
+    can :create, :tires
+    can [:read, :update, :destroy], :tires, company: { id: tire.try(:using_company_id) }
     can :read, :tire_samples, company: { id: tire_sample.try(:company_id) }
     can :read, :trailers, company: { id: trailer.try(:company_id) }
     can :read, :trucks, company: { id: truck.try(:company_id) }
