@@ -3,6 +3,14 @@
 
 %ul.nav.navbar-nav
   - if user_signed_in?
+    %li.divider
+
+    %li.dropdown-header
+      %i.fa.fa-user.fa-fw
+      = "Logged in as #{current_user.first_last}"
+
+    %li.divider
+
     %li.dropdown
       %a.dropdown-toggle{href:"#", "data-toggle" => "dropdown"}
         %i.fa.fa-bank
@@ -71,10 +79,8 @@
                 Chart
 
     %li.divider
-
-    %li.dropdown-header
-      %i.fa.fa-user.fa-fw
-      = "Logged in as #{current_user.first_last}"
+    %hr/
+    %li.divider
 
     %li
       %a{href: edit_user_registration_path}
@@ -87,6 +93,8 @@
           %i.fa.fa-users
           View/Edit Users
 
+    %li.divider
+    %hr/
     %li.divider
 
     %li
