@@ -9,6 +9,10 @@ class TireType < ActiveRecord::Base
   validates_uniqueness_of :name
 
   scope :all_tire_types, -> {
+    active
+  }
+  scope :active, -> {
+    where(active: true)
   }
   scope :company, -> company_id {
     joins(
@@ -20,4 +24,9 @@ class TireType < ActiveRecord::Base
   scope :contains, -> x {
     where("locate(\"#{x}\", name) > 0")
   }
+
+  def destroy
+    self.active = false
+    save!
+  end
 end

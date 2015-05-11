@@ -8,6 +8,10 @@ class Receiver < ActiveRecord::Base
   validates_uniqueness_of :serial, scope: :receiver_type
 
   scope :all_receivers, -> {}
+  scope :active, -> {
+    active
+    .where(active: true)
+  }
 
   scope :contains, -> x {
     where("locate(\"#{x}\", serial) > 0")
@@ -15,5 +19,10 @@ class Receiver < ActiveRecord::Base
 
   def name
     serial
+  end
+
+  def destroy
+    self.active = false
+    save!
   end
 end

@@ -13,7 +13,8 @@ class TireSample < ActiveRecord::Base
   scope :ordered_samples, -> { order('sample_time desc') }
 
   scope :all_samples, -> {
-    joins(
+    active
+    .joins(
       'LEFT JOIN (tires, sensors, receivers) ON (' +
       [
         'receivers.id = tire_samples.receiver_id',
@@ -23,8 +24,11 @@ class TireSample < ActiveRecord::Base
       ')'
     )
   }
+  scope :active, -> {
+    where(active: true)
+  }
   scope :company, -> company_id {
-    where("#{company_id} = tires.company_id")
+    where("#{company_id} = tires.using_company_id")
   }
   scope :sensor, -> sensor_id {
     where("#{sensor_id} = sensor_id")
@@ -70,5 +74,10 @@ class TireSample < ActiveRecord::Base
 
   def receiver_name
     receiver.name
+  end
+
+  def destroy
+    self.active = false
+    save!
   end
 end

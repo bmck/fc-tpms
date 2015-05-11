@@ -7,10 +7,14 @@ class Trailer < TireLocation
   validates_uniqueness_of :trailer_serial, scope: :company_id
 
   scope :all_trailers, -> {
-    joins(
+    active
+    .joins(
       'left join (companies) ' \
       'on (companies.id = company_id)'
     )
+  }
+  scope :active, -> {
+    where(active: true)
   }
   scope :company, -> company_id { where(company_id: company_id) }
 
@@ -25,5 +29,10 @@ class Trailer < TireLocation
 
   def name
     "Trailer #{trailer_serial} (#{company_name})"
+  end
+
+  def destroy
+    self.active = false
+    save!
   end
 end

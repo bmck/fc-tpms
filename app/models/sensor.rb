@@ -12,6 +12,10 @@ class Sensor < ActiveRecord::Base
   scope :all_sensors, -> {
     joins('join tires on tires.sensor_id = sensors.id')
   }
+  scope :active, -> {
+    active
+    .where(active: true)
+  }
   scope :company, -> company_id {
     where("tires.company_id = #{company_id}")
   }
@@ -26,5 +30,10 @@ class Sensor < ActiveRecord::Base
 
   def tire_name
     tire.try(:name) || 'No Tire Known'
+  end
+
+  def destroy
+    self.active = false
+    save!
   end
 end
