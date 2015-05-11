@@ -24,7 +24,7 @@ class Ability
     can [:new, :create], :"user/registrations"
     can [:show], :"devise/confirmations"
     can :manage, :main
-    can [:create], :tire_samples
+    can [:create], TireSample
 
     return if user.nil?
 
@@ -33,18 +33,18 @@ class Ability
 
   def setup_abilities(user)
     if user.company_admin?
-      can :manage, :user, company_id: user.company_id
+      can :manage, User, company_id: user.company_id
 
-      can :manage, :trucks, company_id: user.company_id
-      can :manage, :trailers, company_id: user.company_id
-      can :manage, :storages, company_id: user.company_id
+      can :manage, Truck, company_id: user.company_id
+      can :manage, Trailer, company_id: user.company_id
+      can :manage, Storage, company_id: user.company_id
 
-      can :create, :tire_types
-      can :create, :tires
-      can :destroy, :tires, owning_company_id: user.company_id
+      can :create, TireType
+      can :create, Tire
+      can :destroy, Tire, owning_company_id: user.company_id
 
-      can :create, :tire_samples
-      can [:read, :update, :destroy], :tire_samples do |tire_sample|
+      can :create, TireSample
+      can [:read, :update, :destroy], TireSample do |tire_sample|
         tire_sample.company_id == user.company_id
       end
     end
@@ -58,15 +58,14 @@ class Ability
     can [:destroy], :"user/sessions"
     can [:edit], :'user/registrations'
 
-    can :read, :trailers, company_id: user.company_id
-    can :read, :trucks, company_id: user.company_id
-    can :read, :storages, company_id: user.company_id
-    can :read, :tire_sample_report
+    can :read, Trailer, company_id: user.company_id
+    can :read, Truck, company_id: user.company_id
+    can :read, Storage, company_id: user.company_id
+    can [:index, :create], TireSampleReport
 
+    can [:read, :update], Tire, using_company_id: user.company_id
 
-    can [:read, :update], :tires, using_company_id: user.company_id
-
-    can :read, :tire_samples do |tire_sample|
+    can :read, TireSample do |tire_sample|
       tire_sample.company_id == user.company_id
     end
   end

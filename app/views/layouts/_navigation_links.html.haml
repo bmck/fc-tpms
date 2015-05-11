@@ -10,48 +10,48 @@
         %i.fa.fa-fw.fa-caret-down
 
       %ul.dropdown-menu
-        - if can? :index, :companies
+        - if can? :index, Company
           %li
             %a{ href: companies_path }
               %i.fa.fa-phone
               Company Contacts
-        - if can? :index, :tires
+        - if can? :index, Tire
           %li
             %a{ href: tires_path }
               %i.fa.fa-circle-o
               Tires
-        - if can? :index, :trucks
+        - if can? :index, Truck
           %li
             %a{ href: trucks_path }
               %i.fa.fa-car
               Trucks
-        - if can? :index, :trailers
+        - if can? :index, Trailer
           %li
             %a{ href: trailers_path }
               %i.fa.fa-truck
               Trailers
-        - if can? :index, :storages
+        - if can? :index, Storage
           %li
             %a{ href: storages_path }
               %i.fa.fa-building-o
               Storage Facilities
 
-    - if can? :index, :sensors
+    - if can? :index, Sensor
       %li
         %a{ href: sensors_path }
           %i.fa.fa-sign-out
           Sensors
-    - if can? :index, :receivers
+    - if can? :index, Receiver
       %li
         %a{ href: receivers_path }
           %i.fa.fa-sign-in
           Receivers
-    - if can? :index, :tire_types
+    - if can? :index, TireType
       %li
         %a{ href: tire_types_path }
           %i.fa.fa-info-circle
           Tire Types
-    - if can? :index, :tire_samples
+    - if can? :index, TireSample
       %li.dropdown
         %a.dropdown-toggle{ href:"#", "data-toggle" => "dropdown"}
           %i.fa.fa-eyedropper
@@ -59,12 +59,12 @@
           %i.fa.fa-fw.fa-caret-down
 
         %ul.dropdown-menu
-          - if can? :index, :tire_samples
+          - if can? :index, TireSample
             %li
               %a{ href: tire_samples_path }
                 %i.fa.fa-database
                 View/Edit
-          - if can? :index, :tire_sample_report
+          - if can? :index, TireSampleReport
             %li
               %a{ href: new_tire_sample_report_path }
                 %i.fa.fa-area-chart
@@ -81,7 +81,7 @@
         %i.fa.fa-user.fa-fw
         Edit User Profile
 
-    - if can? :index, :user
+    - if can? :index, User
       %li
         %a{ href: users_path }
           %i.fa.fa-users
