@@ -15,7 +15,8 @@ class Tire < ActiveRecord::Base
   validate :tire_location_must_belong_to_using_company
 
   scope :all_tires, -> {
-    joins(
+    active
+    .joins(
       'left join (sensors, tire_types, companies as using_company, companies as owning_company, tire_locations) ' \
       'on (' +
       [
@@ -27,6 +28,9 @@ class Tire < ActiveRecord::Base
       ].join(' and ') +
       ')'
     )
+  }
+  scope :active, -> {
+    where(active: true)
   }
 
   scope :company, -> company_id {
@@ -79,5 +83,10 @@ class Tire < ActiveRecord::Base
     unless tire_location.company_id == using_company_id
       errors.add(:using_company, 'must provide the tire location')
     end
+  end
+
+  def destroy
+    self.active = false
+    save!
   end
 end

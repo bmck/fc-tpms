@@ -11,7 +11,12 @@ class TireLocation < ActiveRecord::Base
   scope :trailers, -> { where(type: 'Trailer') }
   scope :in_storage, -> { where(type: 'Storage') }
 
-  scope :all_locations, -> {}
+  scope :all_locations, -> {
+    active
+  }
+  scope :active, -> {
+    where(active: true)
+  }
 
   scope :company_locations, -> company_id { where(company_id: company_id) }
   scope :company_trucks, -> company_id { trucks.company_locations(company_id) }
@@ -30,5 +35,10 @@ class TireLocation < ActiveRecord::Base
 
   def assign_location_name
     self.location_name = name
+  end
+
+  def destroy
+    self.active = false
+    save!
   end
 end

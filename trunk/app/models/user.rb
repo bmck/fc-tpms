@@ -19,9 +19,13 @@ class User < ActiveRecord::Base
   scope :myself, -> user_id { where(id: user_id) }
   scope :same_company, -> user_company_id { where(company_id: user_company_id) }
   scope :all_users, -> {
-    joins('LEFT JOIN `companies` ON users.company_id = companies.id')
+    active
+    .joins('LEFT JOIN `companies` ON users.company_id = companies.id')
   }
 
+  scope :active, -> {
+    where(active: true)
+  }
   scope :contains, -> x {
     where(
       [
@@ -59,6 +63,11 @@ class User < ActiveRecord::Base
 
   def company_name
     company.try(:name) || 'No Company Specified'
+  end
+
+  def destroy
+    self.active = false
+    save!
   end
 
   private

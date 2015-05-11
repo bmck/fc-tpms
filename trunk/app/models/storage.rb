@@ -13,6 +13,10 @@ class Storage < TireLocation
       'on (companies.id = company_id)'
     )
   }
+  scope :active, -> {
+    active
+    .where(active: true)
+  }
   scope :company, -> company_id {
     where(company_id: company_id)
   }
@@ -31,5 +35,10 @@ class Storage < TireLocation
 
   def name
     "#{storage_name} Storage Facility (#{company_name})"
+  end
+
+  def destroy
+    self.active = false
+    save!
   end
 end
