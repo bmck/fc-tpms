@@ -72,7 +72,7 @@
               %a{ href: tire_samples_path }
                 %i.fa.fa-database
                 View/Edit
-          - if can? :index, TireSampleReport
+          - if can? :index, Report::TireSampleReport
             %li
               %a{ href: new_tire_sample_report_path }
                 %i.fa.fa-area-chart
