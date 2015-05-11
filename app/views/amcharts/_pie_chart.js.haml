@@ -1,0 +1,30 @@
+- # $Id: _line_chart.js.haml 81 2015-04-29 02:38:21Z bmck_newco $
+- # $(c): Copyright 2015 by Newco $
+
+:javascript
+  AmCharts.makeChart("#{div_name}",
+    {
+      "type": "pie",
+      "path": "http://www.amcharts.com/lib/3/",
+      "angle": 12,
+      "balloonText": "[[title]]<br><span style='font-size:14px'><b>[[value]]</b> ([[percents]]%)</span>",
+      "depth3D": 15,
+      "titleField": "#{report.data_name}",
+      "valueField": "#{report.value_name}",
+      "creditsPosition": "bottom-right",
+      "allLabels": [],
+      "balloon": {},
+      "export": {
+        "enabled": true,
+        "filename": "#{report.try(:filename) || controller.controller_name.humanize.html_safe}",
+        "libs": { "autoLoad": false }
+        },
+      "titles": [
+        {
+          "id": "Title-1",
+          "text": "#{(report.title || "Chart Title").html_safe}"
+        }
+      ],
+      "dataProvider": #{report.pie_chart_data.html_safe}
+    }
+  )
