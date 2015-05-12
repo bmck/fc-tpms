@@ -17,6 +17,8 @@
     = f.label :password_confirmation, "Confirm new password"
     %br/
     = f.password_field :password_confirmation, autocomplete: "off"
+  %br/
   .actions
     = f.submit "Change my password"
+%br/
 = render "user/shared/links"
