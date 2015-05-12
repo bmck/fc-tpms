@@ -11,86 +11,94 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150425022654) do
+ActiveRecord::Schema.define(version: 20150508185454) do
 
   create_table "companies", force: :cascade do |t|
-    t.string   "name",            limit: 64,  null: false
-    t.date     "start_service",               null: false
-    t.date     "end_service",                 null: false
-    t.string   "contact_name",    limit: 64,  null: false
-    t.string   "contact_address", limit: 128, null: false
-    t.string   "contact_city",    limit: 32,  null: false
-    t.string   "contact_state",   limit: 2,   null: false
-    t.string   "contact_zip",     limit: 10,  null: false
-    t.string   "contact_phone",   limit: 15,  null: false
-    t.string   "contact_email",   limit: 64,  null: false
-    t.string   "domain_name",     limit: 128, null: false
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.string   "name",            limit: 64,                 null: false
+    t.date     "start_service",                              null: false
+    t.date     "end_service",                                null: false
+    t.string   "contact_name",    limit: 64,                 null: false
+    t.string   "contact_address", limit: 128,                null: false
+    t.string   "contact_city",    limit: 32,                 null: false
+    t.string   "contact_state",   limit: 2,                  null: false
+    t.string   "contact_zip",     limit: 10,                 null: false
+    t.string   "contact_phone",   limit: 15,                 null: false
+    t.string   "contact_email",   limit: 64,                 null: false
+    t.string   "domain_name",     limit: 128,                null: false
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
+    t.boolean  "active",          limit: 1,   default: true, null: false
   end
 
   create_table "receivers", force: :cascade do |t|
-    t.string   "serial",        limit: 255, null: false
+    t.string   "serial",        limit: 255,                null: false
     t.string   "receiver_type", limit: 255
-    t.datetime "created_at",                null: false
-    t.datetime "updated_at",                null: false
+    t.datetime "created_at",                               null: false
+    t.datetime "updated_at",                               null: false
+    t.boolean  "active",        limit: 1,   default: true, null: false
   end
 
   create_table "sensors", force: :cascade do |t|
-    t.string   "serial",      limit: 255, null: false
+    t.string   "serial",      limit: 255,                null: false
     t.string   "sensor_type", limit: 255
-    t.datetime "created_at",              null: false
-    t.datetime "updated_at",              null: false
+    t.datetime "created_at",                             null: false
+    t.datetime "updated_at",                             null: false
+    t.boolean  "active",      limit: 1,   default: true, null: false
   end
 
+  create_table "sessions", force: :cascade do |t|
+    t.string   "session_id", limit: 255,   null: false
+    t.text     "data",       limit: 65535
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "sessions", ["session_id"], name: "index_sessions_on_session_id", unique: true, using: :btree
+  add_index "sessions", ["updated_at"], name: "index_sessions_on_updated_at", using: :btree
+
   create_table "tire_locations", force: :cascade do |t|
-    t.string   "type",                limit: 255, null: false
-    t.integer  "company_id",          limit: 4,   null: false
-    t.string   "truck_serial",        limit: 255
-    t.string   "trailer_serial",      limit: 255
-    t.string   "storage_name",        limit: 255
-    t.string   "storage_address",     limit: 255
-    t.string   "storage_city",        limit: 255
-    t.string   "storage_state",       limit: 255
-    t.string   "in_storage_location", limit: 255
-    t.datetime "created_at",                      null: false
-    t.datetime "updated_at",                      null: false
+    t.string   "type",            limit: 255,                null: false
+    t.integer  "company_id",      limit: 4,                  null: false
+    t.string   "truck_serial",    limit: 255
+    t.string   "trailer_serial",  limit: 255
+    t.string   "storage_name",    limit: 255
+    t.string   "storage_address", limit: 255
+    t.string   "storage_city",    limit: 255
+    t.string   "storage_state",   limit: 255
+    t.string   "location_name",   limit: 255,                null: false
+    t.datetime "created_at",                                 null: false
+    t.datetime "updated_at",                                 null: false
+    t.boolean  "active",          limit: 1,   default: true, null: false
   end
 
   create_table "tire_samples", force: :cascade do |t|
-    t.integer  "sensor_id",   limit: 4,                          null: false
-    t.integer  "receiver_id", limit: 4,                          null: false
-    t.decimal  "value",                 precision: 10, scale: 6, null: false
+    t.integer  "sensor_id",   limit: 4,                                         null: false
+    t.integer  "receiver_id", limit: 4,                                         null: false
+    t.decimal  "value",                 precision: 10, scale: 6,                null: false
     t.datetime "sample_time"
-    t.datetime "created_at",                                     null: false
-    t.datetime "updated_at",                                     null: false
+    t.datetime "created_at",                                                    null: false
+    t.datetime "updated_at",                                                    null: false
+    t.boolean  "active",      limit: 1,                          default: true, null: false
   end
 
   create_table "tire_types", force: :cascade do |t|
-    t.string   "name",       limit: 255, null: false
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.string   "name",       limit: 255,                null: false
+    t.datetime "created_at",                            null: false
+    t.datetime "updated_at",                            null: false
+    t.boolean  "active",     limit: 1,   default: true, null: false
   end
 
   create_table "tires", force: :cascade do |t|
-    t.integer  "sensor_id",         limit: 4,   null: false
-    t.integer  "tire_type_id",      limit: 4,   null: false
-    t.integer  "using_company_id",  limit: 4,   null: false
-    t.integer  "owning_company_id", limit: 4,   null: false
-    t.integer  "tire_location_id",  limit: 4,   null: false
+    t.integer  "sensor_id",         limit: 4,                  null: false
+    t.integer  "tire_type_id",      limit: 4,                  null: false
+    t.integer  "using_company_id",  limit: 4,                  null: false
+    t.integer  "owning_company_id", limit: 4,                  null: false
+    t.integer  "tire_location_id",  limit: 4,                  null: false
     t.string   "serial",            limit: 255
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
-  end
-
-  create_table "tires_bak", force: :cascade do |t|
-    t.integer  "sensor_id",         limit: 4,   null: false
-    t.integer  "tire_type_id",      limit: 4,   null: false
-    t.integer  "using_company_id",  limit: 4,   null: false
-    t.integer  "owning_company_id", limit: 4,   null: false
-    t.string   "serial",            limit: 255
-    t.datetime "created_at",                    null: false
-    t.datetime "updated_at",                    null: false
+    t.string   "location_notation", limit: 255
+    t.datetime "created_at",                                   null: false
+    t.datetime "updated_at",                                   null: false
+    t.boolean  "active",            limit: 1,   default: true, null: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -117,6 +125,7 @@ ActiveRecord::Schema.define(version: 20150425022654) do
     t.integer  "failed_attempts",        limit: 4,   default: 0,            null: false
     t.string   "unlock_token",           limit: 255
     t.datetime "locked_at"
+    t.boolean  "active",                 limit: 1,   default: true,         null: false
   end
 
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
