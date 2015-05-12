@@ -21,8 +21,9 @@ class Ability
 
     can [:new, :create], :"user/sessions"
     can [:new], :"user/password"
+    can [:new, :create], :"devise/passwords"
     can [:new, :create], :"user/registrations"
-    can [:show], :"devise/confirmations"
+    can [:new, :show, :create], :"devise/confirmations"
     can :manage, :main
     can [:create], TireSample
 
