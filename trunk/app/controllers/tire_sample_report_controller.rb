@@ -25,8 +25,8 @@ class TireSampleReportController < ApplicationController
   private
 
   def report_params
-    params.require(:tire_sample_report).permit(:"start_service(1i)", :"start_service(2i)", :"start_service(3i)",
-                                               :"end_service(1i)", :"end_service(2i)", :"end_service(3i)",
-                                               sensor_ids: [], receiver_ids: [])
+    params.require(:report_tire_sample_report).permit(:"start_service(1i)", :"start_service(2i)", :"start_service(3i)",
+                                                      :"end_service(1i)", :"end_service(2i)", :"end_service(3i)",
+                                                      sensor_ids: [], receiver_ids: [])
   end
 end
