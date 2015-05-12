@@ -95,8 +95,8 @@ module Report
       end
 
       x = '[' + serial_string.join(",\n") + ']'
-      Rails.logger.verbose { "serial_string = #{x.inspect}" }
-      x
+      # Rails.logger.verbose { "serial_string = #{x.inspect}" }
+      # x
     end
 
     def data_date_format
