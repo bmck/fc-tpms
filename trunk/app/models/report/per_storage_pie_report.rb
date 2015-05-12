@@ -9,7 +9,7 @@ module Report
     include Chartable
 
     attr_accessor :company_id
-    cattr_reader :title do 'Pct Tires by Type' end
+    cattr_reader :title do 'Pct Tires per Location' end
 
     def initialize(params)
       @company_id = params[:company_id]
