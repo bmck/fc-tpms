@@ -97,9 +97,9 @@ module Report
       end
 
       x = '[' + serial_string.join(",\n") + ']'
-      Rails.logger.verbose { "serial_string = #{x.inspect}" }
+      # Rails.logger.verbose { "serial_string = #{x.inspect}" }
 
-      x
+      # x
     end
 
     def colors
