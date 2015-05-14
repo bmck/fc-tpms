@@ -107,6 +107,10 @@ module Report
       '[' + chart_colors(sensors.length).map { |col| "\"##{col}\"" }.join(",\n") + ']'
     end
 
+    def subtitle
+      "From #{start_service.to_s(:long)} thru #{end_service.to_s(:long)}"
+    end
+
     def serial_xaxis_name
       :sample_time
     end

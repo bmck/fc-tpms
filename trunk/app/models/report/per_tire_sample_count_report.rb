@@ -102,6 +102,10 @@ module Report
       # x
     end
 
+    def subtitle
+      "From #{start_service.to_s(:long)} thru #{end_service.to_s(:long)}"
+    end
+
     def colors
       '[' + chart_colors(1).map { |col| "\"##{col}\"" }.join(",\n") + ']'
     end
@@ -111,7 +115,7 @@ module Report
     end
 
     def yaxis_title
-      'Samples per Tire'
+      'Samples per Tire / Day'
     end
 
     def filename
