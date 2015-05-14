@@ -23,7 +23,12 @@ class TireSamplesController < ApplicationController
     # fail NewcoError::VerificationError.new(request) unless \
     #   current_user.global_admin? || confirm_verify_value
 
-    @tire_sample = TireSample.create(tire_sample_params)
+
+    begin
+      @tire_sample = TireSample.create!(tire_sample_params)
+    rescue ActiveRecord::RecordInvalid => e
+      render text: e.message, status: 403 and return
+    end
 
     respond_to do |format|
       format.html { render text: 'ok', status: 200 and return }
