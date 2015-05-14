@@ -6,6 +6,7 @@ class TireSample < ActiveRecord::Base
 
   validates_uniqueness_of :sample_time, scope: :sensor_id, message: 'must be unique for a sensor'
   validates_presence_of :value, :sample_time, message: 'must be provided'
+  validate :sensor_must_belong_to_tire
 
   belongs_to :sensor
   belongs_to :receiver
@@ -79,5 +80,11 @@ class TireSample < ActiveRecord::Base
   def destroy
     self.active = false
     save!
+  end
+
+  def sensor_must_belong_to_tire
+    unless Sensor.find(sensor_id).try(:tire)
+      errors.add(:sensor_id, 'must be associated with a valid tire')
+    end
   end
 end
