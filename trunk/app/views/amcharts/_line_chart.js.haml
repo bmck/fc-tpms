@@ -43,9 +43,10 @@
       "titles": [
         {
           "id": "Title-1",
-          "size": 18,
+          "size": 15,
           "text": "#{(report.title || "Chart Title").html_safe}"
         }
+        #{report.respond_to?(:subtitle) ? ', {"id": "Title-2", "size": 12, "text": "' + report.subtitle + '"}' : ''}
       ],
       "dataProvider": #{report.serial_data.html_safe}
     }
