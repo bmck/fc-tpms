@@ -26,9 +26,11 @@ class TireSamplesController < ApplicationController
     @tire_sample = TireSample.create(tire_sample_params)
 
     respond_to do |format|
-      format.html { render nothing: true, status: 200 and return }
+      format.html { render text: 'ok', status: 200 and return }
       format.js {  }
     end
+  rescue ActiveRecord::RecordInvalid
+    render text: 'fail', status: 403 and return
   end
 
   def edit
