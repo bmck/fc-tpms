@@ -24,10 +24,12 @@ class TireSamplesController < ApplicationController
     #   current_user.global_admin? || confirm_verify_value
 
 
-    begin
-      @tire_sample = TireSample.create!(tire_sample_params)
-    rescue ActiveRecord::RecordInvalid => e
-      render text: e.message, status: 403 and return
+    @tire_sample = TireSample.create(tire_sample_params)
+    if @tire_sample.errors.any?
+      Rails.logger.verbose { "#{@tire_sample.errors.full_messages.join("\n")}" }
+      render \
+        text: (['Sample creation failed.'] + Array(@tire_sample.errors.full_messages)).join('<br/>'+"\n"),
+        status: 403 and return
     end
 
     respond_to do |format|
