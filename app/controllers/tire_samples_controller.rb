@@ -26,7 +26,6 @@ class TireSamplesController < ApplicationController
 
     @tire_sample = TireSample.create(tire_sample_params)
     if @tire_sample.errors.any?
-      Rails.logger.verbose { "#{@tire_sample.errors.full_messages.join("\n")}" }
       render \
         text: (['Sample creation failed.'] + Array(@tire_sample.errors.full_messages)).join('<br/>'+"\n"),
         status: 403 and return
