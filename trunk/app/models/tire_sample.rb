@@ -6,6 +6,7 @@ class TireSample < ActiveRecord::Base
 
   validates_uniqueness_of :sample_time, scope: :sensor_id, message: 'must be unique for a sensor'
   validates_presence_of :value, :sample_time, message: 'must be provided'
+  validates :value, numericality: { greater_than_or_equal_to: 0.0, less_than: 9500.0 }
   validate :sensor_must_belong_to_tire
 
   belongs_to :sensor
