@@ -4,10 +4,14 @@
 class TireSample < ActiveRecord::Base
   has_paper_trail
 
-  validates_uniqueness_of :sample_time, scope: :sensor_id, message: 'must be unique for a sensor'
-  validates_presence_of :value, :sample_time, message: 'must be provided'
+  validates_presence_of :sensor_id, :receiver_id, :value, :sample_time, message: 'must be provided'
   validates :value, numericality: { greater_than_or_equal_to: 0.0, less_than: 9500.0 }
+  validates :sensor_id, numericality: { only_integer: true, greater_than: 0 }
+  validates :receiver_id, numericality: { only_integer: true, greater_than: 0 }
+  validates_datetime :sample_time, on: :create, on_or_before: :now, after: lambda { DateTime.now - 1.day }
+  validates_uniqueness_of :sample_time, scope: :sensor_id, message: 'must be unique for a sensor'
   validate :sensor_must_belong_to_tire
+  validate :receiver_must_be_valid
 
   belongs_to :sensor
   belongs_to :receiver
@@ -87,5 +91,13 @@ class TireSample < ActiveRecord::Base
     unless Sensor.find(sensor_id).try(:tire)
       errors.add(:sensor_id, 'must be associated with a valid tire')
     end
+  rescue ActiveRecord::RecordNotFound
+    errors.add(:sensor_id, 'must be a valid sensor')
+  end
+
+  def receiver_must_be_valid
+    Receiver.find(receiver_id)
+  rescue ActiveRecord::RecordNotFound
+    errors.add(:receiver_id, 'must be a valid receiver')
   end
 end
