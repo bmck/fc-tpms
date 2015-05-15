@@ -62,7 +62,16 @@ class Ability
     can :read, Trailer, company_id: user.company_id
     can :read, Truck, company_id: user.company_id
     can :read, Storage, company_id: user.company_id
-    can [:index, :create], TireSampleReport
+
+    [
+      Report::PerStoragePieReport,
+      Report::PerTireSampleCountReport,
+      Report::PerTireTypePieReport,
+      Report::TireSampleCountReport,
+      Report::TireSampleReport,
+    ].each do |rpt_klass|
+      can [:index, :create], rpt_klass
+    end
 
     can [:read, :update], Tire, using_company_id: user.company_id
 
