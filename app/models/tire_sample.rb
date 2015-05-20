@@ -8,7 +8,8 @@ class TireSample < ActiveRecord::Base
   validates :value, numericality: { greater_than_or_equal_to: 0.0, less_than: 9500.0 }
   validates :sensor_id, numericality: { only_integer: true, greater_than: 0 }
   validates :receiver_id, numericality: { only_integer: true, greater_than: 0 }
-  validates_datetime :sample_time, on: :create, on_or_before: :now #, after: lambda { DateTime.now - 1.day }
+  validates_datetime :sample_time, on: :create, on_or_before: lambda { DateTime.now + 5.minutes },
+    on_or_before_message: 'must not be in the far future' #, after: lambda { DateTime.now - 1.day }, after_message: 'tbd'
   validates_uniqueness_of :sample_time, scope: :sensor_id, message: 'must be unique for a sensor'
   validate :sensor_must_belong_to_tire
   validate :receiver_must_be_valid
