@@ -20,8 +20,8 @@ class Ability
     end
 
     can [:new, :create], :"user/sessions"
-    can [:new], :"user/password"
-    can [:new, :create], :"devise/passwords"
+    can [:new, :edit], :"user/password"
+    can [:new, :create, :edit, :update], :"devise/passwords"
     can [:new, :create], :"user/registrations"
     can [:new, :show, :create], :"devise/confirmations"
     can :manage, :main
