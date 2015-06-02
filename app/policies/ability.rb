@@ -66,7 +66,7 @@ class Ability
     [
       Report::PerStoragePieReport,
       Report::PerTireSampleCountReport,
-      Report::PerTireTypePieReport,
+      Report::PerTiretypePieReport,
       Report::TireSampleCountReport,
       Report::TireSampleReport,
     ].each do |rpt_klass|
