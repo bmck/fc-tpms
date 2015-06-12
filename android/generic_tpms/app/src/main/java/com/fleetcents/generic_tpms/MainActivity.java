@@ -42,10 +42,10 @@ import java.util.Date;
 import java.util.Locale;
 
 /**
- * <h1>RF Analyzer - Main Activity</h1>
+ * <h1>Fleet Cents Generic TPMS Client - Main Activity</h1>
  *
  * Module:      MainActivity.java
- * Description: Main Activity of the RF Analyzer
+ * Description: Main Activity of the Fleet Cents Generic TPMS Client
  *
  * @author Dennis Mantz
  *
@@ -734,7 +734,7 @@ public class MainActivity extends Activity implements IQSourceInterface.Callback
   }
 
   /**
-   * Will stop the RF Analyzer. This includes shutting down the scheduler (which turns of the
+   * Will stop the Fleet Cents Generic TPMS Client. This includes shutting down the scheduler (which turns of the
    * source), the processing loop and the demodulator if running.
    */
   public void stopAnalyzer() {
@@ -795,7 +795,7 @@ public class MainActivity extends Activity implements IQSourceInterface.Callback
   }
 
   /**
-   * Will start the RF Analyzer. This includes creating a source (if null), open a source
+   * Will start the Fleet Cents Generic TPMS Client. This includes creating a source (if null), open a source
    * (if not open), starting the scheduler (which starts the source) and starting the
    * processing loop.
    */

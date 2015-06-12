@@ -1,7 +1,7 @@
 package com.fleetcents.generic_tpms;
 
 /**
- * <h1>RF Analyzer - unsigned 8-bit IQ Converter</h1>
+ * <h1>Fleet Cents Generic TPMS Client - unsigned 8-bit IQ Converter</h1>
  *
  * Module:      Unsigned8BitIQConverter.java
  * Description: This class implements methods to convert the raw input data of IQ sources (8 bit unsigned)
