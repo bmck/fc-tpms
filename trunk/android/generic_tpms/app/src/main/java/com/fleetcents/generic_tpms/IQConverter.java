@@ -2,7 +2,7 @@ package com.fleetcents.generic_tpms;
 
 
 /**
- * <h1>RF Analyzer - IQ Converter</h1>
+ * <h1>Fleet Cents Generic TPMS Client - IQ Converter</h1>
  *
  * Module:      IQConverter.java
  * Description: This class implements methods to convert the raw input data of IQ sources (bytes)
