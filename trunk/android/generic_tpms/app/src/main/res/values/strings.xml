@@ -20,6 +20,7 @@
     <string name="help_url">http://tech.mantz-it.com/2014/10/rf-analyzer-explore-frequency-spectrum.html</string>
     <string name="hackrf_vga_gain_label">VGA Gain:</string>
     <string name="hackrf_lna_gain_label">LNA Gain:</string>
+    <string name="hello_world">Bite Me!!</string>
     <string name="rtlsdr_manual_gain_label">Manual gain:</string>
     <string name="rtlsdr_agc_label">AGC:</string>
     <string name="rtlsdr_gain_label">Gain:</string>
