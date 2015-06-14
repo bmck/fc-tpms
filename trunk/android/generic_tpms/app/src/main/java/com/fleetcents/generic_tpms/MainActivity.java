@@ -68,29 +68,29 @@ import java.util.Locale;
  * License along with this library; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA
  */
-public class MainActivity extends Activity implements IQSourceInterface.Callback, AnalyzerSurface.CallbackInterface {
+public class MainActivity extends Activity { // implements IQSourceInterface.Callback, AnalyzerSurface.CallbackInterface {
 
   private MenuItem mi_startStop = null;
   private MenuItem mi_demodulationMode = null;
   private MenuItem mi_record = null;
-  private FrameLayout fl_analyzerFrame = null;
-  private AnalyzerSurface analyzerSurface = null;
-  private AnalyzerProcessingLoop analyzerProcessingLoop = null;
-  private IQSourceInterface source = null;
-  private Scheduler scheduler = null;
+  // private FrameLayout fl_analyzerFrame = null;
+  // private AnalyzerSurface analyzerSurface = null;
+  // private AnalyzerProcessingLoop analyzerProcessingLoop = null;
+  // private IQSourceInterface source = null;
+  // private Scheduler scheduler = null;
   private Demodulator demodulator = null;
-  private SharedPreferences preferences = null;
-  private Bundle savedInstanceState = null;
-  private Process logcat = null;
+  // private SharedPreferences preferences = null;
+  // private Bundle savedInstanceState = null;
+  // private Process logcat = null;
   private boolean running = false;
-  private File recordingFile = null;
+  // private File recordingFile = null;
   private int demodulationMode = Demodulator.DEMODULATION_OFF;
 
   private static final String LOGTAG = "MainActivity";
   private static final String RECORDING_DIR = "RFAnalyzer";
   public static final int RTL2832U_RESULT_CODE = 1234;  // arbitrary value, used when sending intent to RTL2832U
-  private static final int FILE_SOURCE = 0;
-  private static final int HACKRF_SOURCE = 1;
+  // private static final int FILE_SOURCE = 0;
+  // private static final int HACKRF_SOURCE = 1;
   private static final int RTLSDR_SOURCE = 2;
   private static final String[] SOURCE_NAMES = new String[] {"filesource", "hackrf", "rtlsdr"};
 
