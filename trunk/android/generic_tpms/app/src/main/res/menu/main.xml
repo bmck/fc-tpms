@@ -1,14 +1,14 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools" tools:context=".MainActivity">
-    <item android:id="@+id/action_settings" android:title="@string/action_settings"
-        android:orderInCategory="100" app:showAsAction="never" />
-    <item android:id="@+id/action_startStop"
+<!--     <item android:id="@+id/action_settings" android:title="@string/action_settings"
+        android:orderInCategory="100" app:showAsAction="never" /> -->
+         <item android:id="@+id/action_startStop"
           android:icon="@drawable/ic_action_play"
           android:title="@string/action_start"
           android:orderInCategory="1"
           android:showAsAction="always" />
-    <item android:id="@+id/action_setDemodulation"
+<!--     <item android:id="@+id/action_setDemodulation"
           android:icon="@drawable/ic_action_demod_nfm"
           android:title="@string/action_demodulation_nfm"
           android:orderInCategory="3"
@@ -21,5 +21,5 @@
     <item android:id="@+id/action_help"
           android:title="@string/action_help"
           android:orderInCategory="101"
-          android:showAsAction="never" />
+          android:showAsAction="never" /> -->
 </menu>
