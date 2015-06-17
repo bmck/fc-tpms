@@ -1,25 +1,40 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "23.0.0 rc2"
-
+    signingConfigs {
+        release {
+            keyAlias 'release'
+            keyPassword 'w4r4w4Rfc'
+            storeFile file('/Users/bmck/Documents/workspace/fleetcents/android/generic_tpms/keystore.jks')
+            storePassword 'w4r4w4Rfc'
+        }
+    }
+    compileSdkVersion 19
+    buildToolsVersion "21.1.2"
+    sourceSets.main.jni.srcDirs = [] //disable automatic ndk-build call
     defaultConfig {
-        applicationId "com.fleetcents"
-        minSdkVersion 19
-        targetSdkVersion 22
-        versionCode 1
-        versionName "1.0"
+        applicationId "com.fleetcents.generic_tpms"
+        minSdkVersion 16
+        targetSdkVersion 19
+        ndk {
+            moduleName "rtl_sdr"
+        }
+        //noinspection GroovyAssignabilityCheck
+        signingConfig signingConfigs.release
     }
     buildTypes {
         release {
             minifyEnabled false
-            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+    }
+    lintOptions {
+        abortOnError false
+    }
+    productFlavors {
     }
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:appcompat-v7:22.2.0'
+    compile 'com.mcxiaoke.volley:library-aar:1.0.0'
+    compile 'com.android.support:support-v4:22.2.0'
 }
