@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <PreferenceCategory
+  <!--   <PreferenceCategory
         android:key="@string/pref_signalProcessing_category"
         android:title="@string/pref_signalProcessing_category_title">
         <ListPreference
@@ -15,7 +15,7 @@
             android:key="@string/pref_sourceSettings"
             android:title="@string/pref_sourceSettings_title"
             android:persistent="false">
-           <!--  <PreferenceCategory
+            <PreferenceCategory
                 android:key="@string/pref_filesource_category"
                 android:title="@string/pref_filesource_category_title">
                 <EditTextPreference
@@ -47,8 +47,8 @@
                     android:summaryOn="@string/pref_filesource_repeat_summ_on"
                     android:summaryOff="@string/pref_filesource_repeat_summ_off"
                     android:defaultValue="false" />
-            </PreferenceCategory> -->
-     <!--        <PreferenceCategory
+            </PreferenceCategory>
+            <PreferenceCategory
                 android:key="@string/pref_hackrf_category"
                 android:title="@string/pref_hackrf_category_title">
                 <SwitchPreference
@@ -69,17 +69,17 @@
                     android:dialogTitle="@string/pref_hackrf_frequencyShift_title"
                     android:defaultValue="0"
                     android:inputType="number|numberSigned"/>
-            </PreferenceCategory> -->
+            </PreferenceCategory>
             <PreferenceCategory
                 android:key="@string/pref_rtlsdr_category"
                 android:title="@string/pref_rtlsdr_category_title">
-               <!--  <SwitchPreference
+                <SwitchPreference
                     android:key="@string/pref_rtlsdr_externalServer"
                     android:title="@string/pref_rtlsdr_externalServer_title"
                     android:summaryOn="@string/pref_rtlsdr_externalServer_summ_on"
                     android:summaryOff="@string/pref_rtlsdr_externalServer_summ_off"
-                    android:defaultValue="false" /> -->
-               <!--  <EditTextPreference
+                    android:defaultValue="false" />
+                <EditTextPreference
                     android:key="@string/pref_rtlsdr_ip"
                     android:dependency="@string/pref_rtlsdr_externalServer"
                     android:title="@string/pref_rtlsdr_ip_title"
@@ -91,7 +91,7 @@
                     android:title="@string/pref_rtlsdr_port_title"
                     android:dialogTitle="@string/pref_rtlsdr_port_title"
                     android:defaultValue="@string/pref_rtlsdr_port_default"
-                    android:inputType="number"/> -->
+                    android:inputType="number"/>
                 <EditTextPreference
                     android:key="@string/pref_rtlsdr_frequencyCorrection"
                     android:title="@string/pref_rtlsdr_frequencyCorrection_title"
@@ -106,7 +106,7 @@
                     android:inputType="number|numberSigned"/>
             </PreferenceCategory>
         </PreferenceScreen>
-       <!--  <ListPreference
+        <ListPreference
             android:key="@string/pref_fftSize"
             android:title="@string/pref_fftSize_title"
             android:dialogTitle="@string/pref_fftSize_title"
@@ -131,9 +131,9 @@
             android:title="@string/pref_autostart_title"
             android:summaryOn="@string/pref_autostart_summ_on"
             android:summaryOff="@string/pref_autostart_summ_off"
-            android:defaultValue="false" /> -->
+            android:defaultValue="false" />
     </PreferenceCategory>
-  <!--   <PreferenceCategory
+    <PreferenceCategory
         android:key="@string/pref_view_category"
         android:title="@string/pref_view_category_title">
         <ListPreference
@@ -195,7 +195,7 @@
             android:summaryOn="@string/pref_relativeFrequencies_summ_on"
             android:summaryOff="@string/pref_relativeFrequencies_summ_off"
             android:defaultValue="false" />
-    </PreferenceCategory> -->
+    </PreferenceCategory>
     <PreferenceScreen
         android:key="@string/pref_advancedSettings"
         android:title="@string/pref_advancedSettings_title"
@@ -206,7 +206,7 @@
             android:summaryOn="@string/pref_showDebugInformation_summ_on"
             android:summaryOff="@string/pref_showDebugInformation_summ_off"
             android:defaultValue="false" />
-    <!--     <SwitchPreference
+        <SwitchPreference
             android:key="@string/pref_dynamicFrameRate"
             android:title="@string/pref_dynamicFrameRate_title"
             android:summaryOn="@string/pref_dynamicFrameRate_summ_on"
@@ -220,7 +220,7 @@
             android:dialogTitle="@string/pref_frameRate_title"
             android:entries="@array/pref_frameRate_entries"
             android:entryValues="@array/pref_frameRate_values"
-            android:defaultValue="@string/pref_frameRate_default" /> -->
+            android:defaultValue="@string/pref_frameRate_default" />
         <SwitchPreference
             android:key="@string/pref_logging"
             android:title="@string/pref_logging_title"
@@ -237,5 +237,5 @@
             android:title="@string/pref_showLog_title"
             android:dependency="@string/pref_logging"
             android:persistent="false" />
-    </PreferenceScreen>
+    </PreferenceScreen> -->
 </PreferenceScreen><!-- From: file:/Users/bmck/Documents/workspace/fleetcents/android/generic_tpms/app/src/main/res/xml/preferences.xml -->
