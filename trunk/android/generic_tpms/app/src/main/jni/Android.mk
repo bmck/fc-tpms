@@ -19,13 +19,14 @@
 # Boston, MA 02110-1301, USA.
 
 LOCAL_PATH := $(call my-dir)
-APP_PLATFORM:= android-8
+APP_ABI := armeabi
+TARGET_PLATFORM:= android-18
 
 #
 # FleetCents proprietary library
 #
 include $(CLEAR_VARS)
-LOCAL_MODULE    := fleetcents
+LOCAL_MODULE    := "fleetcents"
 LOCAL_SRC_FILES := fleetcents/rtlsdr-to-cfile2.c fleetcents/rtlsdr_cplx-to-pkt.c fleetcents/rtlsdr_harness.c
 LOCAL_C_INCLUDES += $(LOCAL_PATH)/android/include
 LOCAL_LDLIBS :=  -llog

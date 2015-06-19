@@ -9,29 +9,54 @@ android {
             storePassword 'w4r4w4Rfc'
         }
     }
-    compileSdkVersion 19
+    compileSdkVersion 22
     buildToolsVersion "21.1.2"
-    sourceSets.main.jni.srcDirs = [] //disable automatic ndk-build call
+    // sourceSets.main.jni.srcDirs = [] //disable automatic ndk-build call
     defaultConfig {
         applicationId "com.fleetcents.generic_tpms"
         minSdkVersion 16
-        targetSdkVersion 19
-        ndk {
-            moduleName "rtl_sdr"
-        }
-        //noinspection GroovyAssignabilityCheck
+        targetSdkVersion 22
         signingConfig signingConfigs.release
-    }
-    buildTypes {
-        release {
-            minifyEnabled false
+        ndk {
+            moduleName "fleetcents"
+            abiFilter "armeabi"
         }
     }
+
+//    splits {
+//        abi {
+//            enable true
+//            reset()
+//            include "armeabi"
+//            universalApk false
+//        }
+//        density {
+//            enable true
+//            exclude "ldpi", "tvdpi", "xxxhdpi"
+//            include "mdpi", "hdpi", "xhdpi", "xxhdpi"
+//        }
+//    }
+
+//    buildTypes {
+//        release {
+//        }
+//    }
     lintOptions {
         abortOnError false
     }
-    productFlavors {
-    }
+//    productFlavors {
+//        v1 {
+//            applicationId "com.fleetcents.generic_tpms"
+//            versionCode 010
+//            versionName "0.1"
+//            signingConfig signingConfigs.release
+//            minSdkVersion 16
+//            targetSdkVersion 22
+//            ndk {
+//                abiFilter "armeabi"
+//            }
+//        }
+//    }
 }
 
 dependencies {
