@@ -11,7 +11,7 @@ class TireSamplesController < ApplicationController
   def index
     smart_listing_create partial: 'tire_samples/list',
       sort_attributes: [[:tire_name, "tires.serial"], [:receiver_name, "receivers.serial"],
-                        [:val, :psi], [:samptime, :sample_time]],
+                        [:psi, :psi], [:samptime, :sample_time]],
       default_sort: { samptime: 'desc'}
   end
 
