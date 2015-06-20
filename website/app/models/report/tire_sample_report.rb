@@ -101,7 +101,7 @@ module Report
       num_graphs.times.each do |sensor_ndex|
         sensor = sensors[sensor_ndex]
         samples[sensor].each do |tire_sample|
-          (sensor_samples[tire_sample[:sample_time]] ||= {})[sensor.name] = tire_sample[:value].to_f
+          (sensor_samples[tire_sample[:sample_time]] ||= {})[sensor.name] = tire_sample[:psi].to_f
         end
       end
 
