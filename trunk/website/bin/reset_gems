@@ -38,7 +38,7 @@ else
   gem list --no-versions | grep -v "LOCAL GEMS" | xargs gem uninstall --all --ignore-dependencies
   gem install --no-rdoc --no-ri bundler
   gem install --no-rdoc --no-ri rake -v 10.3.2
-  cd /home/capital/src
+  cd /home/newco/src
   bundle install
   # In order to complete the asset:precompile, I had to do the following
   cd /usr/local/lib/ruby/gems/2.0.0/gems/mysql2-0.3.13/lib/mysql2
@@ -57,4 +57,4 @@ cd -
 su - newco -c "cd ~/src && rake assets:precompile --trace"
 
 service httpd start
-/home/newco/src/bin/renice_processes_for_root
+# /home/newco/src/bin/renice_processes_for_root
