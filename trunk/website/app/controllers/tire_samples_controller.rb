@@ -24,11 +24,11 @@ class TireSamplesController < ApplicationController
     # fail NewcoError::VerificationError.new(request) unless \
     #   current_user.global_admin? || confirm_verify_value
 
-
     @tire_sample = TireSample.create(tire_sample_params)
     if @tire_sample.errors.any?
       render \
-        text: (['Sample creation failed.'] + Array(@tire_sample.errors.full_messages)).join('<br/>'+"\n"),
+        text: (['Sample creation failed.'] +
+               Array(@tire_sample.errors.full_messages)).join('<br/>'+"\n"),
         status: 403 and return
     end
 
@@ -56,7 +56,8 @@ class TireSamplesController < ApplicationController
   end
 
   def smart_listing_resource
-    @tire_sample ||= (params[:id] ? TireSample.find(params[:id]) : TireSample.new(params[:tire_sample]))
+    @tire_sample ||= (params[:id] ? TireSample.find(params[:id]) :
+                      TireSample.new(params[:tire_sample]))
   end
   helper_method :smart_listing_resource
 
@@ -69,16 +70,16 @@ class TireSamplesController < ApplicationController
     scoped_tire_samples = scoped_tire_samples.contains(params[:filter]) unless \
       params[:filter].blank?
 
-    if !params[:min_val].blank? && !params[:max_val].blank? && \
-        params[:min_val].to_f > params[:max_val].to_f
-      mn, mx = params[:max_val].to_f, params[:min_val].to_f
-      params[:min_val], params[:max_val] = mn, mx
+    if !params[:min_psi].blank? && !params[:max_psi].blank? && \
+        params[:min_psi].to_f > params[:max_psi].to_f
+      mn, mx = params[:max_psi].to_f, params[:min_psi].to_f
+      params[:min_psi], params[:max_psi] = mn, mx
     end
 
-    scoped_tire_samples = scoped_tire_samples.max_val(params[:max_val]) unless \
-      params[:max_val].blank?
-    scoped_tire_samples = scoped_tire_samples.min_val(params[:min_val]) unless \
-      params[:min_val].blank?
+    scoped_tire_samples = scoped_tire_samples.max_val(params[:max_psi]) unless \
+      params[:max_psi].blank?
+    scoped_tire_samples = scoped_tire_samples.min_val(params[:min_psi]) unless \
+      params[:min_psi].blank?
 
     @tire_samples ||= scoped_tire_samples
   end
@@ -86,7 +87,7 @@ class TireSamplesController < ApplicationController
 
   def self.generate_verify_value(tmp_params)
     tmp_tire_sample_params = tmp_params[:tire_sample].slice(
-      :sensor_id, :receiver_id, :value, :sample_time
+      :sensor_id, :receiver_id, :psi, :sample_time
     )
     tire_param_str = tmp_tire_sample_params.values.map(&:to_s).sort.join('_')
     verify_val = BCrypt::Password.create(tire_param_str, cost: 10)
@@ -102,7 +103,14 @@ class TireSamplesController < ApplicationController
   end
 
   def tire_sample_params
-    params.require(:tire_sample).permit(:sensor_id, :receiver_id, :value, :sample_time, :verify)
+    begin
+      params[:tire_sample][:psi] ||= params[:tire_sample][:value] if \
+        params[:tire_sample][:value]
+    rescue
+    end
+
+    params.require(:tire_sample).permit(:sensor_id, :receiver_id,
+                                        :sample_time, :verify, :tempc, :psi)
   end
 
   def confirm_verify_value

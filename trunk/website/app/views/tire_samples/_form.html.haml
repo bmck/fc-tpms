@@ -1,7 +1,7 @@
 - # $Id$
 - # $(c)$
 
-%td{colspan: 5}
+%td{colspan: 6}
   = render partial: 'components/form_error', formats: [:html], layout: false, locals: { object: object }
   = form_for object, url: object.new_record? ? tire_samples_path : tire_sample_path(object), remote: true, html: {class: "form-horizontal"} do |f|
     %table.table
@@ -16,16 +16,22 @@
             = f.label :receiver
             \&nbsp;
             = f.collection_select :receiver_id, Receiver.all, :id, :name, autofocus: true
+        %td
 
-      %tr{colspan: 2}
+      %tr{colspan: 3}
         %td
 
       %tr
         %td
           .field
-            = f.label :value
+            = f.label :pressure_psi
             \&nbsp;
-            = f.number_field :value, :size => 12, :autofocus => true, step: 0.0001
+            = f.number_field :psi, :size => 12, :autofocus => true, step: 0.0001
+        %td
+          .field
+            = f.label :temperature_C
+            \&nbsp;
+            = f.number_field :tempc, :size => 12, :autofocus => true, step: 0.1
         %td
           .field
             = f.label :sample_time

@@ -4,8 +4,8 @@
 class TireSample < ActiveRecord::Base
   has_paper_trail
 
-  validates_presence_of :sensor_id, :receiver_id, :value, :sample_time, message: 'must be provided'
-  validates :value, numericality: { greater_than_or_equal_to: 0.0, less_than: 9500.0 }
+  validates_presence_of :sensor_id, :receiver_id, :psi, :sample_time, message: 'must be provided'
+  validates :psi, numericality: { greater_than_or_equal_to: 0.0, less_than: 9500.0 }
   validates :sensor_id, numericality: { only_integer: true, greater_than: 0 }
   validates :receiver_id, numericality: { only_integer: true, greater_than: 0 }
   validates_datetime :sample_time, on: :create, on_or_before: lambda { DateTime.now + 5.minutes },
@@ -48,16 +48,23 @@ class TireSample < ActiveRecord::Base
       [
         "locate(\"#{x}\", tires.serial) > 0",
         "locate(\"#{x}\", receivers.serial) > 0",
-        "locate(\"#{x}\", value) > 0",
+        "locate(\"#{x}\", psi) > 0",
         "locate(\"#{x}\", sample_time) > 0"
       ].join(' or ')
     )
   }
-  scope :min_val, -> val {
-    where("value >= #{val.to_f}")
+  scope :min_psi, -> psi {
+    where("psi >= #{psi.to_f}")
   }
-  scope :max_val, -> val {
-    where("value <= #{val.to_f}")
+  scope :max_psi, -> psi {
+    where("psi <= #{psi.to_f}")
+  }
+
+  scope :min_tempc, -> tmpc {
+    where("tempc is not null and tempc >= #{tmpc.to_f}")
+  }
+  scope :max_tempc, -> tmpc {
+    where("tempc is not null and tempc <= #{tmpc.to_f}")
   }
 
   delegate :tire, to: :sensor
