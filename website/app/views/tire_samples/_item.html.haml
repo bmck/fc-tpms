@@ -11,6 +11,7 @@
 
 %td= object.tire_name
 %td= object.receiver_name
-%td= object.value.to_f
+%td= object.psi.to_f
+%td= object.tempc.try(:to_f)
 %td= object.sample_time.localtime
 %td.actions= smart_listing_item_actions [ *actions ]

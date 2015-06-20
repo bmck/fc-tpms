@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150508185454) do
+ActiveRecord::Schema.define(version: 20150620194854) do
 
   create_table "companies", force: :cascade do |t|
     t.string   "name",            limit: 64,                 null: false
@@ -74,11 +74,12 @@ ActiveRecord::Schema.define(version: 20150508185454) do
   create_table "tire_samples", force: :cascade do |t|
     t.integer  "sensor_id",   limit: 4,                                         null: false
     t.integer  "receiver_id", limit: 4,                                         null: false
-    t.decimal  "value",                 precision: 10, scale: 6,                null: false
+    t.decimal  "kpa",                   precision: 10, scale: 6,                null: false
     t.datetime "sample_time"
     t.datetime "created_at",                                                    null: false
     t.datetime "updated_at",                                                    null: false
     t.boolean  "active",      limit: 1,                          default: true, null: false
+    t.integer  "tempC",       limit: 4
   end
 
   create_table "tire_types", force: :cascade do |t|
