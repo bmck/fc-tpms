@@ -17,10 +17,10 @@ android {
         minSdkVersion 16
         targetSdkVersion 22
         signingConfig signingConfigs.release
-        ndk {
-            moduleName "fleetcents"
-            abiFilter "armeabi"
-        }
+//        ndk {
+//            moduleName "fleetcents"
+//            abiFilter "armeabi", "x86"
+//        }
     }
 
 //    splits {
@@ -44,7 +44,19 @@ android {
     lintOptions {
         abortOnError false
     }
-//    productFlavors {
+    productFlavors {
+//        x86 {
+//            ndk {
+//                moduleName "fleetcents"
+//                abiFilter "x86"
+//            }
+//        }
+        arm {
+            ndk {
+                moduleName "fleetcents"
+                abiFilter "armeabi"
+            }
+        }
 //        v1 {
 //            applicationId "com.fleetcents.generic_tpms"
 //            versionCode 010
@@ -56,7 +68,7 @@ android {
 //                abiFilter "armeabi"
 //            }
 //        }
-//    }
+    }
 }
 
 dependencies {
