@@ -39,4 +39,11 @@ class String
   rescue NameError
     nil
   end
+
+  def numeric?
+    # `!!` converts parsed number to `true`
+    !!Kernel.Float(self)
+  rescue TypeError, ArgumentError
+    false
+  end
 end

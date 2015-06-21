@@ -109,6 +109,18 @@ class TireSamplesController < ApplicationController
     rescue
     end
 
+    begin
+      params[:tire_sample][:tempc] ||= (params[:tire_sample][:tempf].to_f - 32.0) * 5.0/9.0 if \
+        params[:tire_sample][:tempf].numeric?
+    rescue
+    end
+
+    begin
+      params[:tire_sample][:psi] ||= params[:tire_sample][:kpa].to_f * 0.145037738 if \
+        params[:tire_sample][:kpa].numeric?
+    rescue
+    end
+
     params.require(:tire_sample).permit(:sensor_id, :receiver_id,
                                         :sample_time, :verify, :tempc, :psi)
   end
