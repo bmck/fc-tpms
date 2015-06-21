@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.net.Uri;
 import android.util.Log;
 import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.LinearInterpolator;
 import android.view.View.OnClickListener;
@@ -22,6 +23,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.LinearLayout.LayoutParams;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
@@ -58,6 +60,7 @@ public class MainActivity extends Activity implements Runnable {
 
     static {
         try {
+            Log.i(TAG, "Trying to load native fleetcents library");
             System.loadLibrary("fleetcents");
             Log.i(TAG, "Successfully loaded native fleetcents library");
         } catch (Throwable t) {
@@ -71,100 +74,84 @@ public class MainActivity extends Activity implements Runnable {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        Log.i(TAG, "Enter onCreate");
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        myText = new TextView(this);
+        myText.setText(getString(R.string.hello_world));
+        myText.setInputType(0x00020001);
+        LinearLayout linearLayout = (LinearLayout) findViewById(R.id.main_activity);
+        linearLayout.addView(myText, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
         running = false;
         File file = new File(this.cacheDir(), TMPFCBINFN);
         file.delete();
 
-        LinearLayout lView = new LinearLayout(this);
-
-        myText = new TextView(this);
-        myText.setText("Press the play button above to generate an activation tone " +
-                "and begin receiving data from your TPMS sensor for processing.\n\n\n");
-
-        lView.addView(myText);
-
-        setContentView(lView);
-
+        Log.i(TAG, "Exit onCreate");
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        Log.i(TAG, "Enter onCreateOptionsMenu");
+
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.main_menu, menu);
         // Get a reference to the start-stop button:
         mi_startStop = menu.findItem(R.id.action_startStop);
-        mi_startStop.setIcon(R.drawable.ic_action_play);
+        mi_startStop.setActionView(null);
 
-        // update the action bar icons and titles according to the app state:
-        updateActionBar();
+        Log.i(TAG, "Exit onCreateOptionsMenu");
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.i(TAG, "Enter onOptionsItemSelected");
         // Handle presses on the action bar items
         switch (item.getItemId()) {
             case R.id.action_startStop:
                 if (!running) {
-                    running = !running;
-                    updateActionBar();
+                    running = true;
+                    updateActionBarAnimation();
                     run();
                 }
+                Log.i(TAG, "Exit onOptionsItemSelected");
                 return true;
             default:
+                Log.i(TAG, "Exit onOptionsItemSelected");
                 return super.onOptionsItemSelected(item);
         }
     }
 
-    private void updateActionBar() {
+    private void updateActionBarAnimation() {
+        Log.i(TAG, "Enter updateActionBarAnimation");
         // Set icon of the start/stop button according to the state:
         if (mi_startStop != null) {
-            final Button btn = (Button) findViewById(R.id.action_startStop);
-            if (btn == null) {
-                Log.w(TAG, "btn NOT FOUND");
-            } else {
-                Log.i(TAG, "btn IS FOUND");
-            }
             if (running) {
-                final Animation animation = new AlphaAnimation(1, 0); // Change alpha from fully visible to invisible
-                animation.setDuration(150); // duration - half a second
-                animation.setInterpolator(new LinearInterpolator()); // do not alter animation rate
-                animation.setRepeatCount(Animation.INFINITE); // Repeat animation infinitely
-                animation.setRepeatMode(Animation.REVERSE); // Reverse animation at the end so the button will fade back in
-                btn.startAnimation(animation);
+            	mi_startStop.setActionView(R.layout.iv_refresh);
             } else {
-                btn.clearAnimation();
+                mi_startStop.setActionView(null);
             }
         }
-    }
-
-    /*
-     * Method called by the native code to get a device handle
-     */
-    public UsbDeviceConnection open(String device_name) {
-        Log.d(TAG, "Open called " + device_name);
-        return null;
-    }
-
-    void setDevice(UsbDevice device) {
-//    if (myNativeThread == null) {
-//      myNativeThread = new Thread(this);
-//      myNativeThread.start();
-//    }
+        Log.i(TAG, "Exit updateActionBarAnimation");
     }
 
     @Override
     public void run() {
+        Log.i(TAG, "Enter run");
         myText.append("Sending Activation Signal\n");
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW);
+
             File file = new File(this.cacheDir(), TMPFCBINFN);
-            myText.append("Waiting for Sensor Data\n");
+
+            myText.append(getString(R.string.msg_wait_for_sensor_data));
             intent.setData(Uri.parse("iqsrc://-f 315000000 -s 2048000 -n 4000000 \"" + file.getAbsolutePath() + "\""));
-            myText.append("Receiving Sensor Data\n");
+
+            myText.append(getString(R.string.msg_rcving_sensor_data));
             startActivityForResult(intent, RTL2832U_RESULT_CODE);
+
         } catch (ActivityNotFoundException e) {
             Log.e(LOGTAG, "createSource: RTL2832U is not installed");
 
@@ -185,10 +172,12 @@ public class MainActivity extends Activity implements Runnable {
                     })
                     .show();
         }
+        Log.i(TAG, "Exit run");
     }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i(TAG, "Enter onActivityResult");
         super.onActivityResult(requestCode, resultCode, data);
 
         // err_info from RTL2832U:
@@ -211,12 +200,12 @@ public class MainActivity extends Activity implements Runnable {
                     file.delete();
                     String hxAddr = null;
                     getHexAddr(hxAddr);
-                    myText.append("Sensor ID:" + hxAddr + "\n");
+                    myText.append(getString(R.string.sensor_id) + hxAddr + "\n");
                     long tmpC = getTempC();
-                    myText.append("Temperature: " + String.valueOf(tmpC) + " deg C\n");
+                    myText.append(getString(R.string.temp) + String.valueOf(tmpC) + getString(R.string.celsius));
                     double press_psi = getPsi();
-                    myText.append("Pressure: " + String.valueOf(press_psi) + " (psi)\n");
-                    myText.append("Sending Sensor Data to Fleet Cents\n");
+                    myText.append(getString(R.string.pressure) + String.valueOf(press_psi) + getString(R.string.psi));
+                    myText.append(getString(R.string.msg_sending_data));
 
                     // Instantiate the RequestQueue.
                     RequestQueue queue = Volley.newRequestQueue(this);
@@ -227,19 +216,19 @@ public class MainActivity extends Activity implements Runnable {
                             new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
-                                    myText.append("Sensor Data Received OK\n");
+                                    myText.append(getString(R.string.msg_data_rcvd_ok));
 
                                 }
                             }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            myText.append("Sensor Data Not Stored OK");
+                            myText.append(getString(R.string.msg_data_not_rcvd_ok));
                         }
                     });
                     // Add the request to the RequestQueue.
                     queue.add(stringRequest);
                 } else {
-                    myText.append("An Unknown Error Has Occurred");
+                    myText.append(getString(R.string.msg_unknown_error));
                     int errorId = -1;
                     int exceptionCode = 0;
                     String detailedDescription = null;
@@ -259,6 +248,7 @@ public class MainActivity extends Activity implements Runnable {
                 break;
         }
         running = false;
-        updateActionBar();
+        updateActionBarAnimation();
+        Log.i(TAG, "Exit onActivityResult");
     }
 }

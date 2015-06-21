@@ -19,7 +19,6 @@
 # Boston, MA 02110-1301, USA.
 
 LOCAL_PATH := $(call my-dir)
-APP_ABI := armeabi
 TARGET_PLATFORM:= android-18
 
 #

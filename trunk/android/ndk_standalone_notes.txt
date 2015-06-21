@@ -2,11 +2,13 @@
 # Need to minimally support armeabi
 # armeabi-v7a and arm64-v8a are later versions of hardware.
 
+
 export NDK=~/src/android-ndk-r10e
 
 export ANDROIDLVL=21
 export HOST_ARCH=darwin-x86_64
-export TARGET_ARCH=arm
+# export TARGET_ARCH=arm
+export TARGET_ARCH=x86
 
 export SYSROOT=$NDK/platforms/android-$ANDROIDLVL/arch-$TARGET_ARCH
 
@@ -15,8 +17,14 @@ export SYSROOT=$NDK/platforms/android-$ANDROIDLVL/arch-$TARGET_ARCH
 # -llvm-version=3.6 \
 # -system=darwin-x86_64"
 
+# if TARGET_ARCH == arm
+# export TOOLCHAIN=$TARGET_ARCH-linux-androideabi
+
+# if TARGET_ARCH == x86
+export TOOLCHAIN=$TARGET_ARCH
+
 $NDK/build/tools/make-standalone-toolchain.sh \
---toolchain=arm-linux-androideabi-clang3.6 \
+--toolchain=$TOOLCHAIN-clang3.6 \
 --arch=$TARGET_ARCH \
 --platform=android-$ANDROIDLVL \
 --llvm-version=3.6 \

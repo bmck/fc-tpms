@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">Fleet Cents</string>
-    <string name="hello_world">Hi there!</string>
+    <string name="hello_world">\n\nPress the play button above to generate an activation tone and begin receiving data from your TPMS sensor for processing.\n\n</string>
 
     <string name="action_settings">Settings</string>
     <string name="action_help">Help</string>
