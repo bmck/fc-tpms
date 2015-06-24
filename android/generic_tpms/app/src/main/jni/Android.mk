@@ -25,9 +25,9 @@ TARGET_PLATFORM:= android-18
 # FleetCents proprietary library
 #
 include $(CLEAR_VARS)
-LOCAL_MODULE    := "fleetcents"
-LOCAL_SRC_FILES := fleetcents/rtlsdr-to-cfile2.c fleetcents/rtlsdr_cplx-to-pkt.c fleetcents/rtlsdr_harness.c
-LOCAL_C_INCLUDES += $(LOCAL_PATH)/android/include
+LOCAL_MODULE    := fleetcents
+LOCAL_SRC_FILES := fleetcents/rtlsdr_cplx-to-pkt.c
 LOCAL_LDLIBS :=  -llog
+LOCAL_STATIC_LIBRARIES := fftw3_mod
 include $(BUILD_SHARED_LIBRARY)
 

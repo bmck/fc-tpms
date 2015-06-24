@@ -55,6 +55,7 @@ android {
             ndk {
                 moduleName "fleetcents"
                 abiFilter "armeabi"
+                ldLibs "log"
             }
         }
 //        v1 {
