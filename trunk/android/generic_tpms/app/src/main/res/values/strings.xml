@@ -19,6 +19,7 @@
     <string name="psi">(psi)</string>
     <string name="celsius">deg C</string>
     <string name="fahrenheit">deg F</string>
+    <string name="msg_valid_pkt_not_found">Valid Binary String Not Received from TPMS; please try again</string>
     <string name="msg_sending_data">Sending Sensor Data to Fleet Cents</string>
     <string name="msg_data_rcvd_ok">Sensor Data Received OK</string>
     <string name="msg_data_not_rcvd_ok">Sensor Data Not Stored OK</string>

@@ -37,8 +37,12 @@ public class MainActivity extends Activity implements Runnable {
     private static final String TMPFCBINFN = "fc.bin";
     private static final String LOGTAG = "MainActivity";
     private static final String TAG = "FleetCents";
+    private static final MainActivity sole_instance = null;
     private MenuItem mi_startStop = null;
     private boolean running = false;
+    private boolean testing = true;
+
+    public static native int pktFound();
 
     public static native void convertAndGetPkt();
 
@@ -52,15 +56,17 @@ public class MainActivity extends Activity implements Runnable {
 
     public static native long getDecAddr();
 
-    public static native String getHexAddr(String str);
+    public static native String getHexAddr();
 
-    public static native String getFullUrl(String str);
+    public static native String getFullUrl();
+
+    public static native void setCacheDir(String str);
 
     private TextView myText = null;
 
     static {
         try {
-            Log.i(TAG, "Trying to load native fleetcents library");
+            // Log.i(TAG, "Trying to load native fleetcents library");
             System.loadLibrary("fleetcents");
             Log.i(TAG, "Successfully loaded native fleetcents library");
         } catch (Throwable t) {
@@ -69,7 +75,11 @@ public class MainActivity extends Activity implements Runnable {
     }
 
     private String cacheDir() {
-        return this.getCacheDir().getAbsolutePath();
+        // emulator expects dir at /storage/sdcard/Android/data/com.fleetcents.generic_tpms/cache
+        Log.i(TAG, "Enter cacheDir -- caching " + String.valueOf(this.getExternalCacheDir()));
+    	setCacheDir(String.valueOf(this.getExternalCacheDir()));
+        Log.i(TAG, "Exit cacheDir");
+        return String.valueOf(this.getExternalCacheDir());
     }
 
     @Override
@@ -80,13 +90,22 @@ public class MainActivity extends Activity implements Runnable {
 
         myText = new TextView(this);
         myText.setText(getString(R.string.hello_world));
-        myText.setInputType(0x00020001);
+        myText.setInputType(0x00020001); // multi-line text box
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.main_activity);
         linearLayout.addView(myText, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
         running = false;
-        File file = new File(this.cacheDir(), TMPFCBINFN);
-        file.delete();
+        if (!testing) {
+            File file = new File(cacheDir(), TMPFCBINFN);
+            // Emulator looks for temporary file at /data/data/com.fleetcents.generic_tpms/cache/fc.bin
+            // Need a rw directory, pref on external storage
+            // Would generally prefer putting this in external storage
+            Log.i(TAG, "Looking for temporary file at " + file.getAbsolutePath());
+            file.delete();
+        }
+        else {
+            cacheDir();
+        }
 
         Log.i(TAG, "Exit onCreate");
     }
@@ -114,7 +133,14 @@ public class MainActivity extends Activity implements Runnable {
                 if (!running) {
                     running = true;
                     updateActionBarAnimation();
-                    run();
+                    if (testing) {
+                        processRtlsdrData();
+                        running = false;
+                        updateActionBarAnimation();
+                    }
+                    else {
+                        run();
+                    }
                 }
                 Log.i(TAG, "Exit onOptionsItemSelected");
                 return true;
@@ -140,16 +166,17 @@ public class MainActivity extends Activity implements Runnable {
     @Override
     public void run() {
         Log.i(TAG, "Enter run");
-        myText.append("Sending Activation Signal\n");
+        myText.append(getString(R.string.msg_send_activation) + "\n");
+
         try {
             Intent intent = new Intent(Intent.ACTION_VIEW);
 
             File file = new File(this.cacheDir(), TMPFCBINFN);
 
-            myText.append(getString(R.string.msg_wait_for_sensor_data));
+            myText.append(getString(R.string.msg_wait_for_sensor_data) + "\n");
             intent.setData(Uri.parse("iqsrc://-f 315000000 -s 2048000 -n 4000000 \"" + file.getAbsolutePath() + "\""));
 
-            myText.append(getString(R.string.msg_rcving_sensor_data));
+            myText.append(getString(R.string.msg_rcving_sensor_data) + "\n");
             startActivityForResult(intent, RTL2832U_RESULT_CODE);
 
         } catch (ActivityNotFoundException e) {
@@ -196,37 +223,7 @@ public class MainActivity extends Activity implements Runnable {
                 // We check for errors and print them:
                 if (resultCode == RESULT_OK) {
                     Log.i(LOGTAG, "onActivityResult: RTL-SDR Data Capture Completed.");
-                    convertAndGetPkt();
-                    file.delete();
-                    String hxAddr = null;
-                    getHexAddr(hxAddr);
-                    myText.append(getString(R.string.sensor_id) + hxAddr + "\n");
-                    long tmpC = getTempC();
-                    myText.append(getString(R.string.temp) + String.valueOf(tmpC) + getString(R.string.celsius));
-                    double press_psi = getPsi();
-                    myText.append(getString(R.string.pressure) + String.valueOf(press_psi) + getString(R.string.psi));
-                    myText.append(getString(R.string.msg_sending_data));
-
-                    // Instantiate the RequestQueue.
-                    RequestQueue queue = Volley.newRequestQueue(this);
-                    String url = null;
-                    getFullUrl(url);
-                    // Request a string response from the provided URL.
-                    StringRequest stringRequest = new StringRequest(StringRequest.Method.GET, url,
-                            new Response.Listener<String>() {
-                                @Override
-                                public void onResponse(String response) {
-                                    myText.append(getString(R.string.msg_data_rcvd_ok));
-
-                                }
-                            }, new Response.ErrorListener() {
-                        @Override
-                        public void onErrorResponse(VolleyError error) {
-                            myText.append(getString(R.string.msg_data_not_rcvd_ok));
-                        }
-                    });
-                    // Add the request to the RequestQueue.
-                    queue.add(stringRequest);
+                    processRtlsdrData();
                 } else {
                     myText.append(getString(R.string.msg_unknown_error));
                     int errorId = -1;
@@ -250,5 +247,51 @@ public class MainActivity extends Activity implements Runnable {
         running = false;
         updateActionBarAnimation();
         Log.i(TAG, "Exit onActivityResult");
+    }
+
+    private void processRtlsdrData() {
+        Log.i(TAG, "Enter processRtlsdrData");
+        convertAndGetPkt();
+        // file.delete();
+        if (pktFound() == 1) {
+            String hxAddr = getHexAddr();
+            Log.i(TAG, "hxAddr is >" + hxAddr + "<");
+            myText.append(getString(R.string.sensor_id) + " " + hxAddr + "\n");
+
+            long tmpC = getTempC();
+            Log.i(TAG, "tmpC is >" + (double)(tmpC) + "<");
+            myText.append(getString(R.string.temp) + " " + ((double)((int)(tmpC*10)))/10 + getString(R.string.celsius) + "\n");
+
+            double press_psi = getPsi();
+            Log.i(TAG, "press_psi is >" + press_psi + "<");
+            myText.append(getString(R.string.pressure) + " " + ((double)((int)(press_psi*100)))/100 + getString(R.string.psi) + "\n");
+
+            myText.append(getString(R.string.msg_sending_data) + "\n");
+
+            // Instantiate the RequestQueue.
+            RequestQueue queue = Volley.newRequestQueue(this);
+            String url = getFullUrl();
+            Log.i(TAG, "url is >" + url + "<");
+            // Request a string response from the provided URL.
+            StringRequest stringRequest = new StringRequest(StringRequest.Method.GET, url,
+                    new Response.Listener<String>() {
+                        @Override
+                        public void onResponse(String response) {
+                            myText.append(getString(R.string.msg_data_rcvd_ok) + "\n");
+
+                        }
+                    }, new Response.ErrorListener() {
+                @Override
+                public void onErrorResponse(VolleyError error) {
+                    myText.append(getString(R.string.msg_data_not_rcvd_ok) + "\n");
+                }
+            });
+            // Add the request to the RequestQueue.
+            queue.add(stringRequest);
+        }
+        else {
+            myText.append(getString(R.string.msg_valid_pkt_not_found) + "\n");
+        }
+        Log.i(TAG, "Exit processRtlsdrData");
     }
 }
