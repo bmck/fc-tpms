@@ -1,25 +1,63 @@
 // $Id$
 // $(c)$
 
-// Adapted from ...
-//
-// IQ file converter for Software Defined Radio Programs rtl_sdr, gqrx
-// from gqrx/gnuradio .cfile playback format -- complex64
-// to binary packet as string
-//
-// compile on Linux or Mac with:  gcc ./rtlsdr_cplx-to-pkt.c -o rtlsdr_cplx-to-pkt
-//
-//
-
 #include <stdio.h>
 #include <stdlib.h>
 #include <stdint.h>
+#include <unistd.h>
 #include <string.h>
 #include <time.h>
 #include <math.h>
+#include <jni.h>
 
+#include "fc_log.h"
+
+#define PI 3.1415926535897932385
+
+typedef enum { false, true } bool;
+struct complex { double real, imag; } ;
+
+static char app_dir[200];
 static int bits_per_pkt = 69;
+static bool success = false;
 static char bit_vals[69];
+static long expo = 8L;
+static long block_size = 256L; //(long)(pow(2.0,expo));
+
+// float iq_to_cplx(int b)
+// {
+//   return ((float)(b-127)/(float)128.0);
+// }
+
+void iqfile_to_cplxfile(char *infile, char *outfile)
+{
+  int b;
+  float f;
+  FILE *i, *o;
+  // LOGI("(%s:%d) infile=%s, outfile=%s\n", __FILE__, __LINE__, infile, outfile);
+  i = fopen(infile, "rb"); o = fopen(outfile, "wb");
+  do {
+    b = fgetc(i);
+    if (feof(i)) break;
+    f = ((float)(b-127)/(float)128.0);
+    fwrite((void*) &f, sizeof(f), 1, o);
+  } while (1);
+  fclose(o); fclose(i);
+  return;
+}
+
+float *get_complexblock_from_iqfile(char *infile, long block_num, float *returned_f) {
+  int b, j;
+  FILE *i; i = fopen(infile, "rb");
+  fseek(i, block_num * 256 * 2, SEEK_SET);
+  for (j = 0; j < block_size * 2; j++) {
+    b = fgetc(i);
+    if (feof(i)) break;
+    returned_f[j] = ((float)(b-127)/(float)128.0);
+  }
+  fclose(i);
+  return returned_f;
+}
 
 long compute_ccindex_contain_sample(long samp, long *cc, long cc_length) {
   long i;
@@ -32,36 +70,38 @@ long compute_ccindex_contain_sample(long samp, long *cc, long cc_length) {
 }
 
 unsigned long get_dec_address_val( /*char *bit_vals, long num_bits*/ ) {
-  unsigned long addr;
-  int j;
-  addr = 0; for (j = 2; j <= 29; j++) { addr = addr * 2 + ((bit_vals[j]=='1') ? 1 : 0); }
+  unsigned long addr; addr = 0;
+  int j; for (j = 2; j <= 29; j++) { addr = addr * 2 + ((bit_vals[j]=='1') ? 1 : 0); }
+  LOGI("(%s:%d) addr = %ld\n", __FILE__, __LINE__, addr);
   return addr;
 }
 
 char *get_hex_address_str( /*char *bit_vals, long num_bits,*/ char *returned_url) {
   char *addr_str = malloc(sizeof(char) * 10);
   sprintf(addr_str, "%lX", get_dec_address_val( /*bit_vals, num_bits */));
+  LOGI("(%s:%d) addr_str = %s\n", __FILE__, __LINE__, addr_str);
   return (returned_url = addr_str);
 }
 
 long get_temp_c( /*char *bit_vals, long num_bits*/ ) {
-  long tempC;
-  int j;
-  tempC = 0; for (j = 52; j <= 59; j++) { tempC = tempC * 2 + ((bit_vals[j]=='1') ? 1 : 0); }
-  return (tempC - 40);
+  long tempC; tempC = 0L;
+  int j; for (j = 52; j <= 59; j++) { tempC = tempC * 2 + ((bit_vals[j]=='1') ? 1 : 0); }
+  tempC -= 40;
+  LOGI("(%s:%d) tempC = %ld\n", __FILE__, __LINE__, tempC);
+  return tempC;
 }
 
 long get_temp_f( /*char *bit_vals, long num_bits*/ ) {
-  long tempC;
-  tempC = get_temp_c( /*bit_vals, num_bits */);
+  long tempC; tempC = get_temp_c( /*bit_vals, num_bits */);
   return ((double)(tempC*1.8))+32;
 }
 
 double get_pressure_kpa( /*char *bit_vals, long num_bits*/ ) {
-  long press;
-  int j;
-  press = 0L; for (j = 36; j <= 43; j++) { press = press * 2 + (bit_vals[j]=='1' ? 1 : 0); };
-  return ((double)press*2.5-100.0);
+  double press; press = 0.0;
+  int j; for (j = 36; j <= 43; j++) { press = press * 2.0 + (bit_vals[j]=='1' ? 1.0 : 0.0); };
+  press = (press * 2.5 - 100.0);
+  LOGI("(%s:%d) press = %lf\n", __FILE__, __LINE__,  press);
+  return press;
 }
 
 double get_pressure_psi( /*char *bit_vals, long num_bits */ ) {
@@ -72,17 +112,16 @@ char *get_url( /*long addr, long press, long temp,*/ char *returned_url) {
   char *url = malloc(sizeof(char) * 2048);
   returned_url = url;
 
-  time_t rawtime;
-  struct tm * ptm;
-  time ( &rawtime );
-  ptm = gmtime ( &rawtime );
+  time_t rawtime; time ( &rawtime );
+  struct tm * ptm; ptm = gmtime ( &rawtime );
 
   unsigned long addr = get_dec_address_val();
   long press = get_pressure_psi();
-  long temp = get_temp_c();
+  long tempc = get_temp_c();
 
-  sprintf(url, "http://server11288.baremetalcloud.com/tire_samples/create?tire_sample[sensor_id]=%ld&tire_sample[receiver_id]=%d&tire_sample[value]=%ld&tire_sample[sample_time]=%d-%02d-%02d%%20%02d:%02d:%02d",
-    addr, 4, press, ptm->tm_year + 1900, ptm->tm_mon + 1, ptm->tm_mday, ptm->tm_hour, ptm->tm_min, ptm->tm_sec);
+  sprintf(url, "http://server11288.baremetalcloud.com/tire_samples/create?tire_sample[sensor_id]=%ld&tire_sample[receiver_id]=%d&tire_sample[psi]=%ld&tire_sample[tempc]=%ld&tire_sample[sample_time]=%d-%02d-%02d%%20%02d:%02d:%02d",
+    addr, 8, press, tempc, ptm->tm_year + 1900, ptm->tm_mon + 1, ptm->tm_mday, ptm->tm_hour, ptm->tm_min, ptm->tm_sec);
+  LOGI("(%s:%d) url = %s\n", __FILE__, __LINE__,  url);
   return returned_url;
 }
 
@@ -90,11 +129,14 @@ char *get_url( /*long addr, long press, long temp,*/ char *returned_url) {
 /*char **/
 void get_pkt( const char *infilename /*float sample_rate, const char *infilename, char *bits*/ )
 {
-  typedef enum { false, true } bool;
-  float sample_rate = 2.048e6;
+  // LOGI("(%s:%d) infilename=%s\n", __FILE__, __LINE__, infilename);
+
+  // float sample_rate = 2.048e6;
 
   unsigned long infilesize;
   FILE *infile = fopen(infilename, "rb");
+  // LOGI("(%s:%d) infile = %p\n", __FILE__, __LINE__, infile);
+
   if (infile) {
     fseek(infile, 0L, SEEK_END);
     infilesize = (unsigned long) ftell(infile);
@@ -104,78 +146,76 @@ void get_pkt( const char *infilename /*float sample_rate, const char *infilename
   }
 
   float v1, v2;
-  long max_f = ceil((double)infilesize/8.0), j, k;
-  double x[max_f], i[max_f], t[max_f];
-  long pos_peak_samples[max_f], neg_samples[max_f];
-  long ai, bi;
-  ai = 0L; bi = 0L; j = 0L;
+  long max_f, j, k;
+  max_f = (long) (ceil((double)infilesize/8.0));
+  // LOGI("(%s:%d) max_f=%ld\n", __FILE__, __LINE__, max_f);
+
+  long prev, ci;
+  ci = 0L; j = 0L; prev = 0;
 
   rewind(infile);
 
   while (!feof(infile) && j < max_f) {
+    // v1 and v2 are complex number coeffs
     fread((void*)(&v1), sizeof(v1), 1, infile);
-    t[j] = (double)j/sample_rate;
-    x[j] = (double)v1;
     fread((void*)(&v2), sizeof(v2), 1, infile);
-    i[j] = v2;
 
-    if (x[j] > 0.995) {
-      pos_peak_samples[ai] = j; ai++;
+    if (((double)v1) > 0.995) {
+        if (prev == -1) {
+        ci++;
+      }
+      prev = 1;
     }
-    else if (x[j] < 0.0) {
-      neg_samples[bi] = j; bi++;
+    else if (((double)v1) < 0.0) {
+        prev = -1;
     }
     j++;
   }
-  fclose(infile);
 
-  long pos_peak_samples_length, neg_samples_length;
-  pos_peak_samples_length = ai;
-  neg_samples_length = bi;
-  // # "pos_peak_samples" is the set of samples within the file at which the signal amplitude is approximately 1.0
-  // # "neg_samples" is the set of samples within the file at which the signal amplitude is less than 0.0
-
+  rewind(infile);
 
   // # pos_peak_immed_follow_neg_samples is an array of transition points betw high freq and low freq.
   // # This array does not show whether it is a transition hi->lo or lo->hi, but that can be determined by
   // # sampling sufficiently far away from the transition.
   // # This transition point is not exactly accurate; the positive error will always be on the side with the high freq,
   // # and the error with average to be 50% of the high freq period.
-  long pos_peak_immed_follow_neg_samples[pos_peak_samples_length], cci;
-  long pos_sample = pos_peak_samples[0], prev_pos_sample;
-
-  long cindex;
-  for (cci = 0L, cindex = 1L; cindex < pos_peak_samples_length; cindex++) {
-    prev_pos_sample = pos_sample;
-    pos_sample = pos_peak_samples[cindex];
-    long tmp_index;
-    bool flag = false;
-    for (tmp_index = prev_pos_sample + 1; tmp_index < pos_sample; tmp_index++) {
-      int neg_samples_index;
-      if (flag) break;
-      for (neg_samples_index = 0; neg_samples_index < neg_samples_length; neg_samples_index++) {
-        if (neg_samples[neg_samples_length] == tmp_index) {
-          pos_peak_immed_follow_neg_samples[cci] = pos_sample;
-          cci++;
-          flag = true;
-          break;
-        }
-      }
-    }
-  }
 
   long pos_peak_immed_follow_neg_samples_length;
-  pos_peak_immed_follow_neg_samples_length = cci;
+  pos_peak_immed_follow_neg_samples_length = ci;
 
-  long *cc, *cum_pd, cc_length;
+  // LOGI("(%s:%d) pos_peak_immed_follow_neg_samples_length = %ld\n", __FILE__, __LINE__, pos_peak_immed_follow_neg_samples_length);
+
+  long pos_peak_immed_follow_neg_samples[pos_peak_immed_follow_neg_samples_length];
+  ci = 0; j = 0L; prev = 0;
+
+  while (!feof(infile) && j < max_f) {
+    fread((void*)(&v1), sizeof(v1), 1, infile);
+    fread((void*)(&v2), sizeof(v2), 1, infile);
+
+    if (((double)v1) > 0.995) {
+      if (prev == -1) {
+        pos_peak_immed_follow_neg_samples[ci] = j;
+        // LOGI("(%s:%d) pos_peak_immed_follow_neg_samples[%ld] = %ld\n", __FILE__, __LINE__, ci, j);
+        ci++;
+      }
+      prev = 1;
+    }
+    else if (((double)v1) < 0.0) {
+      prev = -1;
+    }
+    j++;
+  }
+
+  fclose(infile);
+
+  long *cc, cc_length;
   cc = pos_peak_immed_follow_neg_samples;
-  cum_pd = pos_peak_immed_follow_neg_samples;
   cc_length = pos_peak_immed_follow_neg_samples_length;
 
   // # Per above ...
-  // # "cc", and "pos_peak_immed_follow_neg_samples" & "cum_pd", are the samples (starting at 1, at the beginning of the file)
-  // # at which a value in "pos_peak_samples" that is immediately preceded by a value in "neg_samples" (and not another value
-  // # from "pos_peak_samples") occurs.  These points are the _possible_ approximate transition points betw "high frequency"
+  // # "cc", and "pos_peak_immed_follow_neg_samples", are the samples
+  // # (starting at 1, at the beginning of the file)
+  // # that are the _possible_ approximate transition points betw "high frequency"
   // # and "low frequency" periods.
 
   // # pd is number of samples betw "peaks", where a "peak" is a point found in "pos_peak_immed_follow_neg_samples" (i.e., "cc").
@@ -185,17 +225,17 @@ void get_pkt( const char *infilename /*float sample_rate, const char *infilename
   pd_length = freq_length;
 
   long pd[pd_length];
-  double freq[freq_length];
 
   long all_freqs[freq_length], freq_freqs[freq_length];
-  int freq_count, most_freq_index;
+  int freq_count, most_freq_index, ii, interesting_freq_index;
   freq_count = 0;
   most_freq_index = 0;
 
   for (j = 1; j < pos_peak_immed_follow_neg_samples_length; j++) {
-    pd[j-1] = (long)(pos_peak_immed_follow_neg_samples[j] - pos_peak_immed_follow_neg_samples[j-1] + 1);
+    pd[j-1] = (long)(pos_peak_immed_follow_neg_samples[j] -
+      pos_peak_immed_follow_neg_samples[j-1] + 1);
+    // LOGI("(%s:%d) pd[%ld] = %ld\n", __FILE__, __LINE__, j-1, pd[j-1]);
 
-    int ii, interesting_freq_index;
     for (interesting_freq_index = freq_count, ii = 0; ii < freq_count; ii++)
       if (all_freqs[ii] == pd[j-1]) interesting_freq_index = ii;
 
@@ -206,55 +246,71 @@ void get_pkt( const char *infilename /*float sample_rate, const char *infilename
     }
     freq_freqs[interesting_freq_index]++;
 
-    if (freq_freqs[interesting_freq_index] > freq_freqs[most_freq_index]) most_freq_index = interesting_freq_index;
+    if (freq_freqs[interesting_freq_index] > freq_freqs[most_freq_index])
+      most_freq_index = interesting_freq_index;
 
-    freq[j-1] = (double)sample_rate/(double)pd[j-1];
+    // LOGI("(%s:%d) (j=%ld) most_freq_index = %d, most_freq_freq = %ld\n",
+    //   __FILE__, __LINE__, j, most_freq_index, freq_freqs[most_freq_index]);
   }
 
   long nom_hfreq, hfreqs_lo, hfreqs_hi;
-  nom_hfreq = freq_freqs[most_freq_index]; //hf_max->first;
-  hfreqs_lo = (0.9 * (double)nom_hfreq);
-  hfreqs_hi = ceil(1.1 * (double)nom_hfreq);
+  nom_hfreq = all_freqs[most_freq_index];
+  hfreqs_lo = (long)(0.9 * (double)nom_hfreq);
+  hfreqs_hi = (long)(ceil(1.1 * (double)nom_hfreq));
+
+  // for (j = 0; j < freq_count; j++) {
+  //   LOGI("(%s:%d) %ld: freq = %ld, count of the freq = %ld \n", __FILE__, __LINE__, j, all_freqs[j], freq_freqs[j]);
+  // }
+
+  // LOGI("(%s:%d) nom_hfreq = %ld \n", __FILE__, __LINE__, nom_hfreq);
+  // LOGI("(%s:%d) hfreqs = %ld ... %ld \n", __FILE__, __LINE__, hfreqs_lo, hfreqs_hi);
 
   // # Let's look for the prelude ... start with looking for at least 1000 consecutive samples containing only high frequency RF
   // # in_hf_s is a string of 1/0 values with value i indicating if the RF is in high or low frequency at sample pd[i]
 
-  char in_hf_s[pd_length];
-  for (j = 0; j < pd_length; j++) {
+  char in_hf_s[pd_length+1];
+  strcpy(&(in_hf_s[pd_length-1]), " ");
+  for (j = 0; j < pd_length; j++)
     in_hf_s[j] = (((pd[j]>=hfreqs_lo) && (pd[j]<=hfreqs_hi)) ? '1' : '0');
-  }
-  in_hf_s[pd_length+1] = (char)0;
 
-  long num_consec_hf = ceil(1000.0/(double)hfreqs_hi);
+  // LOGI("(%s:%d) in_hf_s = %s\n", __FILE__, __LINE__, in_hf_s);
+
+  long num_consec_hf = (long)(ceil(1000.0/(double)hfreqs_hi));
   char target_hf[num_consec_hf];
+  strcpy(&(target_hf[num_consec_hf-1]), " ");
   for (j = 0; j < num_consec_hf; j++)
     target_hf[j] = '1';
+
+  // LOGI("(%s:%d) target_hf = %s\n", __FILE__, __LINE__, target_hf);
 
   // # Find the beginning and end of the high freq prelude (i.e., invalid data), and the high freq portion of the header (valid data)
   char *tmp_char;
   unsigned long cc_index_first_peak_of_hf_prelude;
   tmp_char = strstr(in_hf_s, target_hf);
-  if (!tmp_char) exit(2);
+  if (!tmp_char) return;
   cc_index_first_peak_of_hf_prelude = tmp_char - in_hf_s;
+  // LOGI("(%s:%d) cc_index_first_peak_of_hf_prelude = %lu\n", __FILE__, __LINE__, cc_index_first_peak_of_hf_prelude);
 
   unsigned long cc_index_first_peak_of_lf_prelude;
   const char *c_tmp_char_1; c_tmp_char_1 = &(tmp_char[1]);
   tmp_char = strstr(c_tmp_char_1, "0");
-  if (!tmp_char) exit(3);
+  if (!tmp_char) return;
   cc_index_first_peak_of_lf_prelude = tmp_char - in_hf_s;
+  // LOGI("(%s:%d) cc_index_first_peak_of_lf_prelude = %lu\n", __FILE__, __LINE__, cc_index_first_peak_of_lf_prelude);
 
   unsigned long cc_index_first_peak_of_hf_header;
   const char *c_tmp_char_2; c_tmp_char_2 = &(tmp_char[1]);
   tmp_char = strstr(c_tmp_char_2, "1");
-  if (!tmp_char) exit(4);
+  if (!tmp_char) return;
   cc_index_first_peak_of_hf_header = tmp_char - in_hf_s;
+  // LOGI("(%s:%d) cc_index_first_peak_of_hf_header = %lu\n", __FILE__, __LINE__, cc_index_first_peak_of_hf_header);
 
   unsigned long cc_index_last_peak_of_hf_header;
   const char *c_tmp_char_3; c_tmp_char_3 = &(tmp_char[1]);
   tmp_char = strstr(c_tmp_char_3, "0");
-  if (!tmp_char) exit(5);
+  if (!tmp_char) return;
   cc_index_last_peak_of_hf_header = tmp_char - in_hf_s;
-
+  // LOGI("(%s:%d) cc_index_last_peak_of_hf_header = %lu\n", __FILE__, __LINE__, cc_index_last_peak_of_hf_header);
 
   // # From the prelude and the header, determine a starting guess for the number of samples per bit and
   // # the locations of the start and midpoint of subsequent bits
@@ -264,7 +320,6 @@ void get_pkt( const char *infilename /*float sample_rate, const char *infilename
   apx_samples_per_bit = (cc[cc_index_last_peak_of_hf_header] - cc[cc_index_first_peak_of_hf_header]);
   apx_mid_bit_boundary = cc[cc_index_first_peak_of_hf_header];
   apx_samples_per_qrtr_bit = (long)((double)apx_samples_per_bit/4.0);
-  bits_per_pkt = 69L;
 
   long orig_samples_per_bit;
   orig_samples_per_bit = apx_samples_per_bit;
@@ -274,9 +329,10 @@ void get_pkt( const char *infilename /*float sample_rate, const char *infilename
   char first_bit_half[bits_per_pkt], second_bit_half[bits_per_pkt];
   bool valid_bit[bits_per_pkt];
 
+  // LOGI("(%s:%d) here\n", __FILE__, __LINE__);
+
   // # We will iterate on our estimate for samples per bit, increasing that estimate until
   // # we identify a validly encoded differential Manchester bit stream
-  bool success;
   success = false;
 
   while ((!success) && ((double)apx_samples_per_bit/(double)orig_samples_per_bit < 1.2)) {
@@ -287,8 +343,8 @@ void get_pkt( const char *infilename /*float sample_rate, const char *infilename
       }
       else {
         mid_bits[j] = mid_bits[j-1] + apx_samples_per_bit;
-        long tmp_mid_bits;
-        tmp_mid_bits = -1.0;
+        // long tmp_mid_bits;
+        // tmp_mid_bits = -1.0;
         for (k = 0; k < cc_length; k++) {
           if (abs(cc[k]-mid_bits[j]) > 5L) continue;
           mid_bits[j] = cc[k];
@@ -310,13 +366,235 @@ void get_pkt( const char *infilename /*float sample_rate, const char *infilename
 
     }
     if (success) {
+      LOGI("(%s:%d) here; bit_vals = %s\n", __FILE__, __LINE__, bit_vals);
+
       return; //  (bits = bit_vals);
     }
     else {
       apx_samples_per_bit++;
     }
   }
+  // LOGI("(%s:%d) here\n", __FILE__, __LINE__);
+
   return; // (bits = bit_vals);
+}
+
+// FFT code taken from https://gist.github.com/kristianlm/4df96321d771257aab32
+// code from http://paulbourke.net/miscellaneous/dft/
+// help from http://www.codeproject.com/Articles/9388/How-to-implement-the-FFT-algorithm
+
+/*
+  This computes an in-place complex-to-complex FFT
+  x and y are the real and imaginary arrays of 2^m points.
+  dir =  1 gives forward transform
+  dir = -1 gives reverse transform
+*/
+
+short fft(short int dir, long m, struct complex *buffer)
+{
+  long n,i,i1,j,k,i2,l,l1,l2;
+  double c1,c2,tx,ty,t1,t2,u1,u2,z;
+
+  /* Calculate the number of points */
+  n = 1;
+  for (i=0;i<m;i++)
+    n *= 2;
+
+  /* Do the bit reversal */
+  i2 = n >> 1;
+  j = 0;
+  for (i=0;i<n-1;i++) {
+    if (i < j) {
+      tx = buffer[i].real;
+      ty = buffer[i].imag;
+      buffer[i].real = buffer[j].real;
+      buffer[i].imag = buffer[j].imag;
+      buffer[j].real = tx;
+      buffer[j].imag = ty;
+    }
+    k = i2;
+    while (k <= j) {
+      j -= k;
+      k >>= 1;
+    }
+    j += k;
+  }
+
+  /* Compute the FFT */
+  c1 = -1.0;
+  c2 = 0.0;
+  l2 = 1;
+  for (l=0;l<m;l++) {
+    l1 = l2;
+    l2 <<= 1;
+    u1 = 1.0;
+    u2 = 0.0;
+    for (j=0;j<l1;j++) {
+      for (i=j;i<n;i+=l2) {
+        i1 = i + l1;
+        t1 = u1 * buffer[i1].real - u2 * buffer[i1].imag;
+        t2 = u1 * buffer[i1].imag + u2 * buffer[i1].real;
+        buffer[i1].real = buffer[i].real - t1;
+        buffer[i1].imag = buffer[i].imag - t2;
+        buffer[i].real += t1;
+        buffer[i].imag += t2;
+      }
+      z =  u1 * c1 - u2 * c2;
+      u2 = u1 * c2 + u2 * c1;
+      u1 = z;
+    }
+    c2 = sqrt((1.0 - c1) / 2.0);
+    if (dir == 1)
+      c2 = -c2;
+    c1 = sqrt((1.0 + c1) / 2.0);
+  }
+
+  /* Scaling for forward transform */
+  if (dir == 1) {
+    for (i=0;i<n;i++) {
+      buffer[i].real /= n;
+      buffer[i].imag /= n;
+    }
+  }
+
+  return(1);
+}
+
+
+// JNI calls
+
+JNIEXPORT int JNICALL Java_com_fleetcents_generic_1tpms_MainActivity_pktFound(JNIEnv * env, jclass klass) {
+  return success ? 1 : 0;
+}
+
+JNIEXPORT void JNICALL Java_com_fleetcents_generic_1tpms_MainActivity_setCacheDir(JNIEnv * env, jclass klass, jstring str) {
+
+   const char *nativeString = (*env)->GetStringUTFChars(env, str, 0);
+   // LOGI("(%s:%d) nativeString = |%s|\n", __FILE__, __LINE__, nativeString);
+   strncpy(app_dir, nativeString, 200);
+   // LOGI("app_dir = |%s|\n", app_dir);
+   (*env)->ReleaseStringUTFChars(env, str, nativeString);
+   // LOGI("app_dir = |%s|\n", app_dir);
+}
+
+JNIEXPORT void JNICALL Java_com_fleetcents_generic_1tpms_MainActivity_convertAndGetPkt(JNIEnv * env, jclass klass) {
+
+  char binfilename[300];
+  strcpy(binfilename, app_dir);
+  strcat(binfilename, "/");
+  strcat(binfilename, "fc.bin");
+
+  // LOGI("(%s:%d) binfilename  = %s\n", __FILE__, __LINE__, binfilename);
+
+  char cplxfilename[300];
+  strncpy(cplxfilename, binfilename, strlen(binfilename)-3);
+  strcat(cplxfilename, "cfile");
+  // LOGI("(%s:%d) cplxfilename  = %s\n", __FILE__, __LINE__, binfilename);
+
+  success = false;
+  unsigned long binfilesize;
+  FILE *binfile, *cplxfile; binfile = fopen(binfilename, "rb"); cplxfile = NULL;
+
+  fseek(binfile, 0L, SEEK_END);
+  binfilesize = (unsigned long) ftell(binfile);
+  long num_blocks; num_blocks = (long)(ceil((double)binfilesize/(double)(2.0 * block_size)));
+  // LOGI("(%s:%d) num_blocks = %ld\n", __FILE__, __LINE__, num_blocks);
+
+  long first_block, curr_block;
+  float returned_f[2*block_size];
+  struct complex cplx_f[block_size];
+  int j, file_no, fn_length; file_no = 0; fn_length = strlen(cplxfilename);
+  int hysteresis_timeout, hysteresis_count; hysteresis_timeout = 3;
+
+  for (curr_block = 0L; curr_block < num_blocks; curr_block++) {
+    get_complexblock_from_iqfile(binfilename, curr_block, returned_f);
+    for (j = 0; j < block_size; j++) { // weighted w coeffs for Hann window
+      cplx_f[j].real = returned_f[j*2] * 0.5 * (1.0 - cos(2.0*PI*j/(double)(block_size - 1)));
+      cplx_f[j].imag = returned_f[j*2+1] * 0.5 * (1.0 - cos(2.0*PI*j/(double)(block_size - 1)));
+    }
+    fft(1, expo, cplx_f);
+
+    double block_abs[block_size];
+    double block_max, block_sum; block_max = -1.0; block_sum = 0.0;
+    for (j = 0; j < block_size; j++) {
+      block_abs[j] = (double) sqrt(cplx_f[j].real*cplx_f[j].real + cplx_f[j].imag*cplx_f[j].imag);
+      if (block_abs[j] > block_max) block_max = block_abs[j];
+      block_sum += block_abs[j];
+    }
+    double block_avg; block_avg = block_sum / (double)block_size;
+    double block_spread; block_spread = block_max / block_avg;
+    // LOGI("(%s:%d) curr_block = %ld,  block_spread = %lf\n", __FILE__, __LINE__, curr_block, block_spread);
+
+    if (block_spread >= 10.0) hysteresis_count = hysteresis_timeout;
+    else if (block_spread < 5.0) hysteresis_count--;
+
+    if (hysteresis_count > 0) { // keep this block
+      if (cplxfile == NULL) {
+        first_block = curr_block;
+        sprintf(&(cplxfilename[fn_length]), "%d", file_no++);
+        // LOGI("(%s:%d) OPENING cplxfile\n", __FILE__, __LINE__);
+        cplxfile = fopen(cplxfilename, "wb");
+        fseek( cplxfile, 0L, SEEK_SET );
+      }
+      // LOGI("(%s:%d) ADDING block %ld to cplxfile\n", __FILE__, __LINE__, curr_block);
+      fwrite((void*) returned_f, sizeof(float), 2*block_size, cplxfile);
+    }
+    else { // toss this block
+      if (cplxfile != NULL) {
+        fclose(cplxfile);
+        // LOGI("(%s:%d) CLOSING cplxfile for processing of %ld thru %ld\n", __FILE__, __LINE__, first_block, curr_block);
+        get_pkt(cplxfilename);
+        remove(cplxfilename);
+        cplxfile = NULL;
+      }
+    }
+    if (success) return;
+  }
+
+  // LOGI("(%s:%d) cplxfilename  = %s\n", __FILE__, __LINE__, cplxfilename);
+
+  // iqfile_to_cplxfile(binfilename, cplxfilename);
+  // get_pkt(cplxfilename);
+}
+
+JNIEXPORT double JNICALL Java_com_fleetcents_generic_1tpms_MainActivity_getPsi(JNIEnv * env, jclass klass) {
+  return get_pressure_psi();
+}
+
+JNIEXPORT double JNICALL Java_com_fleetcents_generic_1tpms_MainActivity_getKpa(JNIEnv * env, jclass klass) {
+  return get_pressure_kpa();
+}
+
+JNIEXPORT long JNICALL Java_com_fleetcents_generic_1tpms_MainActivity_getTempF(JNIEnv * env, jclass klass) {
+  return get_temp_f();
+}
+
+JNIEXPORT long JNICALL Java_com_fleetcents_generic_1tpms_MainActivity_getTempC(JNIEnv * env, jclass klass) {
+  long c; c = get_temp_c();
+  LOGI("(%s:%d) c = %ld\n", __FILE__, __LINE__, c);
+  return c;
+}
+
+JNIEXPORT unsigned long JNICALL Java_com_fleetcents_generic_1tpms_MainActivity_getDecAddr(JNIEnv * env, jclass klass) {
+  return get_dec_address_val();
+}
+
+JNIEXPORT jstring JNICALL Java_com_fleetcents_generic_1tpms_MainActivity_getHexAddr(JNIEnv * env, jclass klass) {
+
+  char *retVal; retVal = get_hex_address_str(retVal);
+  LOGI("(%s:%d) retVal = %s\n", __FILE__, __LINE__, retVal);
+  jstring strng; strng = ((*env)->NewStringUTF(env, retVal));
+  free(retVal);
+  return strng;
+}
+
+JNIEXPORT jstring JNICALL Java_com_fleetcents_generic_1tpms_MainActivity_getFullUrl(JNIEnv * env, jclass klass) {
+
+  char *retVal; retVal = get_url(retVal);
+  LOGI("(%s:%d) retVal = %s\n", __FILE__, __LINE__, retVal);
+  jstring strng; strng = ((*env)->NewStringUTF(env, retVal));
+  free(retVal);
+  return strng;
 }
 
 
