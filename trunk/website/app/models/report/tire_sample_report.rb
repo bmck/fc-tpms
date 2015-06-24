@@ -9,7 +9,6 @@ module Report
     include Chartable
 
     attr_accessor :sensors, :receivers, :start_service, :end_service, :samples
-    cattr_reader :title do 'Tire Samples' end
 
     def initialize(params)
       sensor_ids = Array(params[:sensor_ids] || [])
@@ -72,7 +71,7 @@ module Report
         ']'
     end
 
-    def serial_data
+    def serial_data(chart_attr)
       # [
       #   {
       #     "column-1": 8,
@@ -101,7 +100,8 @@ module Report
       num_graphs.times.each do |sensor_ndex|
         sensor = sensors[sensor_ndex]
         samples[sensor].each do |tire_sample|
-          (sensor_samples[tire_sample[:sample_time]] ||= {})[sensor.name] = tire_sample[:psi].to_f
+          (sensor_samples[tire_sample[:sample_time]] ||= {})[sensor.name] =
+            tire_sample.send(chart_attr.to_sym).to_f unless tire_sample.send(chart_attr.to_sym).nil?
         end
       end
 
@@ -126,13 +126,22 @@ module Report
       :sample_time
     end
 
-    def yaxis_title
-      'Tire Sample'
-    end
-
     def filename
       classname
     end
+
+    def title(_arg)
+      'Tire Samples'
+    end
+
+    def subtitle(arg)
+      { psi: 'Tire Pressure [psi]',
+        kpa: 'Tire Pressure [kPa]',
+        tempf: 'Tire Temperature [degF]',
+        tempc: 'Tire Temperature [degC]' }[arg]
+    end
+
+    alias_method :yaxis_title, :subtitle
 
     protected
 

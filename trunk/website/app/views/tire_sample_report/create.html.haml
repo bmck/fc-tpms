@@ -1,6 +1,10 @@
 - # $Id$
 - # $(c)$
 
-%div#tire_sample_report{style:"width:800px;height:600px;background-color:#FFFFFF;"}
+%div#tire_sample_report_psi{style:"width:800px;height:600px;background-color:#FFFFFF;"}
+= render partial: 'amcharts/line_chart', formats: [:js], layout: false, locals: { div_name: 'tire_sample_report', report: @report, controller: controller, charted_value: :psi }
 
-= render partial: 'amcharts/line_chart', formats: [:js], layout: false, locals: { div_name: 'tire_sample_report', report: @report, controller: controller }
+%p
+
+%div#tire_sample_report_tempf{style:"width:800px;height:600px;background-color:#FFFFFF;"}
+= render partial: 'amcharts/line_chart', formats: [:js], layout: false, locals: { div_name: 'tire_sample_report', report: @report, controller: controller, charted_value: :tempf }

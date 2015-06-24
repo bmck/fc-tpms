@@ -90,6 +90,15 @@ class TireSample < ActiveRecord::Base
     receiver.name
   end
 
+  def tempf
+    return nil if tempc.nil?
+    tempc * 1.8 + 32.0
+  end
+
+  def kpa
+    psi * 0.145037738
+  end
+
   def destroy
     self.active = false
     save!

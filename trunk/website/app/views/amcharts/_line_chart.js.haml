@@ -2,7 +2,7 @@
 - # $(c)$
 
 :javascript
-  AmCharts.makeChart("#{div_name}",
+  AmCharts.makeChart("#{div_name}_#{charted_value}",
     {
       "type": "serial",
       "export": {
@@ -30,7 +30,7 @@
       "valueAxes": [
         {
           "id": "ValueAxis-1",
-          "title": "#{report.try(:yaxis_title) || ''}"
+          "title": "#{report.try(:yaxis_title, charted_value) || report.try(:yaxis_title) || ''}"
         }
       ],
       "allLabels": [],
@@ -44,10 +44,10 @@
         {
           "id": "Title-1",
           "size": 15,
-          "text": "#{(report.title || "Chart Title").html_safe}"
+          "text": "#{(report.title(charted_value) || "Chart Title").html_safe}"
         }
-        #{report.respond_to?(:subtitle) ? ', {"id": "Title-2", "size": 12, "text": "' + report.subtitle + '"}' : ''}
+        #{report.respond_to?(:subtitle) ? ', {"id": "Title-2", "size": 12, "text": "' + report.subtitle(charted_value) + '"}' : ''}
       ],
-      "dataProvider": #{report.serial_data.html_safe}
+      "dataProvider": #{report.serial_data(charted_value).html_safe}
     }
   )
