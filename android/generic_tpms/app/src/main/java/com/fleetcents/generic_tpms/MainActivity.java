@@ -11,6 +11,7 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.os.Bundle;
 import android.net.Uri;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -30,6 +31,8 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.Volley;
 import com.android.volley.toolbox.StringRequest;
+
+import static android.support.v4.content.LocalBroadcastManager.*;
 
 public class MainActivity extends Activity implements Runnable {
 
@@ -168,85 +171,27 @@ public class MainActivity extends Activity implements Runnable {
         Log.i(TAG, "Enter run");
         myText.append(getString(R.string.msg_send_activation) + "\n");
 
+        Intent intent = new Intent(Intent.ACTION_VIEW);
+
+        File file = new File(cacheDir(), TMPFCBINFN);
+
+        myText.append(getString(R.string.msg_wait_for_sensor_data) + "\n");
+        intent.setData(Uri.parse("iqsrc://-f 315000000 -s 2048000 -n 4000000 \"" + file.getAbsolutePath() + "\""));
+
+        myText.append(getString(R.string.msg_rcving_sensor_data) + "\n");
+//            startActivityForResult(intent, RTL2832U_RESULT_CODE);
         try {
-            Intent intent = new Intent(Intent.ACTION_VIEW);
-
-            File file = new File(this.cacheDir(), TMPFCBINFN);
-
-            myText.append(getString(R.string.msg_wait_for_sensor_data) + "\n");
-            intent.setData(Uri.parse("iqsrc://-f 315000000 -s 2048000 -n 4000000 \"" + file.getAbsolutePath() + "\""));
-
-            myText.append(getString(R.string.msg_rcving_sensor_data) + "\n");
-            startActivityForResult(intent, RTL2832U_RESULT_CODE);
-
-        } catch (ActivityNotFoundException e) {
-            Log.e(LOGTAG, "createSource: RTL2832U is not installed");
-
-            // Show a dialog that links to the play market:
-            new AlertDialog.Builder(this)
-                    .setTitle("RTL2832U driver not installed!")
-                    .setMessage("You need to install the (free) RTL2832U driver to use RTL-SDR dongles.")
-                    .setPositiveButton("Install from Google Play", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            Intent marketIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("market://details?id=marto.rtl_tcp_andro"));
-                            startActivity(marketIntent);
-                        }
-                    })
-                    .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                        public void onClick(DialogInterface dialog, int whichButton) {
-                            // do nothing
-                        }
-                    })
-                    .show();
+            LocalBroadcastManager.getInstance(MainActivity.this).sendBroadcastSync(intent);
+            Log.i(LOGTAG, "onActivityResult: RTL-SDR Data Capture Completed.");
+            processRtlsdrData();
         }
-        Log.i(TAG, "Exit run");
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.i(TAG, "Enter onActivityResult");
-        super.onActivityResult(requestCode, resultCode, data);
-
-        // err_info from RTL2832U:
-        String[] rtlsdrErrInfo = {
-                "permission_denied",
-                "root_required",
-                "no_devices_found",
-                "unknown_error",
-                "replug",
-                "already_running"};
-        File file = new File(this.cacheDir(), TMPFCBINFN);
-
-        switch (requestCode) {
-            case RTL2832U_RESULT_CODE:
-                // This happens if the RTL2832U driver was started.
-                // We check for errors and print them:
-                if (resultCode == RESULT_OK) {
-                    Log.i(LOGTAG, "onActivityResult: RTL-SDR Data Capture Completed.");
-                    processRtlsdrData();
-                } else {
-                    myText.append(getString(R.string.msg_unknown_error));
-                    int errorId = -1;
-                    int exceptionCode = 0;
-                    String detailedDescription = null;
-                    if (data != null) {
-                        errorId = data.getIntExtra("com.fleetcents.generic_tpms.RtlTcpExceptionId", -1);
-                        exceptionCode = data.getIntExtra("detailed_exception_code", 0);
-                        detailedDescription = data.getStringExtra("detailed_exception_message");
-                    }
-                    String errorMsg = "ERROR NOT SPECIFIED";
-                    if (errorId >= 0 && errorId < rtlsdrErrInfo.length)
-                        errorMsg = rtlsdrErrInfo[errorId];
-
-                    Log.e(LOGTAG, "onActivityResult: RTL2832U driver returned with error: " + errorMsg + " (" + errorId + ")"
-                            + (detailedDescription != null ? ": " + detailedDescription + " (" + exceptionCode + ")" : ""));
-
-                }
-                break;
+        catch (Exception e) {
+            myText.append(getString(R.string.msg_unknown_error));
         }
+
         running = false;
         updateActionBarAnimation();
-        Log.i(TAG, "Exit onActivityResult");
+        Log.i(TAG, "Exit run");
     }
 
     private void processRtlsdrData() {
