@@ -1,0 +1,3 @@
+set solib-search-path /Users/bmck/Documents/workspace/fleetcents/android/generic_tpms/app/src/main/obj/local/armeabi
+source /Users/bmck/Documents/workspace/android-ndk-r10e/prebuilt/common/gdb/common.setup
+directory /Users/bmck/Documents/workspace/android-ndk-r10e/platforms/android-3/arch-arm/usr/include rtl_tcp_android/libusb-andro rtl_tcp_android/libusb-andro/libusb rtl_tcp_android/libusb-andro/libusb/os rtl_tcp_android/rtl-sdr/include rtl_tcp_android/rtl-sdr/src /Users/bmck/Documents/workspace/fleetcents/android/generic_tpms/app/src/main/jni /Users/bmck/Documents/workspace/android-ndk-r10e/sources/cxx-stl/system
