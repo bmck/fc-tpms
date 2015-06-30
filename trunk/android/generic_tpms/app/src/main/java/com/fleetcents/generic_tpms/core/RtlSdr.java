@@ -6,8 +6,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import android.util.Log;
 
-public class RtlTcp {
-	private final static String TAG = "RTLTCP";
+public class RtlSdr {
+	private final static String TAG = "RTLSDR";
 
 	final static int LIBUSB_ERROR_IO = -1;
 	final static int LIBUSB_ERROR_INVALID_PARAM = -2;
@@ -32,21 +32,23 @@ public class RtlTcp {
 	final static int EXIT_CANNOT_CLOSE = 6;
 	final static int EXIT_UNKNOWN = 7;
 	final static int EXIT_SIGNAL_CAUGHT = 8;
-	final static int EXIT_NOT_ENOUGH_POWER = 9;
+  final static int EXIT_NOT_ENOUGH_POWER = 9;
+  final static int RTLSDR_FILENAME_NOT_SPECIFIED = 10;
+  final static int RTLSDR_FILE_NOT_SAVED = 11;
 
 	private final static Object locker = new Object();
 	private final static Object exitcode_locker = new Object();
-	private final static ArrayList<OnProcessTalkCallback> talk_callacks = new ArrayList<RtlTcp.OnProcessTalkCallback>();
+	private final static ArrayList<OnProcessTalkCallback> talk_callacks = new ArrayList<RtlSdr.OnProcessTalkCallback>();
 
 	private static volatile AtomicInteger exitcode = new AtomicInteger(EXIT_UNKNOWN);
 	private static volatile AtomicBoolean exitcode_set = new AtomicBoolean(false);
 
 //	static {
-//        System.loadLibrary("RtlTcp");
+//        System.loadLibrary("RtlSdr");
 //    }
 
-	private static native void open(final String args, final int fd, final String uspfs_path);// throws RtlTcpException;
-	private static native void close();// throws RtlTcpException;
+	public static native void open(final String args, final int fd, final String uspfs_path);// throws RtlSdrException;
+	public static native void close();// throws RtlSdrException;
 	public static native boolean isNativeRunning();
 
 	private static void printf_receiver(final String data) {
@@ -62,7 +64,7 @@ public class RtlTcp {
 	}
 
 	private static void onclose(int exitcode) {
-		RtlTcp.exitcode.set(exitcode);
+		RtlSdr.exitcode.set(exitcode);
 		exitcode_set.set(true);
 		synchronized (exitcode_locker) {
 			exitcode_locker.notifyAll();
@@ -88,16 +90,16 @@ public class RtlTcp {
 	}
 
 
-	public static void start(final String args, final int fd, final String uspfs_path) throws RtlTcpException {
+	public static void start(final String args, final int fd, final String uspfs_path) throws RtlSdrException {
 		if (isNativeRunning()) {
 			close();
 			try {
 				synchronized (locker) {
-					locker.wait(5000);
+					locker.wait(50);
 				}
 			} catch (InterruptedException e) {}
 
-			if (isNativeRunning()) throw new RtlTcpException(EXIT_CANNOT_RESTART);
+			if (isNativeRunning()) throw new RtlSdrException(EXIT_CANNOT_RESTART);
 		}
 
 		new Thread() {
@@ -111,7 +113,7 @@ public class RtlTcp {
 					close();
 					try {
 						synchronized (exitcode_locker) {
-							exitcode_locker.wait(1000);
+							exitcode_locker.wait(100);
 						}
 					} catch (InterruptedException e) {}
 				}
@@ -119,9 +121,9 @@ public class RtlTcp {
 				if (!exitcode_set.get())
 					exitcode.set(EXIT_CANNOT_CLOSE);
 
-				RtlTcpException e = null;
-				final int exitcode = RtlTcp.exitcode.get();
-				if (exitcode != EXIT_OK) e = new RtlTcpException(exitcode);
+				RtlSdrException e = null;
+				final int exitcode = RtlSdr.exitcode.get();
+				if (exitcode != EXIT_OK) e = new RtlSdrException(exitcode);
 
 				for (final OnProcessTalkCallback c : talk_callacks)
 					c.OnClosed(exitcode, e);
@@ -142,7 +144,7 @@ public class RtlTcp {
 		/** Whenever the process writes something to its stdout, this will get called */
 		void OnProcessTalk(final String line);
 
-		void OnClosed(final int exitvalue, final RtlTcpException e);
+		void OnClosed(final int exitvalue, final RtlSdrException e);
 
 		void OnOpened();
 	}
