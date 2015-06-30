@@ -285,17 +285,17 @@ void get_pkt( const char *infilename /*float sample_rate, const char *infilename
 
   // # Find the beginning and end of the high freq prelude (i.e., invalid data), and the high freq portion of the header (valid data)
   char *tmp_char;
-  unsigned long cc_index_first_peak_of_hf_prelude;
+  // unsigned long cc_index_first_peak_of_hf_prelude;
   tmp_char = strstr(in_hf_s, target_hf);
   if (!tmp_char) return;
-  cc_index_first_peak_of_hf_prelude = tmp_char - in_hf_s;
+  // cc_index_first_peak_of_hf_prelude = tmp_char - in_hf_s;
   // LOGI("(%s:%d) cc_index_first_peak_of_hf_prelude = %lu\n", __FILE__, __LINE__, cc_index_first_peak_of_hf_prelude);
 
-  unsigned long cc_index_first_peak_of_lf_prelude;
+  // unsigned long cc_index_first_peak_of_lf_prelude;
   const char *c_tmp_char_1; c_tmp_char_1 = &(tmp_char[1]);
   tmp_char = strstr(c_tmp_char_1, "0");
   if (!tmp_char) return;
-  cc_index_first_peak_of_lf_prelude = tmp_char - in_hf_s;
+  // cc_index_first_peak_of_lf_prelude = tmp_char - in_hf_s;
   // LOGI("(%s:%d) cc_index_first_peak_of_lf_prelude = %lu\n", __FILE__, __LINE__, cc_index_first_peak_of_lf_prelude);
 
   unsigned long cc_index_first_peak_of_hf_header;
@@ -484,27 +484,29 @@ JNIEXPORT void JNICALL Java_com_fleetcents_generic_1tpms_MainActivity_convertAnd
   strcat(binfilename, "/");
   strcat(binfilename, "fc.bin");
 
-  // LOGI("(%s:%d) binfilename  = %s\n", __FILE__, __LINE__, binfilename);
+  LOGI("(%s:%d) binfilename  = %s\n", __FILE__, __LINE__, binfilename);
 
   char cplxfilename[300];
   strncpy(cplxfilename, binfilename, strlen(binfilename)-3);
+  cplxfilename[strlen(binfilename)-3] = (char)0;
   strcat(cplxfilename, "cfile");
-  // LOGI("(%s:%d) cplxfilename  = %s\n", __FILE__, __LINE__, binfilename);
+  LOGI("(%s:%d) cplxfilename  = %s\n", __FILE__, __LINE__, cplxfilename);
 
   success = false;
   unsigned long binfilesize;
   FILE *binfile, *cplxfile; binfile = fopen(binfilename, "rb"); cplxfile = NULL;
+  LOGI("(%s:%d) binfile  = %p\n", __FILE__, __LINE__, binfile);
 
   fseek(binfile, 0L, SEEK_END);
   binfilesize = (unsigned long) ftell(binfile);
   long num_blocks; num_blocks = (long)(ceil((double)binfilesize/(double)(2.0 * block_size)));
-  // LOGI("(%s:%d) num_blocks = %ld\n", __FILE__, __LINE__, num_blocks);
+  LOGI("(%s:%d) num_blocks = %ld\n", __FILE__, __LINE__, num_blocks);
 
-  long first_block, curr_block;
+  long curr_block; //, first_block;
   float returned_f[2*block_size];
   struct complex cplx_f[block_size];
   int j, file_no, fn_length; file_no = 0; fn_length = strlen(cplxfilename);
-  int hysteresis_timeout, hysteresis_count; hysteresis_timeout = 3;
+  int hysteresis_timeout, hysteresis_count; hysteresis_timeout = 3; hysteresis_count = 0;
 
   for (curr_block = 0L; curr_block < num_blocks; curr_block++) {
     get_complexblock_from_iqfile(binfilename, curr_block, returned_f);
@@ -530,7 +532,7 @@ JNIEXPORT void JNICALL Java_com_fleetcents_generic_1tpms_MainActivity_convertAnd
 
     if (hysteresis_count > 0) { // keep this block
       if (cplxfile == NULL) {
-        first_block = curr_block;
+        // first_block = curr_block;
         sprintf(&(cplxfilename[fn_length]), "%d", file_no++);
         // LOGI("(%s:%d) OPENING cplxfile\n", __FILE__, __LINE__);
         cplxfile = fopen(cplxfilename, "wb");
@@ -581,7 +583,7 @@ JNIEXPORT unsigned long JNICALL Java_com_fleetcents_generic_1tpms_MainActivity_g
 
 JNIEXPORT jstring JNICALL Java_com_fleetcents_generic_1tpms_MainActivity_getHexAddr(JNIEnv * env, jclass klass) {
 
-  char *retVal; retVal = get_hex_address_str(retVal);
+  char *retVal; retVal = NULL; retVal = get_hex_address_str(retVal);
   LOGI("(%s:%d) retVal = %s\n", __FILE__, __LINE__, retVal);
   jstring strng; strng = ((*env)->NewStringUTF(env, retVal));
   free(retVal);
@@ -590,7 +592,7 @@ JNIEXPORT jstring JNICALL Java_com_fleetcents_generic_1tpms_MainActivity_getHexA
 
 JNIEXPORT jstring JNICALL Java_com_fleetcents_generic_1tpms_MainActivity_getFullUrl(JNIEnv * env, jclass klass) {
 
-  char *retVal; retVal = get_url(retVal);
+  char *retVal; retVal = NULL; retVal = get_url(retVal);
   LOGI("(%s:%d) retVal = %s\n", __FILE__, __LINE__, retVal);
   jstring strng; strng = ((*env)->NewStringUTF(env, retVal));
   free(retVal);
