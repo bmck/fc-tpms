@@ -2,6 +2,7 @@
 <ImageView
     xmlns:android="http://schemas.android.com/apk/res/android"
     style="@android:style/Widget.ActionButton"
+    android:id="@+id/iv_action_startstop"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
     android:contentDescription="@string/app_name"
