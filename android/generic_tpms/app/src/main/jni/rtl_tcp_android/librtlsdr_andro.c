@@ -23,7 +23,7 @@
 
 #include "librtlsdr_andro.h"
 #include "rtl-sdr/src/librtlsdr.c"
-#include "rtl_tcp_andro.h"
+#include "rtl_sdr_andro.h"
 
 /**
  * If updating to a new librtlsdr and rtlsdr_open in librtlsdr.c has been modified,

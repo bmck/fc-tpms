@@ -1,9 +1,9 @@
-#include "RtlTcp.h"
+#include "RtlSdr.h"
 
 #include <pthread.h>
 #include <stdio.h>
 #include <jni.h>
-#include <rtl_tcp_andro.h>
+#include <rtl_sdr_andro.h>
 
 #define MAX_CHARS_IN_CLI_SEND_STRF (512)
 
@@ -48,6 +48,8 @@ void aprintf_stderr( const char* format , ... ) {
 	va_list arg;
 	va_start (arg, format);
 
+    // LOGI(format, arg);
+
 	if  (cls == NULL) return;
 
 	JNIEnv *env;
@@ -75,6 +77,8 @@ void aprintf( const char* format , ... ) {
 
 	va_list arg;
 	va_start (arg, format);
+
+    // LOGI(format, arg);
 
 	if  (cls == NULL) return;
 
@@ -149,7 +153,7 @@ void allocate_args_from_string(const char * string, int nargslength, int * argc,
 	(*argc) = id;
 }
 
-JNIEXPORT void JNICALL Java_com_fleetcents_generic_1tpms_core_RtlTcp_open
+JNIEXPORT void JNICALL Java_com_fleetcents_generic_1tpms_core_RtlSdr_open
 (JNIEnv * env, jclass class, jstring args, jint fd, jstring uspfs_path) {
 	LOGI("Starting native code!");
 	(*env)->GetJavaVM(env, &jvm);
@@ -165,7 +169,11 @@ JNIEXPORT void JNICALL Java_com_fleetcents_generic_1tpms_core_RtlTcp_open
 	char ** argv;
 
 	allocate_args_from_string(nargs, nargslength, &argc, &argv);
-	rtltcp_main(fd, n_uspfs_path, argc, argv);
+    LOGI("argc = %d\n", argc);
+    int j;
+    for (j = 0; j < argc; j++)
+      LOGI("argv[%d] = %s\n", j, argv[j]);
+	rtlsdr_main(fd, n_uspfs_path, argc, argv);
 
 	(*env)->ReleaseStringUTFChars(env, args, nargs);
 	if (uspfs_path != NULL) (*env)->ReleaseStringUTFChars(env, uspfs_path, n_uspfs_path);
@@ -175,13 +183,13 @@ JNIEXPORT void JNICALL Java_com_fleetcents_generic_1tpms_core_RtlTcp_open
 	free(argv);
 }
 
-JNIEXPORT void JNICALL Java_com_fleetcents_generic_1tpms_core_RtlTcp_close
+JNIEXPORT void JNICALL Java_com_fleetcents_generic_1tpms_core_RtlSdr_close
   (JNIEnv * env, jclass class) {
-	rtltcp_close();
+	rtlsdr_fc_close();
 }
 
-JNIEXPORT jboolean JNICALL Java_com_fleetcents_generic_1tpms_core_RtlTcp_isNativeRunning
+JNIEXPORT jboolean JNICALL Java_com_fleetcents_generic_1tpms_core_RtlSdr_isNativeRunning
   (JNIEnv * env, jclass class) {
-	return (jboolean) ((rtltcp_isrunning()) ? (JNI_TRUE) : (JNI_FALSE));
+	return (jboolean) ((rtlsdr_isrunning()) ? (JNI_TRUE) : (JNI_FALSE));
 }
 

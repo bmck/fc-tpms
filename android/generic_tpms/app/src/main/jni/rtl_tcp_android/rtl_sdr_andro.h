@@ -17,18 +17,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef RTL_TCP_ANDRO_H_
-#define RTL_TCP_ANDRO_H_
+#ifndef RTL_SDR_ANDRO_H_
+#define RTL_SDR_ANDRO_H_
 
-#include <android/log.h>
+// #include <android/log.h>
 
-#ifndef LOGI
-#define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "rtl_tcp_andro", __VA_ARGS__))
-#endif
+// #ifndef LOGI
+// #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "rtl_sdr_andro", __VA_ARGS__))
+// #endif
 
-void rtltcp_main(int usbfd, const char * uspfs_path_input, int argc, char **argv);
-void rtltcp_close();
-int rtltcp_isrunning();
+#include "../../fleetcents/fc_log.h"
+
+void rtlsdr_main(int usbfd, const char * uspfs_path_input, int argc, char **argv);
+void rtlsdr_fc_close();
+int rtlsdr_isrunning();
 
 void aprintf( const char* format , ... );
 void aprintf_stderr( const char* format , ... );
