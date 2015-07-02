@@ -161,8 +161,10 @@ void rtlsdr_main(int usbfd, const char * uspfs_path_input, int argc, char **argv
   int gain = 0;
   int ppm_error = 0;
   int sync_mode = 0;
-  FILE *file;
+  FILE *file, *cplx_file;
   uint8_t *buffer;
+  float *cplx_buf;
+  unsigned char *cbuf;
   int dev_index = 0;
   int dev_given = 0;
   uint32_t frequency = 100000000;
@@ -242,9 +244,11 @@ void rtlsdr_main(int usbfd, const char * uspfs_path_input, int argc, char **argv
     out_block_size = DEFAULT_BUF_LENGTH;
   }
 
-  aprintf("bytes_to_read = %lu", bytes_to_read);
+//  aprintf("bytes_to_read = %lu", bytes_to_read);
 
   buffer = malloc(out_block_size * sizeof(uint8_t));
+  cbuf = buffer;
+  cplx_buf = malloc(out_block_size * sizeof(float));
 
   sigact.sa_handler = sighandler;
   sigemptyset(&sigact.sa_mask);
@@ -353,18 +357,28 @@ void rtlsdr_main(int usbfd, const char * uspfs_path_input, int argc, char **argv
       pthread_mutex_unlock(&running_mutex);
       return;
     }
+    strcpy(&(filename[strlen(filename)-3]),"cfile");
+    cplx_file = fopen(filename, "wb");
+    if (!cplx_file) {
+      aprintf_stderr("Failed to open %s\n", filename);
+      announce_exceptioncode( com_fleetcents_generic_1tpms_core_RtlSdr_RTLSDR_FILENAME_NOT_SPECIFIED );
+      pthread_mutex_lock(&running_mutex);
+      is_running = 0;
+      pthread_mutex_unlock(&running_mutex);
+      return;
+    }
   }
 
-  aprintf("(%s:%d) bytes_to_read = %lu", __FILE__, __LINE__, bytes_to_read);
+//  aprintf("(%s:%d) bytes_to_read = %lu", __FILE__, __LINE__, bytes_to_read);
 
   /* Reset endpoint before we start reading from it (mandatory) */
   verbose_reset_buffer(dev);
 
-  aprintf("(%s:%d) bytes_to_read = %lu", __FILE__, __LINE__, bytes_to_read);
+//  aprintf("(%s:%d) bytes_to_read = %lu", __FILE__, __LINE__, bytes_to_read);
   if (sync_mode) {
     aprintf_stderr("Reading samples in sync mode...\n");
     while (!do_exit) {
-      aprintf("(%s:%d) bytes_to_read = %lu", __FILE__, __LINE__, bytes_to_read);
+//      aprintf("(%s:%d) bytes_to_read = %lu", __FILE__, __LINE__, bytes_to_read);
       r = rtlsdr_read_sync(dev, buffer, out_block_size, &n_read);
       if (r < 0) {
         aprintf_stderr("WARNING: sync read failed.\n");
@@ -372,7 +386,7 @@ void rtlsdr_main(int usbfd, const char * uspfs_path_input, int argc, char **argv
       }
 
       if ((bytes_to_read > 0) && (bytes_to_read < (uint32_t)n_read)) {
-        aprintf("(%s:%d) n_read = %lu, bytes_to_read = %lu", __FILE__, __LINE__, n_read, bytes_to_read);
+//        aprintf("(%s:%d) n_read = %lu, bytes_to_read = %lu", __FILE__, __LINE__, n_read, bytes_to_read);
         n_read = bytes_to_read;
         do_exit = 1;
       }
@@ -381,12 +395,19 @@ void rtlsdr_main(int usbfd, const char * uspfs_path_input, int argc, char **argv
         aprintf_stderr("Short write, samples lost, exiting!\n");
         break;
       }
-      else {
-        aprintf("(%s:%d) n_read = %lu", __FILE__, __LINE__, n_read);
+      for (r = 0; r < n_read; r++) {
+        cplx_buf[r] = (((float)(cbuf[r])-127.0)/(float)128.0);
       }
+      if (fwrite(cplx_buf, sizeof(float), n_read, cplx_file) != (size_t)n_read) {
+        aprintf_stderr("Short write, samples lost, exiting!\n");
+        break;
+      }
+//      else {
+//        aprintf("(%s:%d) n_read = %lu", __FILE__, __LINE__, n_read);
+//      }
 
       if ((uint32_t)n_read < out_block_size) {
-        aprintf("n_read = %lu, out_block_size = %lu", n_read, out_block_size);
+//        aprintf("n_read = %lu, out_block_size = %lu", n_read, out_block_size);
         aprintf_stderr("Short read, samples lost, exiting!\n");
         break;
       }
@@ -406,6 +427,7 @@ void rtlsdr_main(int usbfd, const char * uspfs_path_input, int argc, char **argv
     aprintf_stderr("\nLibrary error %d, exiting...\n", r);
 
   fclose(file);
+  fclose(cplx_file);
   rtlsdr_fc_close(dev);
   free (buffer);
 

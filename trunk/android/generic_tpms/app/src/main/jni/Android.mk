@@ -44,7 +44,10 @@ include $(BUILD_SHARED_LIBRARY)
 #
 include $(CLEAR_VARS)
 LOCAL_MODULE    := fleetcents
-LOCAL_SRC_FILES := fleetcents/rtlsdr_cplx-to-pkt.c
+LOCAL_SRC_FILES := \
+  fleetcents/fft.c \
+  fleetcents/rtlsdr_cplx-to-pkt.c \
+  fleetcents/fc_jni_harness.c
 LOCAL_LDLIBS := -lm -llog
 LOCAL_C_INCLUDES := $(LOCAL_PATH)/fleetcents
 LOCAL_SHARED_LIBRARIES := rtlsdr
