@@ -32,61 +32,31 @@ import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.ServiceConnection;
 
-import com.android.volley.RequestQueue;
-import com.android.volley.Response;
-import com.android.volley.VolleyError;
-import com.android.volley.toolbox.Volley;
-import com.android.volley.toolbox.StringRequest;
-
-import com.fleetcents.generic_tpms.R;
-import com.fleetcents.generic_tpms.core.DeviceNotFoundDialogFragment;
+import com.fleetcents.generic_tpms.core.FcTextView;
 import com.fleetcents.generic_tpms.core.RtlSdr;
 import com.fleetcents.generic_tpms.core.RtlSdrException;
 import com.fleetcents.generic_tpms.core.RtlSdrStartException;
 import com.fleetcents.generic_tpms.core.UsbHelper;
+import com.fleetcents.generic_tpms.core.ProcessHelper;
 import com.fleetcents.generic_tpms.core.UsbHelper.STATUS;
 
 public class MainActivity extends Activity implements Runnable {
 
     // private static final int RTL2832U_RESULT_CODE = 1234;  // arbitrary value, used when sending intent to RTL2832U
 
-    private static final String TMPFCBINFN = "fc.bin";
     private static final String LOGTAG = "MainActivity";
-    private static final String TAG = "FleetCents";
+    public static final String TAG = "FleetCents";
     private MenuItem mi_startStop = null;
     private boolean running = false;
     private boolean testing = false;
 
-    private UsbManager mUsbManager = null;
-
-    private String arguments = "";
-    private String uspfs_path = null;
-    private int fd = -1;
-
     public static PendingIntent permissionIntent;
     public static Intent intent;
 
-    public static native int pktFound();
-
-    public static native void convertAndGetPkt();
-
-    public static native double getKpa();
-
-    public static native double getPsi();
-
-    public static native long getTempF();
-
-    public static native long getTempC();
-
-    public static native long getDecAddr();
-
-    public static native String getHexAddr();
-
-    public static native String getFullUrl();
-
     public static native void setCacheDir(String str);
 
-    private TextView myText = null;
+    private ProcessHelper pHelper = null;
+    private FcTextView myText = null;
 
     static {
         try {
@@ -99,28 +69,18 @@ public class MainActivity extends Activity implements Runnable {
         }
     }
 
-    private String cacheDir() {
+    public String cacheDir(String fn) {
         // emulator expects dir at /storage/sdcard/Android/data/com.fleetcents.generic_tpms/cache
         Log.i(LOGTAG, "Enter cacheDir");
-//        String retVal = System.getenv("SECONDARY_STORAGE");
-//        if (retVal == null) retVal = System.getenv("EXTERNAL_STORAGE");
-//        if (retVal == null) retVal = android.os.Environment.getExternalStorageDirectory().getAbsolutePath();
         File[] dirs = ContextCompat.getExternalFilesDirs(this, "rtlsdr");
         File fdir = dirs[dirs.length-1];
         String retVal = String.valueOf(fdir);
         Log.i(LOGTAG, "cached dir = " + fdir.getPath());
         setCacheDir(retVal);
-        File f = new File(fdir, TMPFCBINFN);
+        File f = new File(fdir, fn);
         f.mkdirs();
-        Log.i(LOGTAG, "Ensuring deletion of " + f.getPath());
         f.delete();
 
-        Log.i(LOGTAG, "Creating " + f.getPath());
-        try {
-            f.createNewFile();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
         Log.i(LOGTAG, "Exit cacheDir");
         return retVal;
     }
@@ -131,21 +91,13 @@ public class MainActivity extends Activity implements Runnable {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        myText = new TextView(this);
-        myText.setText(getString(R.string.hello_world));
-        Log.d(LOGTAG, "displaying "+getString(R.string.hello_world));
+        myText = new FcTextView(this);
         myText.setInputType(0x00020001); // multi-line text box
         LinearLayout linearLayout = (LinearLayout) findViewById(R.id.main_activity);
         linearLayout.addView(myText, new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT));
 
-        permissionIntent = PendingIntent.getBroadcast(this, 0, new Intent("com.android.example.USB_PERMISSION"), 0);
-        mUsbManager = (UsbManager) getSystemService(Context.USB_SERVICE);
-        Log.i(LOGTAG, "USB Manager found.");
-
         running = false;
-        if (testing) {
-            cacheDir();
-        }
+        pHelper = new ProcessHelper(this);
 
         Log.i(LOGTAG, "Exit onCreate");
     }
@@ -172,18 +124,9 @@ public class MainActivity extends Activity implements Runnable {
         switch (item.getItemId()) {
             case R.id.action_startstop:
                 if (!running) {
-                    myText.setText(getString(R.string.hello_world));
-                    Log.d(LOGTAG, "displaying "+getString(R.string.hello_world));
-
                     running = true;
                     updateActionBarAnimation();
-                    if (testing) {
-                        processRtlsdrData();
-                        running = false;
-                        updateActionBarAnimation();
-                    } else {
-                        run();
-                    }
+                    run();
                 }
                 Log.i(LOGTAG, "Exit onOptionsItemSelected");
                 return true;
@@ -214,86 +157,22 @@ public class MainActivity extends Activity implements Runnable {
     @Override
     public void run() {
         Log.i(LOGTAG, "Enter run");
-        myText.append("" + getString(R.string.msg_send_activation) + "\n");
-        Log.d(LOGTAG, "displaying " + getString(R.string.msg_send_activation));
-
-        File file = new File(cacheDir(), TMPFCBINFN);
-        arguments = "-f 315000000 -s 2048000 -n 7500000 -S " + file + "";
-        Log.i(LOGTAG, "arguments = >" + arguments + "<");
-
-        UsbDevice device = UsbHelper.findDevice(this);
-
-        final UsbDeviceConnection connection = UsbHelper.openDevice(this, device);
-        if (connection == null) {
-            throw new RuntimeException(String.valueOf(R.string.exception_FAILED_TO_OPEN_DEVICE));
-        }
-
-        myText.append("" + getString(R.string.msg_wait_for_sensor_data) + "\n");
-        Log.d(LOGTAG, "displaying " + getString(R.string.msg_wait_for_sensor_data));
-
-        RtlSdr.open(arguments, connection.getFileDescriptor(), UsbHelper.properDeviceName(device.getDeviceName()));
-
-        myText.append("" + getString(R.string.msg_rcving_sensor_data) + "\n");
-        Log.d(LOGTAG, "displaying " + getString(R.string.msg_rcving_sensor_data));
-        Log.i(LOGTAG, "onActivityResult: RTL-SDR Data Capture Completed.");
-        processRtlsdrData();
-
+        pHelper.run(testing);
         running = false;
         updateActionBarAnimation();
         Log.i(LOGTAG, "Exit run");
     }
 
-    private void processRtlsdrData() {
-        Log.i(LOGTAG, "Enter processRtlsdrData");
-        convertAndGetPkt();
-        // file.delete();
-        if (pktFound() == 1) {
-            String hxAddr = getHexAddr();
-            Log.i(LOGTAG, "hxAddr is >" + hxAddr + "<");
-            myText.append(getString(R.string.sensor_id) + " " + hxAddr + "\n");
-            Log.d(LOGTAG, "displaying " + getString(R.string.sensor_id) + " " + hxAddr);
-
-            long tmpC = getTempC();
-            Log.i(LOGTAG, "tmpC is >" + (double) (tmpC) + "<");
-            myText.append(getString(R.string.temp) + " " + ((double) ((int) (tmpC * 10))) / 10 + getString(R.string.celsius) + "\n");
-            Log.d(LOGTAG, "displaying " + getString(R.string.temp) + " " + ((double) ((int) (tmpC * 10))) / 10 + getString(R.string.celsius));
-
-            double press_psi = getPsi();
-            Log.i(LOGTAG, "press_psi is >" + press_psi + "<");
-            myText.append(getString(R.string.pressure) + " " + ((double) ((int) (press_psi * 100))) / 100 + getString(R.string.psi) + "\n");
-            Log.d(LOGTAG, "displaying " + getString(R.string.pressure) + " " + ((double) ((int) (press_psi * 100))) / 100 + getString(R.string.psi));
-
-            myText.append(getString(R.string.msg_sending_data) + "\n");
-            Log.d(LOGTAG, "displaying " + getString(R.string.msg_sending_data));
-
-            // Instantiate the RequestQueue.
-            RequestQueue queue = Volley.newRequestQueue(this);
-            String url = getFullUrl();
-            Log.i(LOGTAG, "url is >" + url + "<");
-            // Request a string response from the provided URL.
-            StringRequest stringRequest = new StringRequest(StringRequest.Method.GET, url,
-                    new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            myText.append(getString(R.string.msg_data_rcvd_ok) + "\n");
-                            Log.d(LOGTAG, "displaying " + getString(R.string.msg_data_rcvd_ok));
-                        }
-                    }, new Response.ErrorListener() {
-                @Override
-                public void onErrorResponse(VolleyError error) {
-                    myText.append("" + getString(R.string.msg_data_not_rcvd_ok) + "\n");
-                    Log.d(LOGTAG, "displaying " + getString(R.string.msg_data_not_rcvd_ok));
-                }
-            });
-            // Add the request to the RequestQueue.
-            queue.add(stringRequest);
-        } else {
-            myText.append("" + getString(R.string.msg_valid_pkt_not_found) + "\n");
-            Log.d(LOGTAG, "displaying " + getString(R.string.msg_valid_pkt_not_found));
-        }
-        Log.i(LOGTAG, "Exit processRtlsdrData");
+    public void displayMessage(final String str) {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                myText.append(str + "\n");
+                myText.invalidate();
+            }
+        });
+        Log.d(LOGTAG, "displaying >" + str + "<\n");
     }
-
 
 
     /**
