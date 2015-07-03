@@ -20,6 +20,9 @@ class TiresController < ApplicationController
     @tire = Tire.new
   end
 
+  def show
+  end
+
   def create
     @tire = Tire.create(tire_params)
   end
