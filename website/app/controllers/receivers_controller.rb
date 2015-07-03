@@ -16,6 +16,9 @@ class ReceiversController < ApplicationController
     @receiver = Receiver.new
   end
 
+  def show
+  end
+
   def create
     @receiver = Receiver.create(receiver_params)
   end

@@ -9,8 +9,8 @@
 - if can? :destroy, object
   - actions << {name: :destroy, url: tire_sample_path(object), confirmation: "Are you sure you want to delete this tire sample?"}
 
-%td= object.tire_name
-%td= object.receiver_name
+%td= link_to(object.tire_name, tire_path(object.tire))
+%td= link_to(object.receiver_name, receiver_path(object.receiver))
 %td= object.psi.to_f
 %td= object.tempc.try(:to_f)
 %td= object.sample_time.localtime
