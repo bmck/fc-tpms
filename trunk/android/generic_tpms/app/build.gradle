@@ -34,13 +34,17 @@ android {
     productFlavors {
         arm {
             ndk {
-                moduleName "rtlsdr"
+                moduleName "liquid"
                 abiFilter "armeabi"
                 ldLibs "log", "m"
 
                 moduleName "fleetcents"
                 abiFilter "armeabi"
                 ldLibs "log", "m"
+
+                moduleName "rtlsdr"
+                abiFilter "armeabi"
+                ldLibs "log", "m", "fleetcents"
             }
         }
     }

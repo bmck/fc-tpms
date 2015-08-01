@@ -2,13 +2,14 @@
 # Need to minimally support armeabi
 # armeabi-v7a and arm64-v8a are later versions of hardware.
 
+export ANDROID_NDK_ROOT=~/src/crystax-ndk-10.2.1
+export NDK=$ANDROID_NDK_ROOT
+# export NDK=~/src/android-ndk-r10e
 
-export NDK=~/src/android-ndk-r10e
-
-export ANDROIDLVL=21
+export ANDROIDLVL=18
 export HOST_ARCH=darwin-x86_64
-# export TARGET_ARCH=arm
-export TARGET_ARCH=x86
+export TARGET_ARCH=arm
+# export TARGET_ARCH=x86
 
 export SYSROOT=$NDK/platforms/android-$ANDROIDLVL/arch-$TARGET_ARCH
 
@@ -18,10 +19,10 @@ export SYSROOT=$NDK/platforms/android-$ANDROIDLVL/arch-$TARGET_ARCH
 # -system=darwin-x86_64"
 
 # if TARGET_ARCH == arm
-# export TOOLCHAIN=$TARGET_ARCH-linux-androideabi
+export TOOLCHAIN=$TARGET_ARCH-linux-androideabi
 
 # if TARGET_ARCH == x86
-export TOOLCHAIN=$TARGET_ARCH
+# export TOOLCHAIN=$TARGET_ARCH
 
 $NDK/build/tools/make-standalone-toolchain.sh \
 --toolchain=$TOOLCHAIN-clang3.6 \
@@ -34,3 +35,46 @@ $NDK/build/tools/make-standalone-toolchain.sh \
 # if targeting the armeabi-v7a ABI
 # CFLAGS= -march=armv7-a -mfloat-abi=softfp -mfpu=vfpv3-d16
 # LDFLAGS= -march=armv7-a -Wl,--fix-cortex-a8
+
+
+
+To run configure (per https://lists.gnu.org/archive/html/autoconf/2013-10/msg00004.html) ...
+
+1) Set your PATH so the Android NDK tools (arm-linux-androideabi-cpp,
+arm-linux-androideabi-gcc, and friends) are on PATH:
+
+  $ echo $PATH
+
+/opt/android-ndk-r9/toolchains/arm-linux-androideabi-4.6/prebuilt/darwin-x86_64/bin:
+  /opt/android-sdk-macosx/tools/:/opt/android-sdk-macosx/platform-tools/:
+  /opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin:
+  /opt/X11/bin:/usr/local/MacGPG2/bin
+
+2) Ensure ANDROID_NDK_ROOT is set (this is an Android requirement, see
+https://groups.google.com/d/msg/android-ndk/qZjhOaynHXc/Szy_KYY9GcwJ):
+
+  $ echo $ANDROID_NDK_ROOT
+  /opt/android-ndk-r9
+
+3) Export the tools:
+  export CPP=arm-linux-androideabi-cpp
+  export CC=arm-linux-androideabi-cc
+  ...
+  export LD=arm-linux-androideabi-ld
+  ...
+
+4) Export CPPFLAGS, CFLAGS, and CXXFLAGS *with* SYSROOT (some
+autotools tests don't honor the config option):
+  $ echo $ANDROID_SYSROOT
+  /opt/android-ndk-r9/platforms/android-14/arch-arm
+  export CPPFLAGS="--sysroot=$ANDROID_SYSROOT"
+  export CFLAGS="--sysroot=$ANDROID_SYSROOT"
+  export CXXFLAGS="--sysroot=$ANDROID_SYSROOT"
+
+5) Configure as follows (`--build=arm-android` breaks config):
+
+  $ ./configure --host=x86_64-darwin --build=arm --with-sysroot=$ANDROID_SYSROOT
+  checking build system type... arm-unknown-none
+  checking host system type... x86_64-pc-none
+  checking for a BSD-compatible install... /usr/bin/install -c
+  checking whether build environment is sane... yes

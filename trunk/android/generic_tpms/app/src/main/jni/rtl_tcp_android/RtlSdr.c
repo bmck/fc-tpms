@@ -169,10 +169,6 @@ JNIEXPORT void JNICALL Java_com_fleetcents_generic_1tpms_core_RtlSdr_open
 	char ** argv;
 
 	allocate_args_from_string(nargs, nargslength, &argc, &argv);
-    LOGI("argc = %d\n", argc);
-    int j;
-    for (j = 0; j < argc; j++)
-      LOGI("argv[%d] = %s\n", j, argv[j]);
 	rtlsdr_main(fd, n_uspfs_path, argc, argv);
 
 	(*env)->ReleaseStringUTFChars(env, args, nargs);

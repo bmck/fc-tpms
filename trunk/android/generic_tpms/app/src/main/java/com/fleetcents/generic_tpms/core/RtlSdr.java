@@ -43,10 +43,6 @@ public class RtlSdr {
 	private static volatile AtomicInteger exitcode = new AtomicInteger(EXIT_UNKNOWN);
 	private static volatile AtomicBoolean exitcode_set = new AtomicBoolean(false);
 
-//	static {
-//        System.loadLibrary("RtlSdr");
-//    }
-
 	public static native void open(final String args, final int fd, final String uspfs_path);// throws RtlSdrException;
 	public static native void close();// throws RtlSdrException;
 	public static native boolean isNativeRunning();
@@ -90,7 +86,7 @@ public class RtlSdr {
 	}
 
 
-	public static void start(final String args, final int fd, final String uspfs_path) throws RtlSdrException {
+	public static void start(final String args, final int fd, final String uspfs_path) throws RtlSdrException, InterruptedException {
 		if (isNativeRunning()) {
 			close();
 			try {
@@ -102,7 +98,7 @@ public class RtlSdr {
 			if (isNativeRunning()) throw new RtlSdrException(EXIT_CANNOT_RESTART);
 		}
 
-		new Thread() {
+		Thread t = new Thread() {
 			public void run() {
 				exitcode_set.set(false);
 				exitcode.set(EXIT_UNKNOWN);
@@ -132,7 +128,9 @@ public class RtlSdr {
 					locker.notifyAll();
 				}
 			};
-		}.start();
+		};
+		t.start();
+		t.join();
 	}
 
 	public static void stop() {
