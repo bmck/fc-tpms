@@ -20,13 +20,7 @@
 #ifndef RTL_SDR_ANDRO_H_
 #define RTL_SDR_ANDRO_H_
 
-// #include <android/log.h>
-
-// #ifndef LOGI
-// #define LOGI(...) ((void)__android_log_print(ANDROID_LOG_INFO, "rtl_sdr_andro", __VA_ARGS__))
-// #endif
-
-#include "../../fleetcents/fc_log.h"
+#include "log_macros.h"
 
 void rtlsdr_main(int usbfd, const char * uspfs_path_input, int argc, char **argv);
 void rtlsdr_fc_close();
@@ -37,6 +31,10 @@ void aprintf_stderr( const char* format , ... );
 void announce_exceptioncode( const int exception_code );
 void announce_success( );
 void thread_detach();
+
+extern void save_sample_rate(uint32_t);
+extern int analyze_input(uint8_t *, uint32_t, uint32_t);
+extern int analyze_file(char *);
 
 
 #endif

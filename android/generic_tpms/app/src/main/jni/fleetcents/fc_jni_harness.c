@@ -1,11 +1,11 @@
 
 #include <jni.h>
-#include "rtlsdr_cplx-to-pkt.h"
+#include "liquid_analysis.h"
 #include "log_macros.h"
 
 // JNI calls
 
-JNIEXPORT int JNICALL Java_com_fleetcents_generic_1tpms_core_ProcessHelper_pktFound(JNIEnv * env, jclass klass) {
+JNIEXPORT int JNICALL Java_com_fleetcents_generic_1tpms_MainActivity_pktFound(JNIEnv * env, jclass klass) {
   return get_success();
 }
 
@@ -20,34 +20,38 @@ JNIEXPORT void JNICALL Java_com_fleetcents_generic_1tpms_MainActivity_setCacheDi
    // LOGI("app_dir = |%s|\n", app_dir);
 }
 
-JNIEXPORT void JNICALL Java_com_fleetcents_generic_1tpms_core_ProcessHelper_convertAndGetPkt(JNIEnv * env, jclass klass) {
+#ifdef __FALSE__
+
+JNIEXPORT void JNICALL Java_com_fleetcents_generic_1tpms_MainActivity_convertAndGetPkt(JNIEnv * env, jclass klass) {
 
   find_pkt_in_binfile();
 }
 
-JNIEXPORT double JNICALL Java_com_fleetcents_generic_1tpms_core_ProcessHelper_getPsi(JNIEnv * env, jclass klass) {
+#endif
+
+JNIEXPORT double JNICALL Java_com_fleetcents_generic_1tpms_MainActivity_getPsi(JNIEnv * env, jclass klass) {
   return get_pressure_psi();
 }
 
-JNIEXPORT double JNICALL Java_com_fleetcents_generic_1tpms_core_ProcessHelper_getKpa(JNIEnv * env, jclass klass) {
+JNIEXPORT double JNICALL Java_com_fleetcents_generic_1tpms_MainActivity_getKpa(JNIEnv * env, jclass klass) {
   return get_pressure_kpa();
 }
 
-JNIEXPORT long JNICALL Java_com_fleetcents_generic_1tpms_core_ProcessHelper_getTempF(JNIEnv * env, jclass klass) {
+JNIEXPORT long JNICALL Java_com_fleetcents_generic_1tpms_MainActivity_getTempF(JNIEnv * env, jclass klass) {
   return get_temp_f();
 }
 
-JNIEXPORT long JNICALL Java_com_fleetcents_generic_1tpms_core_ProcessHelper_getTempC(JNIEnv * env, jclass klass) {
+JNIEXPORT long JNICALL Java_com_fleetcents_generic_1tpms_MainActivity_getTempC(JNIEnv * env, jclass klass) {
   long c; c = get_temp_c();
   LOGI("(%s:%d) c = %ld\n", __FILE__, __LINE__, c);
   return c;
 }
 
-JNIEXPORT unsigned long JNICALL Java_com_fleetcents_generic_1tpms_core_ProcessHelper_getDecAddr(JNIEnv * env, jclass klass) {
+JNIEXPORT unsigned long JNICALL Java_com_fleetcents_generic_1tpms_MainActivity_getDecAddr(JNIEnv * env, jclass klass) {
   return get_dec_address_val();
 }
 
-JNIEXPORT jstring JNICALL Java_com_fleetcents_generic_1tpms_core_ProcessHelper_getHexAddr(JNIEnv * env, jclass klass) {
+JNIEXPORT jstring JNICALL Java_com_fleetcents_generic_1tpms_MainActivity_getHexAddr(JNIEnv * env, jclass klass) {
 
   char *retVal; retVal = NULL; retVal = get_hex_address_str(retVal);
   LOGI("(%s:%d) retVal = %s\n", __FILE__, __LINE__, retVal);
@@ -56,7 +60,7 @@ JNIEXPORT jstring JNICALL Java_com_fleetcents_generic_1tpms_core_ProcessHelper_g
   return strng;
 }
 
-JNIEXPORT jstring JNICALL Java_com_fleetcents_generic_1tpms_core_ProcessHelper_getFullUrl(JNIEnv * env, jclass klass) {
+JNIEXPORT jstring JNICALL Java_com_fleetcents_generic_1tpms_MainActivity_getFullUrl(JNIEnv * env, jclass klass) {
 
   char *retVal; retVal = NULL; retVal = get_url(retVal);
   LOGI("(%s:%d) retVal = %s\n", __FILE__, __LINE__, retVal);

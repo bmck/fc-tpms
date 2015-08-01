@@ -2,5 +2,7 @@
 # $(c)$
 
 LOCAL_PATH:= $(call my-dir)
-APP_PLATFORM:= android-18 # android-14
-APP_ABI:= armeabi # armeabi-v7a x86
+APP_PLATFORM:= android-18
+APP_ABI:= armeabi
+NDK_TOOLCHAIN_VERSION := clang
+NDK_DEBUG := 1

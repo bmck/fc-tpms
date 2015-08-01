@@ -50,9 +50,7 @@ public class UsbHelper {
 
     private final static String DEFAULT_USPFS_PATH = "/dev/bus/usb";
 
-    public enum STATUS {SHOW_DEVICE_DIALOG, REQUESTED_OPEN_DEVICE, CANNOT_FIND, CANNOT_FIND_TRY_ROOT}
-
-    ;
+    public enum STATUS {SHOW_DEVICE_DIALOG, REQUESTED_OPEN_DEVICE, CANNOT_FIND, CANNOT_FIND_TRY_ROOT};
 
     public static HashSet<String> getAllowedDeviceData(final Context ctx) {
         final HashSet<String> ans = new HashSet<String>();

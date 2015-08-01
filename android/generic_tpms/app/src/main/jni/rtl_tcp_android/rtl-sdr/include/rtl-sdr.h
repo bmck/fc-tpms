@@ -144,6 +144,10 @@ RTLSDR_API int rtlsdr_read_eeprom(rtlsdr_dev_t *dev, uint8_t *data,
 
 RTLSDR_API int rtlsdr_set_center_freq(rtlsdr_dev_t *dev, uint32_t freq);
 
+RTLSDR_API int rtlsdr_set_if_freq(rtlsdr_dev_t *dev, uint32_t freq);
+
+RTLSDR_API int rtlsdr_set_if_bandwidth(rtlsdr_dev_t *dev, int bw);
+
 /*!
  * Get actual frequency the device is tuned to.
  *
@@ -321,6 +325,17 @@ RTLSDR_API int rtlsdr_set_offset_tuning(rtlsdr_dev_t *dev, int on);
  * \return -1 on error, 0 means disabled, 1 enabled
  */
 RTLSDR_API int rtlsdr_get_offset_tuning(rtlsdr_dev_t *dev);
+
+/*!
+ * Enable or disable frequency dithering for r820t tuners.
+ * Must be performed before freq_set().
+ * Fails for other tuners.
+ *
+ * \param dev the device handle given by rtlsdr_open()
+ * \param on 0 means disabled, 1 enabled
+ * \return 0 on success
+ */
+RTLSDR_API int rtlsdr_set_dithering(rtlsdr_dev_t *dev, int dither);
 
 /* streaming functions */
 
