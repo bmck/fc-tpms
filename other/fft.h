@@ -6,6 +6,6 @@
 
 #include "universal_defines.h"
 
-short fft(short int dir, long m, struct complex *buffer);
+short fft(short int dir, long m, struct cmplx *buffer);
 
 #endif

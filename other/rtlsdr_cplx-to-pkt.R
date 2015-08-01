@@ -66,7 +66,7 @@ library(plyr)
 ff <- arrange(count(pd), desc(freq))
 # cat("\n\n\n----------\n----------\n----------\n\n\n\nff =\n"); print(ff)
 # hfreqs is the list of the very likely set of "high frequency" periodicities expressed in terms of samples.
-hfreqs <- c((floor(ff$x[1] * 0.9)):(ceiling(ff$x[1] * 1.1)))
+hfreqs <- c((floor(ff$x[1] * 0.85)):(ceiling(ff$x[1] * 1.15)))
 cat("\n\n\n----------\n----------\n----------\n\n\n\nhfreqs =\n"); print(hfreqs)
 
 # Let's look for the prelude ... start with looking for at least 1000 consecutive samples containing only high frequency RF
@@ -79,6 +79,7 @@ cat("\n\n\n----------\n----------\n----------\n\n\n\nin_hf_s =\n"); print(in_hf_
 
 num_consec_hf <- ceiling(1000/max(hfreqs))
 target_hf <- paste(replicate(num_consec_hf, '1'), collapse='')
+print(target_hf)
 
 # Find the beginning and end of the high freq prelude (i.e., invalid data), and the high freq portion of the header (valid data)
 cc_index_first_peak_of_hf_prelude <- regexpr(target_hf, in_hf_s, fixed=T)[1]

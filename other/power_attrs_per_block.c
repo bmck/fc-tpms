@@ -99,5 +99,7 @@ int main(int argc, char **argv) {
     printf("\n");
   }
 
+  printf("\n\n");
+  fclose(i);
   return(0);
 }

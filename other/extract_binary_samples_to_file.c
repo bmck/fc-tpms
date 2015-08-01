@@ -1,14 +1,14 @@
 // $Id$
 // $(c)$
 
-// extract_blocks_to_file.c
+// extract_binary_samples_to_file.c
 // Takes 4 positional arguments: the source file containing binary encoded complex numbers,
 // the starting initial (included) block number (where a block is 256 samples), the final
 // (included) block number, and the target file name.
 
 // Compile using gcc:
 
-// gcc extract_blocks_to_file.c -o extract_blocks_to_file
+// gcc extract_binary_samples_to_file.c -o extract_binary_samples_to_file
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -19,7 +19,7 @@
 int main(int argc, char **argv) {
 
   if (argc != 5) {
-    printf("usage: %s (sourcefile) (firstblock#) (lastblock#) (targetfile)\n", argv[0]);
+    printf("usage: %s (sourcefile) (firstsample#) (lastsample#) (targetfile)\n", argv[0]);
     exit(1);
   }
 
@@ -27,9 +27,9 @@ int main(int argc, char **argv) {
   strcpy(sourcefile, argv[1]);
   strcpy(targetfile, argv[4]);
 
-  long firstblock, lastblock;
-  firstblock = atol(argv[2]);
-  lastblock = atol(argv[3]);
+  long firstsample, lastsample;
+  firstsample = atol(argv[2]);
+  lastsample = atol(argv[3]);
 
   FILE *i, *o;
   if ((i = fopen(sourcefile, "rb")) == NULL) {
@@ -41,18 +41,18 @@ int main(int argc, char **argv) {
     exit(3);
   }
 
-  fseek(i, (IQ_SAMPLES_PER_BLOCK * firstblock), SEEK_SET);
-  long num_blocks;
-  num_blocks = (lastblock - firstblock + 1);
+  fseek(i, (firstsample * 2), SEEK_SET);
+  long num_samples;
+  num_samples = (lastsample - firstsample + 1);
 
-  if (num_blocks <= 0) {
-    printf("The firstblock (%ld) must be less than or equal to the lastblock (%ld).\n", firstblock, lastblock);
+  if (num_samples <= 0) {
+    printf("The firstsample (%ld) must be less than or equal to the lastsample (%ld).\n", firstsample, lastsample);
     exit(4);
   }
 
-  float dat[2 * IQ_SAMPLES_PER_BLOCK * num_blocks];
-  fread(dat, sizeof(float), 2 * IQ_SAMPLES_PER_BLOCK * (lastblock - firstblock + 1), i);
-  fwrite(dat, sizeof(float), 2 * IQ_SAMPLES_PER_BLOCK * (lastblock - firstblock + 1), o);
+  unsigned char dat[2 * num_samples];
+  fread(dat, sizeof(unsigned char), 2 * num_samples, i);
+  fwrite(dat, sizeof(unsigned char), 2 * num_samples, o);
 
   printf("\n\n");
   fclose(i);

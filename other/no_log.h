@@ -1,11 +1,12 @@
 // $Id$
 // $(c)$
 
-#ifndef __NO_LOG_H
-#define __NO_LOG_H
-
-#ifndef __LOG_MACROS
-#define __LOG_MACROS
+#ifdef LOGV
+#undef LOGV
+#undef LOGD
+#undef LOGI
+#undef LOGW
+#undef LOGE
 #endif
 
 #ifndef LOGV
@@ -26,6 +27,4 @@
 
 #ifndef LOGE
 #define LOGE(...)
-#endif
-
 #endif

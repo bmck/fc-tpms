@@ -6,13 +6,13 @@
 #include "fft.h"
 
 /*
-  This computes an in-place complex-to-complex FFT
+  This computes an in-place cmplx-to-cmplx FFT
   x and y are the real and imaginary arrays of 2^m points.
   dir =  1 gives forward transform
   dir = -1 gives reverse transform
 */
 
-short fft(short int dir, long m, struct complex *buffer)
+short fft(short int dir, long m, struct cmplx *buffer)
 {
   long n,i,i1,j,k,i2,l,l1,l2;
   double c1,c2,tx,ty,t1,t2,u1,u2,z;

@@ -8,26 +8,24 @@
 
 // Compile using gcc:
 
-// gcc list_complex_samples_per_block.c -o list_complex_samples_per_block
+// gcc list_complex_samples.c -o list_complex_samples
 
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #include "universal_defines.h"
 
 int main(int argc, char **argv) {
 
-  if (argc != 3) {
-    printf("usage: %s (sourcefile) (block#)\n", argv[0]);
+  if (argc != 2) {
+    printf("usage: %s (sourcefile.bin)\n", argv[0]);
     exit(1);
   }
 
   char sourcefile[200];
   strcpy(sourcefile, argv[1]);
-
-  long blocknum;
-  blocknum = atol(argv[2]);
 
   FILE *i;
   if ((i = fopen(sourcefile, "rb")) == NULL) {
@@ -35,14 +33,19 @@ int main(int argc, char **argv) {
     exit(2);
   }
 
-  fseek(i, (IQ_SAMPLES_PER_BLOCK * blocknum), SEEK_SET);
+  unsigned long infilesize, num_samples;
+
+  fseek(i, 0L, SEEK_END);
+  infilesize = (unsigned long) ftell(i);
+  num_samples = (long)(ceil((double)(infilesize)/(double)(2.0*sizeof(unsigned char))));
+  rewind(i);
 
   long j, k;
   float v[2];
   int b;
   char c[20];
 
-  for (j = 0; j < IQ_SAMPLES_PER_BLOCK; j++) {
+  for (j = 0; j < num_samples; j++) {
     v[0] = 0.0; v[1] = 0.0;
     for (k = 0; k < 2; k++) {
       b = fgetc(i);
