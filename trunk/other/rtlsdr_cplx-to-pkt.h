@@ -34,7 +34,7 @@ char *get_url( /*long addr, long press, long temp,*/ char *returned_url);
 void find_pkt_in_binfile( );
 void get_pkt( const char *infilename /*float sample_rate, const char *infilename, char *bits*/ );
 
-short fft(short int dir, long m, struct complex *buffer);
+short fft(short int dir, long m, struct cmplx *buffer);
 
 #endif
 

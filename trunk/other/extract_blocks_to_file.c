@@ -18,7 +18,7 @@
 
 int main(int argc, char **argv) {
 
-  if (argc != 4) {
+  if (argc != 5) {
     printf("usage: %s (sourcefile) (firstblock#) (lastblock#) (targetfile)\n", argv[0]);
     exit(1);
   }
@@ -54,6 +54,7 @@ int main(int argc, char **argv) {
   fread(dat, sizeof(float), 2 * IQ_SAMPLES_PER_BLOCK * (lastblock - firstblock + 1), i);
   fwrite(dat, sizeof(float), 2 * IQ_SAMPLES_PER_BLOCK * (lastblock - firstblock + 1), o);
 
+  printf("\n\n");
   fclose(i);
   fclose(o);
   exit(0);

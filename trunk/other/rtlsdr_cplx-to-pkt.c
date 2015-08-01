@@ -224,7 +224,7 @@ void find_pkt_in_binfile( )
     if (success) return;
   }
 
-   LOGI("(%s:%d) cplxfilename  = %s\n", __FILE__, __LINE__, cplxfilename);
+//   LOGI("(%s:%d) cplxfilename  = %s\n", __FILE__, __LINE__, cplxfilename);
 
   // iqfile_to_cplxfile(binfilename, cplxfilename);
   // get_pkt(cplxfilename);
@@ -239,13 +239,13 @@ void find_pkt_in_binfile( )
 /*char **/
 void get_pkt( const char *infilename /*float sample_rate, const char *infilename, char *bits*/ )
 {
-   LOGI("(%s:%d) infilename=%s\n", __FILE__, __LINE__, infilename);
+//   LOGI("(%s:%d) infilename=%s\n", __FILE__, __LINE__, infilename);
 
   // float sample_rate = 2.048e6;
 
   unsigned long infilesize;
   FILE *infile = fopen(infilename, "rb");
-   LOGI("(%s:%d) infile = %p\n", __FILE__, __LINE__, infile);
+//  LOGI("(%s:%d) infile = %p\n", __FILE__, __LINE__, infile);
 
   if (infile) {
     fseek(infile, 0L, SEEK_END);
@@ -258,7 +258,7 @@ void get_pkt( const char *infilename /*float sample_rate, const char *infilename
   float v1, v2;
   long max_f, j, k;
   max_f = (long) (ceil((double)infilesize/8.0));
-   LOGI("(%s:%d) max_f=%ld\n", __FILE__, __LINE__, max_f);
+//  LOGI("(%s:%d) max_f=%ld\n", __FILE__, __LINE__, max_f);
 
   double peak_threshold = 0.995;
   long prev, ci;
@@ -294,7 +294,7 @@ void get_pkt( const char *infilename /*float sample_rate, const char *infilename
   long pos_peak_immed_follow_neg_samples_length;
   if ((pos_peak_immed_follow_neg_samples_length = ci) < 2) return;
 
-   LOGI("(%s:%d) pos_peak_immed_follow_neg_samples_length = %ld\n", __FILE__, __LINE__, pos_peak_immed_follow_neg_samples_length);
+//   LOGI("(%s:%d) pos_peak_immed_follow_neg_samples_length = %ld\n", __FILE__, __LINE__, pos_peak_immed_follow_neg_samples_length);
 
   long pos_peak_immed_follow_neg_samples[pos_peak_immed_follow_neg_samples_length];
   ci = 0; j = 0L; prev = 0;
@@ -306,7 +306,7 @@ void get_pkt( const char *infilename /*float sample_rate, const char *infilename
     if (((double)v1) > peak_threshold) {
       if (prev == -1) {
         pos_peak_immed_follow_neg_samples[ci] = j;
-         LOGI("(%s:%d) pos_peak_immed_follow_neg_samples[%ld] = %ld\n", __FILE__, __LINE__, ci, j);
+//         LOGI("(%s:%d) pos_peak_immed_follow_neg_samples[%ld] = %ld\n", __FILE__, __LINE__, ci, j);
         ci++;
       }
       prev = 1;
@@ -360,14 +360,14 @@ void get_pkt( const char *infilename /*float sample_rate, const char *infilename
     if (freq_freqs[interesting_freq_index] > freq_freqs[most_freq_index])
       most_freq_index = interesting_freq_index;
 
-     LOGI("(%s:%d) (j=%ld) most_freq_index = %d, most_freq_freq = %ld\n",
-       __FILE__, __LINE__, j, most_freq_index, freq_freqs[most_freq_index]);
+//     LOGI("(%s:%d) (j=%ld) most_freq_index = %d, most_freq_freq = %ld\n",
+//       __FILE__, __LINE__, j, most_freq_index, freq_freqs[most_freq_index]);
   }
 
   long nom_hfreq, hfreqs_lo, hfreqs_hi;
   nom_hfreq = all_freqs[most_freq_index];
-  hfreqs_lo = (long)(0.9 * (double)nom_hfreq);
-  hfreqs_hi = (long)(ceil(1.1 * (double)nom_hfreq));
+  hfreqs_lo = (long)(0.85 * (double)nom_hfreq);
+  hfreqs_hi = (long)(ceil(1.15 * (double)nom_hfreq));
 
   // for (j = 0; j < freq_count; j++) {
   //   LOGI("(%s:%d) %ld: freq = %ld, count of the freq = %ld \n", __FILE__, __LINE__, j, all_freqs[j], freq_freqs[j]);

@@ -18,7 +18,7 @@
 
 int main(int argc, char **argv) {
 
-  if (argc != 2) {
+  if (argc != 3) {
     printf("usage: %s (sourcefile) (block#)\n", argv[0]);
     exit(1);
   }
@@ -56,5 +56,7 @@ int main(int argc, char **argv) {
     printf("%f, %f, \"%s\"\n", v[0], v[1], c);
   }
 
+  printf("\n\n");
+  fclose(i);
   return(0);
 }
