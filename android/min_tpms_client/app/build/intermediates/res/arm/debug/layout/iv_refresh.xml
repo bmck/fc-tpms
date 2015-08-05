@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ImageView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    style="@android:style/Widget.ActionButton"
+    android:id="@+id/iv_action_startstop"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:contentDescription="@string/app_name"
+    android:src="@drawable/ic_action_play" />
+<!-- From: file:/Users/bmck/Documents/workspace/fleetcents/android/generic_tpms/app/src/main/res/layout/iv_refresh.xml -->
