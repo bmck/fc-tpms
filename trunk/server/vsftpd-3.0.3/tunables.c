@@ -227,7 +227,7 @@ tunables_load_defaults()
   tunable_ftp_enable = 1;
   tunable_http_enable = 0;
   tunable_seccomp_sandbox = 1;
-  tunable_allow_writeable_chroot = 0;
+  tunable_allow_writeable_chroot = 1;
 
   tunable_accept_timeout = 60;
   tunable_connect_timeout = 60;
@@ -256,7 +256,7 @@ tunables_load_defaults()
 
   install_str_setting("/usr/share/empty", &tunable_secure_chroot_dir);
   install_str_setting("ftp", &tunable_ftp_username);
-  install_str_setting("root", &tunable_chown_username);
+  install_str_setting("bmck", &tunable_chown_username);
   install_str_setting("/var/log/xferlog", &tunable_xferlog_file);
   install_str_setting("/var/log/vsftpd.log", &tunable_vsftpd_log_file);
   install_str_setting(".message", &tunable_message_file);

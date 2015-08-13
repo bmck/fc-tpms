@@ -1,50 +1,83 @@
 # Makefile for systems with GNU tools
 CC 	=	gcc
 INSTALL	=	install
-IFLAGS  = -idirafter dummyinc
+IFLAGS  = -Ivsftpd/dummyinc
 #CFLAGS = -g
 CFLAGS	=	-O2 -fPIE -fstack-protector --param=ssp-buffer-size=4 \
 	-Wall -W -Wshadow -Werror -Wformat-security \
-	-D_FORTIFY_SOURCE=2 \
+	-D_FORTIFY_SOURCE=2 -I. -Ivsftpd -Iliquid/include \
 	#-pedantic -Wconversion
 
 LIBS	=	`./vsf_findlibs.sh`
-LINK	=	-Wl,-s
-LDFLAGS	=	-fPIE -pie -Wl,-z,relro -Wl,-z,now
+LINK	=	-Wl
+LDFLAGS	=	-fPIE -Lliquid -lliquid
 
-OBJS	=	main.o utility.o prelogin.o ftpcmdio.o postlogin.o privsock.o \
-		tunables.o ftpdataio.o secbuf.o ls.o \
-		postprivparent.o logging.o str.o netstr.o sysstr.o strlist.o \
-    banner.o filestr.o parseconf.o secutil.o \
-    ascii.o oneprocess.o twoprocess.o privops.o standalone.o hash.o \
-    tcpwrap.o ipaddrparse.o access.o features.o readwrite.o opts.o \
-    ssl.o sslslave.o ptracesandbox.o ftppolicy.o sysutil.o sysdeputil.o \
-    seccompsandbox.o
+OBJS	=	\
+	vsftpd/main.o \
+	vsftpd/utility.o \
+	vsftpd/prelogin.o \
+	vsftpd/ftpcmdio.o \
+	./postlogin.o \
+	vsftpd/privsock.o \
+	vsftpd/tunables.o \
+	vsftpd/ftpdataio.o \
+	vsftpd/secbuf.o \
+	vsftpd/ls.o \
+	vsftpd/postprivparent.o \
+	vsftpd/logging.o \
+	vsftpd/str.o \
+	vsftpd/netstr.o \
+	vsftpd/sysstr.o \
+	vsftpd/strlist.o \
+	vsftpd/banner.o \
+	vsftpd/filestr.o \
+	vsftpd/parseconf.o \
+	vsftpd/secutil.o \
+	vsftpd/ascii.o \
+	vsftpd/oneprocess.o \
+	vsftpd/twoprocess.o \
+	vsftpd/privops.o \
+	vsftpd/standalone.o \
+	vsftpd/hash.o \
+	vsftpd/tcpwrap.o \
+	vsftpd/ipaddrparse.o \
+	vsftpd/access.o \
+	vsftpd/features.o \
+	vsftpd/readwrite.o \
+	vsftpd/opts.o \
+	vsftpd/ssl.o \
+	vsftpd/sslslave.o \
+	vsftpd/ptracesandbox.o \
+	vsftpd/ftppolicy.o \
+	vsftpd/sysutil.o \
+	vsftpd/sysdeputil.o \
+	vsftpd/seccompsandbox.o \
+	./analyze_tpms.o
 
 
 .c.o:
-	$(CC) -c $*.c $(CFLAGS) $(IFLAGS)
+	$(CC) -c $*.c $(CFLAGS) $(IFLAGS) -o $@
 
-vsftpd: $(OBJS) 
-	$(CC) -o vsftpd $(OBJS) $(LINK) $(LDFLAGS) $(LIBS)
+BIN = fleet_server
+
+$(BIN): $(OBJS)
+	$(CC) -o $(BIN) $(OBJS) $(LINK) $(LDFLAGS) $(LIBS)
 
 install:
 	if [ -x /usr/local/sbin ]; then \
-		$(INSTALL) -m 755 vsftpd /usr/local/sbin/vsftpd; \
+		$(INSTALL) -m 755 $(BIN) /usr/local/sbin/$(BIN); \
 	else \
-		$(INSTALL) -m 755 vsftpd /usr/sbin/vsftpd; fi
-	if [ -x /usr/local/man ]; then \
-		$(INSTALL) -m 644 vsftpd.8 /usr/local/man/man8/vsftpd.8; \
-		$(INSTALL) -m 644 vsftpd.conf.5 /usr/local/man/man5/vsftpd.conf.5; \
-	elif [ -x /usr/share/man ]; then \
-		$(INSTALL) -m 644 vsftpd.8 /usr/share/man/man8/vsftpd.8; \
-		$(INSTALL) -m 644 vsftpd.conf.5 /usr/share/man/man5/vsftpd.conf.5; \
-	else \
-		$(INSTALL) -m 644 vsftpd.8 /usr/man/man8/vsftpd.8; \
-		$(INSTALL) -m 644 vsftpd.conf.5 /usr/man/man5/vsftpd.conf.5; fi
+		$(INSTALL) -m 755 $(BIN) /usr/sbin/$(BIN); fi
 	if [ -x /etc/xinetd.d ]; then \
-		$(INSTALL) -m 644 xinetd.d/vsftpd /etc/xinetd.d/vsftpd; fi
+		$(INSTALL) -m 644 vsftpd/xinetd.d/$(BIN) /etc/xinetd.d/$(BIN); fi
+	if [ -x /etc ]; then \
+		$(INSTALL) -m 644 vsftpd.conf /etc/vsftpd.conf; fi
+
+	if ! [ -x /var/empty/fleet_server ]; then \
+		mkdir /var/empty/fleet_server; fi
+	chown ftp /var/empty/fleet_server
+	chmod 777 /var/empty/fleet_server
 
 clean:
-	rm -f *.o *.swp vsftpd
+	rm -f vsftpd/*.o *.o *.swp $(BIN)
 

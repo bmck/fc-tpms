@@ -559,7 +559,7 @@ vsf_sysdep_has_capabilities(void)
   }
   return s_runtime_has_caps;
 }
-  
+
   #ifndef VSF_SYSDEP_HAVE_LIBCAP
 static int
 do_checkcap(void)
@@ -1081,7 +1081,7 @@ vsf_sysutil_recv_fd(const int sock_fd)
   msg.msg_flags = 0;
   /* In case something goes wrong, set the fd to -1 before the syscall */
   p_fd = (int*)CMSG_DATA(CMSG_FIRSTHDR(&msg));
-  *p_fd = -1;  
+  *p_fd = -1;
   retval = recvmsg(sock_fd, &msg, 0);
   if (retval != 1)
   {
