@@ -20,7 +20,7 @@
 
 #define IQ_SAMPLES_PER_BLOCK 256
 #define BITS_PER_FREESCALE_MSG 69
-#define SAMPLE_RATE 2.048e6
+#define SAMPLE_RATE 1.024e6
 
 #include <math.h>
 #define PI M_PI

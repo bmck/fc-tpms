@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- From: file:/Users/bmck/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/values/strings_activity_settings.xml -->
+    <eat-comment/>
+    <string-array name="pref_example_list_titles">
+        <item>Always</item>
+        <item>When possible</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_example_list_values">
+        <item>1</item>
+        <item>0</item>
+        <item>-1</item>
+    </string-array>
+    <string-array name="pref_sync_frequency_titles">
+        <item>15 minutes</item>
+        <item>30 minutes</item>
+        <item>1 hour</item>
+        <item>3 hours</item>
+        <item>6 hours</item>
+        <item>Never</item>
+    </string-array>
+    <string-array name="pref_sync_frequency_values">
+        <item>15</item>
+        <item>30</item>
+        <item>60</item>
+        <item>180</item>
+        <item>360</item>
+        <item>-1</item>
+    </string-array>
+    <!-- From: file:/Users/bmck/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/values/dimens.xml -->
+    <eat-comment/>
+    <dimen name="activity_horizontal_margin">16dp</dimen>
+    <dimen name="activity_vertical_margin">16dp</dimen>
+    <!-- From: file:/Users/bmck/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/values/strings.xml -->
+    <eat-comment/>
+    <string name="action_help">Help</string>
+    <string name="action_settings">Settings</string>
+    <string name="action_start">Start</string>
+    <string name="action_stop">Stop</string>
+    <string name="app_name">FleetCents TPMS Remote Client</string>
+    <string name="args_hint">rtl_sdr command line arguments</string>
+    <string name="btn_cancel">Cancel</string>
+    <string name="btn_ok">OK</string>
+    <string name="btn_retry">Retry</string>
+    <string name="celsius">deg C</string>
+    <string name="choose_device">Device Chooser</string>
+    <string name="clear">Clear</string>
+    <string name="copied_to_clip">Output was copied to clipboard</string>
+    <string name="copy">Copy</string>
+    <string name="default_args"/>
+    <string name="enable_gui">Enable advanced mode (for debug &amp; stream to PC)</string>
+    <string name="error">Error</string>
+    <string name="exception_CANNOT_CLOSE">Internal error: Cannot stop service</string>
+    <string name="exception_CANNOT_RESTART">Internal error: Cannot restart service</string>
+    <string name="exception_DEFAULT">Exception id %d</string>
+    <string name="exception_FAILED_TO_OPEN_DEVICE">A compatible device was found, but cannot be opened.</string>
+    <string name="exception_INVALID_FD">Invalid USB file descriptor passed via Java.</string>
+    <string name="exception_LIBUSB_ERROR_ACCESS">Cannot access device</string>
+    <string name="exception_LIBUSB_GENERIC">libusb exception %s</string>
+    <string name="exception_NOT_ENOUGH_POWER">Your Android device does not provide enough power to the dongle. You must use an externally powered USB hub or an externally powered USB OTG cable.</string>
+    <string name="exception_NO_DEVICES">No compatible SDR devices found (make sure your USB device is connected, properly powered and your phone/tablet supports USB host mode). </string>
+    <string name="exception_OK">No exception :)</string>
+    <string name="exception_RTLSDR_FILENAME_NOT_SPECIFIED">Internal error: A filename for temporarily storing RF samples was not provided</string>
+    <string name="exception_RTLSDR_FILE_NOT_SAVED">Internal error: A file for temporarily storing RF samples could not be written to the file system in the location identified</string>
+    <string name="exception_SIGNAL_CAUGHT">Signal was caught!</string>
+    <string name="exception_UNKNOWN">Unknown error!</string>
+    <string name="exception_WRONG_ARGS">Wrong arguments were supplied! Please, check the rtl_sdr manual!</string>
+    <string name="fahrenheit">deg F</string>
+    <string name="force_root">Force root</string>
+    <string name="hello_world">\n\nPress the play button above to generate an activation tone and begin receiving data from your TPMS sensor for processing.\n\n</string>
+    <string name="help">Help</string>
+    <string name="help_info">TBD</string>
+    <string name="kill">Kill</string>
+    <string name="kpa">(kPa)</string>
+    <string name="license">License</string>
+    <string name="msg_data_not_rcvd_ok">Sensor Data Not Stored OK</string>
+    <string name="msg_data_rcvd_ok">Sensor Data Received OK</string>
+    <string name="msg_rcving_sensor_data">Receiving Sensor Data</string>
+    <string name="msg_sdr_not_found">No compatible SDR device found</string>
+    <string name="msg_send_activation">Sending Activation Signal</string>
+    <string name="msg_sending_data">Sending Sensor Data to Fleet Cents</string>
+    <string name="msg_unknown_error">An Unknown Error Has Occurred</string>
+    <string name="msg_valid_pkt_not_found">Valid Binary String Not Received from TPMS; please try again</string>
+    <string name="msg_wait_for_sensor_data">Waiting for Sensor Data</string>
+    <string name="notif_message">There is an ongoing communication with an RTL2832U based USB dongle</string>
+    <string name="notif_title">rtl_sdr_andro is running</string>
+    <string name="notsupported">The required action was not executed due to being not available.</string>
+    <!-- From: file:/Users/bmck/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/values/strings_activity_settings.xml -->
+    <eat-comment/>
+    <string name="pref_basestation_hostname">Hostname or IP Address</string>
+    <string name="pref_basestation_hostname_summary">Enter the fully qualified hostname, or IP address, of the base station that can be reached by your TPMS readers, and that can access the internet.</string>
+    <string name="pref_default_display_name">John Smith</string>
+    <string name="pref_description_social_recommendations">Recommendations for people to contact
+        based on your message history
+    </string>
+    <string name="pref_header_basestation">Base Station</string>
+    <string name="pref_header_data_sync">Data &amp; sync</string>
+    <string name="pref_header_general">General</string>
+    <string name="pref_header_notifications">Notifications</string>
+    <string name="pref_header_settings">Settings</string>
+    <string name="pref_ringtone_silent">Silent</string>
+    <string name="pref_title_add_friends_to_messages">Add friends to messages</string>
+    <string name="pref_title_display_name">Display name</string>
+    <string name="pref_title_new_message_notifications">New message notifications</string>
+    <string name="pref_title_ringtone">Ringtone</string>
+    <string name="pref_title_social_recommendations">Enable social recommendations</string>
+    <string name="pref_title_sync_frequency">Sync frequency</string>
+    <string name="pref_title_system_sync_settings">System sync settings</string>
+    <string name="pref_title_vibrate">Vibrate</string>
+    <!-- From: file:/Users/bmck/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/values/strings.xml -->
+    <eat-comment/>
+    <string name="pressure">Pressure:</string>
+    <string name="psi">(psi)</string>
+    <string name="quickinfo">This application provides for reading and archiving TPMS data from contemporary tire samples. For more information, please contact Fleet Cents.</string>
+    <string name="rtl_tcp_andro_exec">rtl_sdr_andro</string>
+    <string name="sensor_id">Sensor ID:</string>
+    <string name="stream">Start stream</string>
+    <string name="temp">Temperature:</string>
+    <string name="use_root">Use root access</string>
+    <string name="warn_txt">The driver has been installed successfully! Please, launch your host application and it will trigger the driver automatically.</string>
+    <!-- From: file:/Users/bmck/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/values/styles.xml -->
+    <eat-comment/>
+    <style name="AppTheme" parent="android:Theme.Holo">
+        <!-- Customize your theme here. -->
+    </style>
+</resources>

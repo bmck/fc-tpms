@@ -10,7 +10,8 @@ CFLAGS	=	-O2 -fPIE -fstack-protector --param=ssp-buffer-size=4 \
 
 LIBS	=	`./vsf_findlibs.sh`
 LINK	=	-Wl
-LDFLAGS	=	-fPIE -Lliquid -lliquid
+CURL_CONFIG = `curl-config --libs`
+LDFLAGS	=	-fPIE -Lliquid -lliquid $(CURL_CONFIG)
 
 OBJS	=	\
 	vsftpd/main.o \

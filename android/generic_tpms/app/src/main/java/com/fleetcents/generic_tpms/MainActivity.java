@@ -82,10 +82,12 @@ public class MainActivity extends Activity {
         public void run() {
             synchronized (this) {
                 Log.i(LOGTAG, "A @ " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()) + "\n");
-                displayMessage(getString(R.string.msg_send_activation));
+                displayMessage(getString(R.string.msg_send_activation) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
 
                 File file = new File(cacheDir(TMPFCBINFN), TMPFCBINFN);
-                arguments = "-f 315000000 -s 2048000 -n 4000000 -t " + (testing ? "1" : "0") + " -S" + " " + file + "";
+                int sample_rate = 1024000;
+                float secs = 3;
+                arguments = "-f 314980000 -s " + sample_rate + " -n " + Math.round(secs * sample_rate) + " -t " + (testing ? "1" : "0") + " " + file + "";
                 Log.i(LOGTAG, "arguments = >" + arguments + "<");
 
                 if (!testing) {
@@ -109,7 +111,7 @@ public class MainActivity extends Activity {
                     Log.d(LOGTAG, "C @ " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
 
                 }
-                displayMessage(getString(R.string.msg_rcving_sensor_data));
+                displayMessage(getString(R.string.msg_rcving_sensor_data) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
                 Log.i(LOGTAG, "onActivityResult: RTL-SDR Data Capture Completed.");
 
                 if (pktFound() == 1) {
@@ -136,18 +138,18 @@ public class MainActivity extends Activity {
                             new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
-                                    displayMessage(getString(R.string.msg_data_rcvd_ok) + "\n\n");
+                                    displayMessage(getString(R.string.msg_data_rcvd_ok));
                                 }
                             }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            displayMessage(getString(R.string.msg_data_not_rcvd_ok) + "\n\n");
+                            displayMessage(getString(R.string.msg_data_not_rcvd_ok));
                         }
                     });
                     // Add the request to the RequestQueue.
                     queue.add(stringRequest);
                 } else {
-                    displayMessage(getString(R.string.msg_valid_pkt_not_found) + "\n\n");
+                    displayMessage(getString(R.string.msg_valid_pkt_not_found));
                 }
 
                 Log.i(LOGTAG, "Exit postProcessRtlsdrData");
@@ -158,6 +160,8 @@ public class MainActivity extends Activity {
                 Log.i(LOGTAG, "G @ " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()) + "\n");
 
                 this.notify();
+                displayMessage("Completed at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()) + "\n\n");
+
             }
         }
     };

@@ -5,6 +5,7 @@
 # This script is intended to be a _single_file_ installation script to set up a Centos server with all Capitalytics'
 # bells and whistles.  It should only be run by root.
 
+export CUST=newco
 
 
 
@@ -20,6 +21,7 @@ echo --------------------------------------------- STEP 0
 echo Preconfiguration
 
 #  /data is typically on a "larger" partition than /; / usually contains /tmp
+mkdir /data
 mv /home /data
 ln -s /data/home /
 
@@ -100,6 +102,7 @@ gpgkey=https://yum.mariadb.org/RPM-GPG-KEY-MariaDB
 gpgcheck=1
 EOM
 
+yum -y upgrade ca-certificates
 yum --enablerepo=epel -y install epel-release
 rm -f /etc/yum.repos.d/epel-bootstrap.repo
 
@@ -170,6 +173,7 @@ step_3() {
 echo --------------------------------------------- STEP 3
 echo Installing rvm, ruby and its dependencies
 
+gpg2 --keyserver hkp://keys.gnupg.net --recv-keys 409B6B1796C275462A1703113804BB82D39DC0E3
 curl -L get.rvm.io | bash -s stable
 source /etc/profile.d/rvm.sh
 rvm install 2.1.4 ; rvm use 2.1.4 --default
@@ -231,7 +235,7 @@ echo Configure Services
 #       680/tcp  open  unknown
 #       1311/tcp open  unknown
 #
-#     Port 25 (smtp) should remain open for sending email as part of the Newco service.
+#     Port 25 (smtp) should remain open for sending email as part of the $CUST service.
 #     Ports 111 (rpcbind), 199 (smux), and 1311 should remain open for the NewServers management system.
 #     Port 631 (ipp) is controlled via the cups service, and should be closed.
 #     It is not clear what services are using port 680.  Port 6311 will be needed for for Rserve.
@@ -258,10 +262,10 @@ step_6() {
 
 echo --------------------------------------------- STEP 6
 echo Creating user accounts
-#  Create the "newco" local user account, as well as other accounts required for administrators.
+#  Create the "$CUST" local user account, as well as other accounts required for administrators.
 
-useradd newco && chmod 755 /home/newco
-usermod -G wheel,rvm newco
+useradd $CUST && chmod 755 /home/$CUST
+usermod -G wheel,rvm $CUST
 useradd bmck && chmod 700 /home/bmck
 
 }
@@ -317,15 +321,15 @@ Y6dZWZj7a7aLyY7+UUA=
 step_8() {
 
 echo --------------------------------------------- STEP 8
-echo Setup newco account
-# Configure the "newco" account to run the web application code and configuration files.
+echo Setup $CUST account
+# Configure the "$CUST" account to run the web application code and configuration files.
 
-mkdir -p /home/newco/html && chown newco:newco /home/newco/html && chmod 775 /home/newco/html
-su - newco -c "cd && svn checkout --username bmck_newco --password w4r4w4Rjp --non-interactive https://subversion.assembla.com/svn/bmck-newco/trunk assembla"
-su - newco -c "ln -s ~/assembla/website ~/src"
-su - newco -c "cd ~/src/config && ln -s database-mysql-prod.yml database.yml"
-echo "export PATH=$PATH:/usr/local/lib/ruby/gems/1.9.1/bin" >> ~newco/.bash_profile
-mkdir /home/newco/tmp && mkdir /home/newco/tmp/cores && chown -R newco:newco /home/newco/tmp && ln -s /home/newco/tmp/cores /cores
+mkdir -p /home/$CUST/html && chown $CUST:$CUST /home/$CUST/html && chmod 775 /home/$CUST/html
+su - $CUST -c "cd && svn checkout --username bmck_newco --password e5t5e5t5E --non-interactive https://subversion.assembla.com/svn/bmck-newco/trunk assembla"
+su - $CUST -c "ln -s ~/assembla/website ~/src"
+su - $CUST -c "cd ~/src/config && ln -s database-mysql-prod.yml database.yml"
+echo "export PATH=$PATH:/usr/local/lib/ruby/gems/1.9.1/bin" >> /home/$CUST/.bash_profile
+mkdir /home/$CUST/tmp && mkdir /home/$CUST/tmp/cores && chown -R $CUST:$CUST /home/$CUST/tmp && ln -s /home/$CUST/tmp/cores /cores
 
 }
 
@@ -343,7 +347,7 @@ step_9() {
 echo --------------------------------------------- STEP 9
 echo Updating R
 
-~newco/src/bin/update.R
+/home/$CUST/src/bin/update.R
 
 }
 
@@ -374,9 +378,9 @@ rvm use 2.1.4@global --create
 gem install --no-rdoc --no-ri bundler
 gem install --no-rdoc --no-ri rake -v 10.3.2
 gem install --no-rdoc --no-ri rack -v 1.5.2
-rvm gemset delete newco --force
-su - newco -c "rvm use 2.1.4@newco --create && cd src && bundle install "
-rvm use 2.1.4@newco
+rvm gemset delete $CUST --force
+su - $CUST -c "rvm use 2.1.4@$CUST --create && cd src && bundle install "
+rvm use 2.1.4@$CUST
 
 }
 
@@ -398,7 +402,7 @@ USR=bmck
 
 service mysql stop
 mv /etc/my.cnf /etc/my.cnf.bak
-ln -s ~newco/src/etc/mysql/my.cnf.prod /etc/my.cnf
+ln -s /home/$CUST/src/etc/mysql/my.cnf.prod /etc/my.cnf
 ln -s /etc/init.d/mysql /etc/init.d/mysqld
 
 mv /var/lib/mysql /data
@@ -415,9 +419,9 @@ chown -h mysql:mysql /var/lib/mysql
 # echo $ ssh -l $USR -p 9922 www.capitalytics.com
 # echo
 # echo You may also wish to ensure that all of the relevant tables are in MyISAM format.  One way to do so is the following command, executed as
-# echo -e "the \"newco\" user on the target machine (i.e., www.capitalytics.com)."
+# echo -e "the \"$CUST\" user on the target machine (i.e., www.capitalytics.com)."
 # echo
-# echo -e "(as newco)"
+# echo -e "(as $CUST)"
 # echo $ rake db:caplyt:myisam_convert --trace
 # echo
 # echo Then return to this process using \'fg 1\' or similar command, and press Enter to resume this script.
@@ -425,14 +429,14 @@ chown -h mysql:mysql /var/lib/mysql
 
 chmod 777 /data/mysql
 ls -d1 /var/lib/mysql/* | xargs chmod 777
-su - $USR -c "~newco/src/bin/sync_db"
+su - $USR -c "/home/$CUST/src/bin/sync_db"
 chown -R mysql:mysql /var/lib/mysql/*
 ls -d1 /var/lib/mysql/* | xargs chmod 700
 chmod 644 /var/lib/mysql/*/*
 chmod 755 /data/mysql
 service mysql start; chkconfig mysql on
 
-mysql -u admin --password=w4r4w4R -e "create database newco_test;"
+mysql -u admin --password=w4r4w4R -e "create database $CUST_test;"
 mysql_upgrade -u admin --password=w4r4w4R
 mysql -u admin --password=w4r4w4R -D mysql -e "repair table proc;"
 
@@ -454,9 +458,9 @@ echo --------------------------------------------- STEP 12
 echo Configure httpd and passenger
 
 service httpd stop
-cd /etc/httpd/conf ; mv httpd.conf httpd.conf.old ; ln -s  ~newco/src/etc/httpd/httpd.conf .
-cd /etc/httpd/conf.d ; mv ssl.conf ssl.conf.old ; ln -s  ~newco/src/etc/httpd/ssl.conf .
-/usr/local/rvm/gems/ruby-2.1.4@newco/gems/passenger-*/bin/passenger-install-apache2-module  --auto
+cd /etc/httpd/conf ; mv httpd.conf httpd.conf.old ; ln -s  /home/$CUST/src/etc/httpd/httpd.conf .
+cd /etc/httpd/conf.d ; mv ssl.conf ssl.conf.old ; ln -s  /home/$CUST/src/etc/httpd/ssl.conf .
+/usr/local/rvm/gems/ruby-2.1.4@$CUST/gems/passenger-*/bin/passenger-install-apache2-module  --auto
 service httpd start; chkconfig httpd on
 
 }
@@ -475,15 +479,15 @@ echo --------------------------------------------- STEP 13
 # echo Configure outgoing email
 
 
-# cd /etc/pki/tls/certs ; ln -s /home/newco/src/etc/email/*.pem .
+# cd /etc/pki/tls/certs ; ln -s /home/$CUST/src/etc/email/*.pem .
 # mv /etc/mail/authinfo /etc/mail/authinfo.bak
 # mv /etc/mail/sendmail.mc /etc/mail/sendmail.mc.bak
-# ln -s ~newco/src/etc/email/authinfo /etc/mail
-# ln -s ~newco/src/etc/email/sendmail.mc /etc/mail
+# ln -s /home/$CUST/src/etc/email/authinfo /etc/mail
+# ln -s /home/$CUST/src/etc/email/sendmail.mc /etc/mail
 cd /etc/mail ; make clean ; make
 service sendmail restart; chkconfig sendmail on
 # echo "info@capitalytics.com" > ~/.forward
-# su - newco -c "echo 'support@capitalytics.com' > ~/.forward"
+# su - $CUST -c "echo 'support@capitalytics.com' > ~/.forward"
 
 }
 
@@ -503,23 +507,23 @@ step_14() {
 echo --------------------------------------------- STEP 14
 echo Install 3rd party software
 
-mkdir ~newco/tmp
-cd ~newco/tmp
+mkdir /home/$CUST/tmp
+cd /home/$CUST/tmp
 
 # echo Boost v.1.47
-# cd ~newco/src/vendor/3rdparty/boost/1.47.0
+# cd /home/$CUST/src/vendor/3rdparty/boost/1.47.0
 # ./bootstrap.sh --without-libraries=python
 # ./b2 --clean
 # ./b2 -a -d+2 install
 
 # echo Boost v.1.53
-# cd ~newco/src/vendor/3rdparty/boost/1.53.0
+# cd /home/$CUST/src/vendor/3rdparty/boost/1.53.0
 # ./bootstrap.sh --without-libraries=python
 # ./b2 --clean
 # ./b2 -a -d+2 install
 
 # echo Boost v.1.55
-# cd ~newco/src/vendor/3rdparty/boost/1.55.0
+# cd /home/$CUST/src/vendor/3rdparty/boost/1.55.0
 # ./bootstrap.sh --without-libraries=python
 # ./b2 --clean
 # ./b2 -a -d+2 install
@@ -528,7 +532,7 @@ cd ~newco/tmp
 
 # echo yaml-cpp v.0.2.7
 
-# cd ~newco/tmp
+# cd /home/$CUST/tmp
 # wget http://yaml-cpp.googlecode.com/files/yaml-cpp-0.2.7.tar.gz
 # tar -zxvf yaml-cpp-0.2.7.tar.gz
 # cd yaml-cpp-0.2.7
@@ -538,7 +542,7 @@ cd ~newco/tmp
 
 # echo mysql++ v.3.2.1
 
-# cd ~newco/tmp
+# cd /home/$CUST/tmp
 # rm -rf mysql++-3.2.1*
 # wget http://tangentsoft.net/mysql++/releases/mysql++-3.2.1.tar.gz
 # tar -zxvf mysql++-3.2.1.tar.gz
@@ -550,35 +554,35 @@ cd ~newco/tmp
 # echo unoconv
 
 # cd /usr/local/bin
-# ln -s ~newco/src/vendor/3rdparty/unoconv/trunk/unoconv .
+# ln -s /home/$CUST/src/vendor/3rdparty/unoconv/trunk/unoconv .
 
 # echo QuantLib v.1.2.1
 
-# cd ~newco/src/vendor/3rdparty/quantlib/1.2.1/QuantLib
+# cd /home/$CUST/src/vendor/3rdparty/quantlib/1.2.1/QuantLib
 # ./autogen.sh
 # ./configure --prefix=/usr --with-boost-include=/usr/local/include/boost --with-boost-lib=/usr/local/lib
 # make clean ; make all
 
 # echo QuantLib v.1.3
 
-# cd ~newco/src/vendor/3rdparty/quantlib/1.3/QuantLib
+# cd /home/$CUST/src/vendor/3rdparty/quantlib/1.3/QuantLib
 # ./autogen.sh
 # ./configure --prefix=/usr --with-boost-include=/usr/local/include/boost --with-boost-lib=/usr/local/lib
 # make clean ; make all
 
 # echo QuantLib v.1.3
 
-# cd ~newco/src/vendor/3rdparty/quantlib/1.4/QuantLib
+# cd /home/$CUST/src/vendor/3rdparty/quantlib/1.4/QuantLib
 # ./autogen.sh
 # ./configure --prefix=/usr --with-boost-include=/usr/local/include/boost --with-boost-lib=/usr/local/lib
 # mv ql/config.hpp ql/config.hpp.bak
-# ln -s ~newco/src/etc/QuantLib/config-prod.hpp ql/config.hpp
+# ln -s /home/$CUST/src/etc/QuantLib/config-prod.hpp ql/config.hpp
 # make clean ; make all install
 
 # mv /usr/include/ql/config.hpp /usr/include/ql/config.hpp.old
-# ln -s ~newco/src/etc/QuantLib/config-prod.hpp /usr/include/ql/config.hpp
+# ln -s /home/$CUST/src/etc/QuantLib/config-prod.hpp /usr/include/ql/config.hpp
 
-chown -R newco:newco ~newco/tmp
+chown -R $CUST:$CUST /home/$CUST/tmp
 }
 
 
@@ -594,12 +598,12 @@ step_15() {
 echo --------------------------------------------- STEP 15
 echo Configure logrotate and logwatch
 
-cd /etc; rm -f logrotate.conf; ln -s /home/newco/src/etc/logrotate/logrotate.conf
+cd /etc; rm -f logrotate.conf; ln -s /home/$CUST/src/etc/logrotate.conf
 
 cd /usr/share/logwatch/scripts/services
-mv http ~newco/src/etc/logwatch/scripts/services
-chown newco:newco ~newco/src/etc/logwatch/scripts/services/http
-ln -s ~newco/src/etc/logwatch/scripts/services/http .
+mv http /home/$CUST/src/etc/logwatch/scripts/services
+chown $CUST:$CUST /home/$CUST/src/etc/logwatch/scripts/services/http
+ln -s /home/$CUST/src/etc/logwatch/scripts/services/http .
 
 }
 
@@ -619,7 +623,7 @@ echo Configure SSHD
 service iptables stop
 mv /etc/ssh/sshd_config /etc/ssh/sshd_config.bak
 cd /etc/ssh
-ln -s ~newco/src/etc/ssh/sshd_config .
+ln -s /home/$CUST/src/etc/ssh/sshd_config .
 service sshd restart
 
 }
@@ -657,7 +661,7 @@ echo --------------------------------------------- STEP 18
 echo Configure iptables
 
 mv /etc/sysconfig/iptables /etc/sysconfig/iptables.bak
-ln -s ~newco/src/etc/iptables/iptables.conf /etc/sysconfig/iptables
+ln -s /home/$CUST/src/etc/iptables/iptables.conf /etc/sysconfig/iptables
 service iptables restart; chkconfig iptables on
 
 }
@@ -694,7 +698,7 @@ step_20() {
 echo --------------------------------------------- STEP 20
 echo Configure cron jobs
 
-echo At this time, please use ^Z to stop this process so that you may rsync all necessary files between ~newco/tmp on the current production server and this server.
+echo At this time, please use ^Z to stop this process so that you may rsync all necessary files between /home/$CUST/tmp on the current production server and this server.
 echo When completed, return to this process using \'fg 1\' or similar command, and press Enter to resume this script.
 read -t 100 NTR
 
@@ -734,7 +738,7 @@ read -t 100 NTR
 
 usage() {
 
-echo -e "This program sets up and installs the Newco system onto a Centos 6 system.  It is divided into \`expr $MAXSTEP \+ 1\` steps,
+echo -e "This program sets up and installs the $CUST system onto a Centos 6 system.  It is divided into \`expr $MAXSTEP \+ 1\` steps,
 by default running from step 0 to step $MAXSTEP.
 
 This program can take up to two optional arguments:

@@ -32,7 +32,6 @@ void end_analysis();
 int analyze_input(unsigned char *buf, uint32_t len, uint32_t sample_offset);
 int analyze_file(char *src_filename);
 int analyze_iq_pairs(unsigned char *buf, uint32_t buf_length);
-int analyze_iq_pairs2(unsigned char *buf, uint32_t buf_length);
 
 unsigned long get_dec_address_val( /*char *bit_vals, long num_bits*/ );
 char *get_hex_address_str( /*char *bit_vals, long num_bits,*/ char *returned_url);

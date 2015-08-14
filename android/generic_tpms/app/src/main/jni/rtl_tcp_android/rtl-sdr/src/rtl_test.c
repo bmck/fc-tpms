@@ -53,23 +53,6 @@
 #define PPM_DURATION			10
 #define PPM_DUMP_TIME			5
 
-#define SCAN_LIMIT			2500000000
-
-struct time_generic
-/* holds all the platform specific values */
-{
-#ifndef _WIN32
-	time_t tv_sec;
-	long tv_nsec;
-#else
-	long tv_sec;
-	long tv_nsec;
-	int init;
-	LARGE_INTEGER frequency;
-	LARGE_INTEGER ticks;
-#endif
-};
-
 static enum {
 	NO_BENCHMARK,
 	TUNER_BENCHMARK,
@@ -93,8 +76,10 @@ void usage(void)
 		"Usage:\n"
 		"\t[-s samplerate (default: 2048000 Hz)]\n"
 		"\t[-d device_index (default: 0)]\n"
-		"\t[-t enable tuner range benchmark]\n"
+		"\t[-t enable Elonics E4000 tuner benchmark]\n"
+#ifndef _WIN32
 		"\t[-p[seconds] enable PPM error measurement (default: 10 seconds)]\n"
+#endif
 		"\t[-b output_block_size (default: 16 * 16384)]\n"
 		"\t[-S force sync output (default: async)]\n");
 	exit(1);
@@ -149,15 +134,12 @@ static void underrun_test(unsigned char *buf, uint32_t len, int mute)
 }
 
 #ifndef _WIN32
-static int ppm_gettime(struct time_generic *tg)
+static int ppm_gettime(struct timespec *ts)
 {
 	int rv = ENOSYS;
-	struct timespec ts;
 
 #ifdef __unix__
-	rv = clock_gettime(CLOCK_MONOTONIC, &ts);
-	tg->tv_sec = ts.tv_sec;
-	tg->tv_nsec = ts.tv_nsec;
+	rv = clock_gettime(CLOCK_MONOTONIC, ts);
 #elif __APPLE__
 	struct timeval tv;
 
@@ -167,24 +149,6 @@ static int ppm_gettime(struct time_generic *tg)
 #endif
 	return rv;
 }
-#endif
-
-#ifdef _WIN32
-static int ppm_gettime(struct time_generic *tg)
-{
-	int rv;
-	int64_t frac;
-	if (!tg->init) {
-		QueryPerformanceFrequency(&tg->frequency);
-		tg->init = 1;
-	}
-	rv = QueryPerformanceCounter(&tg->ticks);
-	tg->tv_sec = tg->ticks.QuadPart / tg->frequency.QuadPart;
-	frac = (int64_t)(tg->ticks.QuadPart - (tg->tv_sec * tg->frequency.QuadPart));
-	tg->tv_nsec = (long)(frac * 1000000000L / (int64_t)tg->frequency.QuadPart);
-	return !rv;
-}
-#endif
 
 static int ppm_report(uint64_t nsamples, uint64_t interval)
 {
@@ -201,9 +165,8 @@ static void ppm_test(uint32_t len)
 	static uint64_t interval = 0;
 	static uint64_t nsamples_total = 0;
 	static uint64_t interval_total = 0;
-	static struct time_generic ppm_now;
-	static struct time_generic ppm_recent;
-
+	struct timespec ppm_now;
+	static struct timespec ppm_recent;
 	static enum {
 		PPM_INIT_NO,
 		PPM_INIT_DUMP,
@@ -211,7 +174,6 @@ static void ppm_test(uint32_t len)
 	} ppm_init = PPM_INIT_NO;
 
 	ppm_gettime(&ppm_now);
-
 	if (ppm_init != PPM_INIT_RUN) {
 		/*
 		 * Kyle Keen wrote:
@@ -227,7 +189,8 @@ static void ppm_test(uint32_t len)
 		}
 		if (ppm_init == PPM_INIT_DUMP && ppm_recent.tv_sec < ppm_now.tv_sec)
 			return;
-		ppm_recent = ppm_now;
+		ppm_recent.tv_sec = ppm_now.tv_sec;
+		ppm_recent.tv_nsec = ppm_now.tv_nsec;
 		ppm_init = PPM_INIT_RUN;
 		return;
 	}
@@ -237,110 +200,71 @@ static void ppm_test(uint32_t len)
 		return;
 	interval *= 1000000000UL;
 	interval += (int64_t)(ppm_now.tv_nsec - ppm_recent.tv_nsec);
-
 	nsamples_total += nsamples;
 	interval_total += interval;
 	printf("real sample rate: %i current PPM: %i cumulative PPM: %i\n",
 		(int)((1000000000UL * nsamples) / interval),
 		ppm_report(nsamples, interval),
 		ppm_report(nsamples_total, interval_total));
-	ppm_recent = ppm_now;
+	ppm_recent.tv_sec = ppm_now.tv_sec;
+	ppm_recent.tv_nsec = ppm_now.tv_nsec;
 	nsamples = 0;
 }
+#endif
 
 static void rtlsdr_callback(unsigned char *buf, uint32_t len, void *ctx)
 {
 	underrun_test(buf, len, 0);
+#ifndef _WIN32
 	if (test_mode == PPM_BENCHMARK)
 		ppm_test(len);
+#endif
 }
 
-/* smallest band or band gap that tuner_benchmark() will notice */
-static uint32_t max_step(uint32_t freq) {
-	if (freq < 1e6)
-		return 1e4;
-	if (freq > 1e8)
-		return 1e6;
-	return freq / 1e2;
-}
-
-/* precision with which tuner_benchmark() will measure the edges of bands */
-static uint32_t min_step(uint32_t freq) {
-	return 100;
-}
-
-int confirm_pll_lock(uint32_t f)
+void e4k_benchmark(void)
 {
-	int i;
-	for (i=0; i<20; i++) {
-		if (rtlsdr_set_center_freq(dev, f) >= 0)
-			return 1;
-	}
-	return 0;
-}
+	uint32_t freq, gap_start = 0, gap_end = 0;
+	uint32_t range_start = 0, range_end = 0;
 
-/* returns last frequency before achieving status of 'lock' */
-uint32_t coarse_search(uint32_t start, int lock)
-{
-	uint32_t f = start, f2;
-	int status;
-	while (f < SCAN_LIMIT) {
-		if (do_exit)
+	fprintf(stderr, "Benchmarking E4000 PLL...\n");
+
+	/* find tuner range start */
+	for (freq = MHZ(70); freq > MHZ(1); freq -= MHZ(1)) {
+		if (rtlsdr_set_center_freq(dev, freq) < 0) {
+			range_start = freq;
 			break;
-		f2 = f + max_step(f);
-		status = rtlsdr_set_center_freq(dev, f2) >= 0;
-		if (!lock && !status)
-			status = confirm_pll_lock(f2);
-		if (status == lock)
-			return f;
-		f = f2;
+		}
 	}
-	return SCAN_LIMIT + 1;
-}
 
-/* returns frequency of a transition
- * must have one transition between start and start+step */
-uint32_t fine_search(uint32_t start, uint32_t step)
-{
-	int low_status, mid_status, high_status;
-	uint32_t f, stop;
-	stop = start + step;
-	f = start + step / 2;
-	low_status = rtlsdr_set_center_freq(dev, start) >= 0;
-	high_status = rtlsdr_set_center_freq(dev, stop) >= 0;
-	if (low_status == high_status)
-		return start;
-	while (step > min_step(start)) {
-		if (do_exit)
+	/* find tuner range end */
+	for (freq = MHZ(2000); freq < MHZ(2300UL); freq += MHZ(1)) {
+		if (rtlsdr_set_center_freq(dev, freq) < 0) {
+			range_end = freq;
 			break;
-		mid_status = rtlsdr_set_center_freq(dev, f) >= 0;
-		if (low_status == mid_status)
-			start = f;
-		else
-			stop = f;
-		step = stop - start;
-		f = start + step / 2;
+		}
 	}
-	return f;
-}
 
-void tuner_benchmark(void)
-{
-	uint32_t f = 0, low_bound, high_bound;
-	fprintf(stderr, "Testing tuner range. This may take a couple of minutes...\n");
-	while (!do_exit) {
-		/* find start of a band */
-		f = coarse_search(f, 1);
-		low_bound = fine_search(f, max_step(f));
-		f += max_step(f);
-		/* find stop of a band */
-		f = coarse_search(f, 0);
-		high_bound = fine_search(f, max_step(f));
-		f += max_step(f);
-		if (f > SCAN_LIMIT)
+	/* find start of L-band gap */
+	for (freq = MHZ(1000); freq < MHZ(1300); freq += MHZ(1)) {
+		if (rtlsdr_set_center_freq(dev, freq) < 0) {
+			gap_start = freq;
 			break;
-		fprintf(stderr, "Band: %u - %u Hz\n", low_bound, high_bound);
+		}
 	}
+
+	/* find end of L-band gap */
+	for (freq = MHZ(1300); freq > MHZ(1000); freq -= MHZ(1)) {
+		if (rtlsdr_set_center_freq(dev, freq) < 0) {
+			gap_end = freq;
+			break;
+		}
+	}
+
+	fprintf(stderr, "E4K range: %i to %i MHz\n",
+		range_start/MHZ(1) + 1, range_end/MHZ(1) - 1);
+
+	fprintf(stderr, "E4K L-band gap: %i to %i MHz\n",
+		gap_start/MHZ(1), gap_end/MHZ(1));
 }
 
 int main(int argc, char **argv)
@@ -436,7 +360,11 @@ int main(int argc, char **argv)
 	verbose_set_sample_rate(dev, samp_rate);
 
 	if (test_mode == TUNER_BENCHMARK) {
-		tuner_benchmark();
+		if (rtlsdr_get_tuner_type(dev) == RTLSDR_TUNER_E4000)
+			e4k_benchmark();
+		else
+			fprintf(stderr, "No E4000 tuner found, aborting.\n");
+
 		goto exit;
 	}
 
@@ -447,7 +375,7 @@ int main(int argc, char **argv)
 	verbose_reset_buffer(dev);
 
 	if ((test_mode == PPM_BENCHMARK) && !sync_mode) {
-		fprintf(stderr, "Reporting PPM error measurement every %u seconds...\n", ppm_duration);
+		fprintf(stderr, "Reporting PPM error measurement every %i seconds...\n", ppm_duration);
 		fprintf(stderr, "Press ^C after a few minutes.\n");
 	}
 

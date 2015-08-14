@@ -53,7 +53,7 @@
 #include <io.h>
 #include "getopt/getopt.h"
 #define usleep(x) Sleep(x/1000)
-#if defined(_MSC_VER) && _MSC_VER < 1800
+#ifdef _MSC_VER
 #define round(x) (x > 0.0 ? floor(x + 0.5): ceil(x - 0.5))
 #endif
 #define _USE_MATH_DEFINES
@@ -72,44 +72,31 @@
 #define AUTO_GAIN			-100
 #define BUFFER_DUMP			(1<<12)
 
-#define MAXIMUM_RATE			3200000
+#define MAXIMUM_RATE			2800000
 #define MINIMUM_RATE			1000000
-#define DEFAULT_TARGET			2400000
-
-#define MAXIMUM_FFT			32
 
 static volatile int do_exit = 0;
 static rtlsdr_dev_t *dev = NULL;
 FILE *file;
 
-struct sine_table
-{
-	int16_t* Sinewave;
-	int N_WAVE;
-	int LOG2_N_WAVE;
-};
-
-struct sine_table s_tables[MAXIMUM_FFT];
+int16_t* Sinewave;
+double* power_table;
+int N_WAVE, LOG2_N_WAVE;
+int next_power;
+int16_t *fft_buf;
+int *window_coefs;
 
 struct tuning_state
 /* one per tuning range */
 {
 	int freq;
 	int rate;
-	int gain;
 	int bin_e;
-	int16_t *fft_buf;
-	int64_t *avg;  /* length == 2^bin_e */
+	long *avg;  /* length == 2^bin_e */
 	int samples;
 	int downsample;
 	int downsample_passes;  /* for the recursive filter */
-	int comp_fir_size;
-	int peak_hold;
-	int linear;
-	int bin_spec;
 	double crop;
-	int crop_i1, crop_i2;
-	int freq_low, freq_high;
 	//pthread_rwlock_t avg_lock;
 	//pthread_mutex_t avg_mutex;
 	/* having the iq buffer here is wasteful, but will avoid contention */
@@ -118,50 +105,27 @@ struct tuning_state
 	//int *comp_fir;
 	//pthread_rwlock_t buf_lock;
 	//pthread_mutex_t buf_mutex;
-	int *window_coefs;
-	struct sine_table *sine;  /* points to an element of s_tables */
-};
-
-struct channel_solve
-/* details required to find optimal tuning */
-{
-	int upper, lower, bin_spec;
-	int hops, bw_wanted, bw_needed;
-	int bin_e, downsample, downsample_passes;
-	double crop, crop_tmp;
-};
-
-enum time_modes { VERBOSE_TIME, EPOCH_TIME };
-
-struct misc_settings
-{
-	int boxcar;
-	int comp_fir_size;
-	int peak_hold;
-	int linear;
-	int target_rate;
-	double crop;
-	int gain;
-	double (*window_fn)(int, int);
-	int smoothing;
-	enum time_modes time_mode;
 };
 
 /* 3000 is enough for 3GHz b/w worst case */
-#define MAX_TUNES	4000
+#define MAX_TUNES	3000
 struct tuning_state tunes[MAX_TUNES];
 int tune_count = 0;
+
+int boxcar = 1;
+int comp_fir_size = 0;
+int peak_hold = 0;
 
 void usage(void)
 {
 	fprintf(stderr,
 		"rtl_power, a simple FFT logger for RTL2832 based DVB-T receivers\n\n"
-		"Use:\trtl_power -f freq_range [-options] [-f freq2 -opts2] [filename]\n"
+		"Use:\trtl_power -f freq_range [-options] [filename]\n"
 		"\t-f lower:upper:bin_size [Hz]\n"
-		"\t  valid range for bin_size is 1Hz - 2.8MHz\n"
-		"\t  multiple frequency ranges are supported\n"
+		"\t (bin size is a maximum, smaller more convenient bins\n"
+		"\t  will be used.  valid range 1Hz - 2.8MHz)\n"
 		"\t[-i integration_interval (default: 10 seconds)]\n"
-		"\t  buggy if a full sweep takes longer than the interval\n"
+		"\t (buggy if a full sweep takes longer than the interval)\n"
 		"\t[-1 enables single-shot mode (default: off)]\n"
 		"\t[-e exit_timer (default: off/0)]\n"
 		//"\t[-s avg/iir smoothing (default: avg)]\n"
@@ -170,45 +134,37 @@ void usage(void)
 		"\t[-g tuner_gain (default: automatic)]\n"
 		"\t[-p ppm_error (default: 0)]\n"
 		"\tfilename (a '-' dumps samples to stdout)\n"
-		"\t  omitting the filename also uses stdout\n"
+		"\t (omitting the filename also uses stdout)\n"
 		"\n"
 		"Experimental options:\n"
 		"\t[-w window (default: rectangle)]\n"
-		"\t  hamming, blackman, blackman-harris, hann-poisson, bartlett, youssef\n"
+		"\t (hamming, blackman, blackman-harris, hann-poisson, bartlett, youssef)\n"
 		// kaiser
-		"\t[-c crop_percent (default: 0%% suggested: 20%%)]\n"
-		"\t  discards data at the edges, 100%% discards everything\n"
-		"\t  has no effect for bins larger than 1MHz\n"
-		"\t  this value is a minimum crop size, more may be discarded\n"
+		"\t[-c crop_percent (default: 0%%, recommended: 20%%-50%%)]\n"
+		"\t (discards data at the edges, 100%% discards everything)\n"
+		"\t (has no effect for bins larger than 1MHz)\n"
 		"\t[-F fir_size (default: disabled)]\n"
-		"\t  enables low-leakage downsample filter,\n"
+		"\t (enables low-leakage downsample filter,\n"
 		"\t  fir_size can be 0 or 9.  0 has bad roll off,\n"
-		"\t  try -F 0 with '-c 50%%' to hide the roll off\n"
-		"\t[-r max_sample_rate (default: 2.4M)]\n"
-		"\t  possible values are 2M to 3.2M\n"
-		"\t[-E enables epoch timestamps (default: off/verbose)]\n"
-		"\t[-P enables peak hold (default: off/averaging)]\n"
-		"\t[-L enable linear output (default: off/dB)]\n"
-		"\t[-D direct_sampling_mode, 0 (default/off), 1 (I), 2 (Q), 3 (no-mod)]\n"
+		"\t  try with '-c 50%%')\n"
+		"\t[-P enables peak hold (default: off)]\n"
+		"\t[-D enable direct sampling (default: off)]\n"
 		"\t[-O enable offset tuning (default: off)]\n"
 		"\n"
 		"CSV FFT output columns:\n"
 		"\tdate, time, Hz low, Hz high, Hz step, samples, dbm, dbm, ...\n\n"
 		"Examples:\n"
 		"\trtl_power -f 88M:108M:125k fm_stations.csv\n"
-		"\t  creates 160 bins across the FM band,\n"
-		"\t  individual stations should be visible\n"
+		"\t (creates 160 bins across the FM band,\n"
+		"\t  individual stations should be visible)\n"
 		"\trtl_power -f 100M:1G:1M -i 5m -1 survey.csv\n"
-		"\t  a five minute low res scan of nearly everything\n"
+		"\t (a five minute low res scan of nearly everything)\n"
 		"\trtl_power -f ... -i 15m -1 log.csv\n"
-		"\t  integrate for 15 minutes and exit afterwards\n"
+		"\t (integrate for 15 minutes and exit afterwards)\n"
 		"\trtl_power -f ... -e 1h | gzip > log.csv.gz\n"
-		"\t  collect data for one hour and compress it on the fly\n\n"
-		"\tIf you have issues writing +2GB logs on a 32bit platform\n"
-		"\tuse redirection (rtl_power ... > filename.csv) instead\n\n"
+		"\t (collect data for one hour and compress it on the fly)\n\n"
 		"Convert CSV to a waterfall graphic with:\n"
-		"  https://github.com/keenerd/rtl-sdr-misc/blob/master/heatmap/heatmap.py \n"
-		"More examples at http://kmkeen.com/rtl-power/\n");
+		"\t http://kmkeen.com/tmp/heatmap.py.txt \n");
 	exit(1);
 }
 
@@ -264,7 +220,7 @@ int cic_9_tables[][10] = {
 	{9, -199, -362, 5303, -25505, 77489, -25505, 5303, -362, -199},
 };
 
-#if defined(_MSC_VER) && _MSC_VER < 1800
+#ifdef _MSC_VER
 double log2(double n)
 {
 	return log(n) / log(2.0);
@@ -281,34 +237,15 @@ void sine_table(int size)
 {
 	int i;
 	double d;
-	struct sine_table *sine;
-	if (size > (MAXIMUM_FFT-1)) {
-		fprintf(stderr, "Maximum FFT is 2^%i\n", MAXIMUM_FFT-1);
-		exit(1);
-	}
-	sine = &s_tables[size];
-	if (sine->LOG2_N_WAVE == size) {
-		return;}
-	sine->LOG2_N_WAVE = size;
-	sine->N_WAVE = 1 << sine->LOG2_N_WAVE;
-	sine->Sinewave = malloc(sizeof(int16_t) * sine->N_WAVE*3/4);
-	for (i=0; i<sine->N_WAVE*3/4; i++)
+	LOG2_N_WAVE = size;
+	N_WAVE = 1 << LOG2_N_WAVE;
+	Sinewave = malloc(sizeof(int16_t) * N_WAVE*3/4);
+	power_table = malloc(sizeof(double) * N_WAVE);
+	for (i=0; i<N_WAVE*3/4; i++)
 	{
-		d = (double)i * 2.0 * M_PI / sine->N_WAVE;
-		sine->Sinewave[i] = (int)round(32767*sin(d));
-		//printf("%i\n", sine->Sinewave[i]);
-	}
-}
-
-void generate_sine_tables(void)
-{
-	struct tuning_state *ts;
-	int i;
-	for (i=0; i < tune_count; i++) {
-		ts = &tunes[i];
-		sine_table(ts->bin_e);
-		ts->sine = &s_tables[ts->bin_e];
-		ts->fft_buf = malloc(ts->buf_len * sizeof(int16_t));
+		d = (double)i * 2.0 * M_PI / N_WAVE;
+		Sinewave[i] = (int)round(32767*sin(d));
+		//printf("%i\n", Sinewave[i]);
 	}
 }
 
@@ -320,13 +257,13 @@ inline int16_t FIX_MPY(int16_t a, int16_t b)
 	return (c >> 1) + b;
 }
 
-int fix_fft(int16_t iq[], int m, struct sine_table *sine)
+int fix_fft(int16_t iq[], int m)
 /* interleaved iq[], 0 <= n < 2**m, changes in place */
 {
 	int mr, nn, i, j, l, k, istep, n, shift;
 	int16_t qr, qi, tr, ti, wr, wi;
 	n = 1 << m;
-	if (n > sine->N_WAVE)
+	if (n > N_WAVE)
 		{return -1;}
 	mr = 0;
 	nn = n - 1;
@@ -348,14 +285,14 @@ int fix_fft(int16_t iq[], int m, struct sine_table *sine)
 		iq[2*mr+1] = ti;
 	}
 	l = 1;
-	k = sine->LOG2_N_WAVE-1;
+	k = LOG2_N_WAVE-1;
 	while (l < n) {
 		shift = 1;
 		istep = l << 1;
 		for (m=0; m<l; ++m) {
 			j = m << k;
-			wr =  sine->Sinewave[j+sine->N_WAVE/4];
-			wi = -sine->Sinewave[j];
+			wr =  Sinewave[j+N_WAVE/4];
+			wi = -Sinewave[j];
 			if (shift) {
 				wr >>= 1; wi >>= 1;}
 			for (i=m; i<n; i+=istep) {
@@ -465,21 +402,21 @@ void rms_power(struct tuning_state *ts)
 	int i, s;
 	uint8_t *buf = ts->buf8;
 	int buf_len = ts->buf_len;
-	int64_t p, t;
+	long p, t;
 	double dc, err;
 
 	p = t = 0L;
 	for (i=0; i<buf_len; i++) {
 		s = (int)buf[i] - 127;
-		t += (int64_t)s;
-		p += (int64_t)(s * s);
+		t += (long)s;
+		p += (long)(s * s);
 	}
 	/* correct for dc offset in squares */
 	dc = (double)t / (double)buf_len;
 	err = t * 2 * dc - dc * dc * buf_len;
-	p -= (int64_t)round(err);
+	p -= (long)round(err);
 
-	if (!ts->peak_hold) {
+	if (!peak_hold) {
 		ts->avg[0] += p;
 	} else {
 		ts->avg[0] = MAX(ts->avg[0], p);
@@ -487,204 +424,89 @@ void rms_power(struct tuning_state *ts)
 	ts->samples += 1;
 }
 
-/* todo, add errors to parse_freq, solve_foo */
-
-int parse_frequency(char *arg, struct channel_solve *c)
+void frequency_range(char *arg, double crop)
+/* flesh out the tunes[] for scanning */
+// do we want the fewest ranges (easy) or the fewest bins (harder)?
 {
 	char *start, *stop, *step;
+	int i, j, upper, lower, max_size, bw_seen, bw_used, bin_e, buf_len;
+	int downsample, downsample_passes;
+	double bin_size;
+	struct tuning_state *ts;
 	/* hacky string parsing */
 	start = arg;
 	stop = strchr(start, ':') + 1;
 	stop[-1] = '\0';
 	step = strchr(stop, ':') + 1;
 	step[-1] = '\0';
-	c->lower = (int)atofs(start);
-	c->upper = (int)atofs(stop);
-	c->bin_spec = (int)atofs(step);
+	lower = (int)atofs(start);
+	upper = (int)atofs(stop);
+	max_size = (int)atofs(step);
 	stop[-1] = ':';
 	step[-1] = ':';
-	return 0;
-}
-
-int solve_giant_bins(struct channel_solve *c)
-{
-	c->bw_wanted = c->bin_spec;
-	c->bw_needed = c->bin_spec;
-	c->hops = (c->upper - c->lower) / c->bin_spec;
-	c->bin_e = 0;
-	c->crop_tmp = 0;
-	return 0;
-}
-
-int solve_downsample(struct channel_solve *c, int target_rate, int boxcar)
-{
-	int scan_size, bins_wanted, bins_needed, ds_next, bw;
-
-	scan_size = c->upper - c->lower;
-	c->hops = 1;
-	c->bw_wanted = scan_size;
-
-	bins_wanted = (int)ceil((double)scan_size / (double)c->bin_spec);
-	c->bin_e = (int)ceil(log2(bins_wanted));
-	while (1) {
-		bins_needed = 1 << c->bin_e;
-		c->crop_tmp = (double)(bins_needed - bins_wanted) / (double)bins_needed;
-		if (c->crop_tmp >= c->crop) {
-			break;}
-		c->bin_e++;
-	}
-
-	c->downsample = 1;
-	c->downsample_passes = 0;
-	while (1) {
-		bw = (int)((double)scan_size / (1.0 - c->crop_tmp));
-		c->bw_needed = bw * c->downsample;
-
-		if (boxcar) {
-			ds_next = c->downsample + 1;
-		} else {
-			ds_next = c->downsample * 2;
-		}
-		if ((bw * ds_next) > target_rate) {
-			break;}
-
-		c->downsample = ds_next;
-		if (!boxcar) {
-			c->downsample_passes++;}
-	}
-
-	return 0;
-}
-
-int solve_single(struct channel_solve *c, int target_rate)
-{
-	int i, scan_size, bins_all, bins_crop, bin_e, bins_2, bw_needed;
-	scan_size = c->upper - c->lower;
-	bins_all = scan_size / c->bin_spec;
-	bins_crop = (int)ceil((double)bins_all * (1.0 + c->crop));
-	bin_e = (int)ceil(log2(bins_crop));
-	bins_2 = 1 << bin_e;
-	bw_needed = bins_2 * c->bin_spec;
-
-	if (bw_needed > target_rate) {
-		/* actually multi-hop */
-		return 1;}
-
-	c->bw_wanted = scan_size;
-	c->bw_needed = bw_needed;
-	c->hops = 1;
-	c->bin_e = bin_e;
-	/* crop will always be bigger than specified crop */
-	c->crop_tmp = (double)(bins_2 - bins_all) / (double)bins_2;
-	return 0;
-}
-
-int solve_hopping(struct channel_solve *c, int target_rate)
-{
-	int i, scan_size, bins_all, bins_sub, bins_crop, bins_2, min_hops;
-	scan_size = c->upper - c->lower;
-	min_hops = scan_size / MAXIMUM_RATE - 1;
-	if (min_hops < 1) {
-		min_hops = 1;}
-	/* evenly sized ranges, as close to target_rate as possible */
-	for (i=min_hops; i<MAX_TUNES; i++) {
-		c->bw_wanted = scan_size / i;
-		bins_all = scan_size / c->bin_spec;
-		bins_sub = (int)ceil((double)bins_all / (double)i);
-		bins_crop = (int)ceil((double)bins_sub * (1.0 + c->crop));
-		c->bin_e = (int)ceil(log2(bins_crop));
-		bins_2 = 1 << c->bin_e;
-		c->bw_needed = bins_2 * c->bin_spec;
-		c->crop_tmp = (double)(bins_2 - bins_sub) / (double)bins_2;
-		if (c->bw_needed > target_rate) {
+	downsample = 1;
+	downsample_passes = 0;
+	/* evenly sized ranges, as close to MAXIMUM_RATE as possible */
+	// todo, replace loop with algebra
+	for (i=1; i<1500; i++) {
+		bw_seen = (upper - lower) / i;
+		bw_used = (int)((double)(bw_seen) / (1.0 - crop));
+		if (bw_used > MAXIMUM_RATE) {
 			continue;}
-		if (c->crop_tmp < c->crop) {
-			continue;}
-		c->hops = i;
+		tune_count = i;
 		break;
 	}
-	return 0;
-}
-
-void frequency_range(char *arg, struct misc_settings *ms)
-/* flesh out the tunes[] for scanning */
-{
-	struct channel_solve c;
-	struct tuning_state *ts;
-	int r, i, j, buf_len, length, hop_bins, logged_bins, planned_bins;
-	int lower_edge, actual_bw, upper_perfect, remainder;
-
-	fprintf(stderr, "Range: %s\n", arg);
-	parse_frequency(arg, &c);
-	c.downsample = 1;
-	c.downsample_passes = 0;
-	c.crop = ms->crop;
-
-	if (ms->target_rate < 2 * MINIMUM_RATE) {
-		ms->target_rate = 2 * MINIMUM_RATE;
+	/* unless small bandwidth */
+	if (bw_used < MINIMUM_RATE) {
+		tune_count = 1;
+		downsample = MAXIMUM_RATE / bw_used;
+		bw_used = bw_used * downsample;
 	}
-	if (ms->target_rate > MAXIMUM_RATE) {
-		ms->target_rate = MAXIMUM_RATE;
+	if (!boxcar && downsample > 1) {
+		downsample_passes = (int)log2(downsample);
+		downsample = 1 << downsample_passes;
+		bw_used = (int)((double)(bw_seen * downsample) / (1.0 - crop));
 	}
-	if ((ms->crop < 0.0) || (ms->crop > 1.0)) {
-		fprintf(stderr, "Crop value outside of 0 to 1.\n");
-		exit(1);
+	/* number of bins is power-of-two, bin size is under limit */
+	// todo, replace loop with log2
+	for (i=1; i<=21; i++) {
+		bin_e = i;
+		bin_size = (double)bw_used / (double)((1<<i) * downsample);
+		if (bin_size <= (double)max_size) {
+			break;}
 	}
-
-	r = -1;
-	if (c.bin_spec >= MINIMUM_RATE) {
-		fprintf(stderr, "Mode: rms power\n");
-		solve_giant_bins(&c);
-	} else if ((c.upper - c.lower) < MINIMUM_RATE) {
-		fprintf(stderr, "Mode: downsampling\n");
-		solve_downsample(&c, ms->target_rate, ms->boxcar);
-	} else if ((c.upper - c.lower) < MAXIMUM_RATE) {
-		r = solve_single(&c, ms->target_rate);
-	} else {
-		fprintf(stderr, "Mode: hopping\n");
-		solve_hopping(&c, ms->target_rate);
+	/* unless giant bins */
+	if (max_size >= MINIMUM_RATE) {
+		bw_seen = max_size;
+		bw_used = max_size;
+		tune_count = (upper - lower) / bw_seen;
+		bin_e = 0;
+		crop = 0;
 	}
-
-	if (r == 0) {
-		fprintf(stderr, "Mode: single\n");
-	} else if (r == 1) {
-		fprintf(stderr, "Mode: hopping\n");
-		solve_hopping(&c, ms->target_rate);
-	}
-	c.crop = c.crop_tmp;
-
-	if ((tune_count+c.hops) > MAX_TUNES) {
+	if (tune_count > MAX_TUNES) {
 		fprintf(stderr, "Error: bandwidth too wide.\n");
 		exit(1);
 	}
-	buf_len = 2 * (1<<c.bin_e) * c.downsample;
+	buf_len = 2 * (1<<bin_e) * downsample;
 	if (buf_len < DEFAULT_BUF_LENGTH) {
 		buf_len = DEFAULT_BUF_LENGTH;
 	}
 	/* build the array */
-	logged_bins = 0;
-	lower_edge = c.lower;
-	planned_bins = (c.upper - c.lower) / c.bin_spec;
-	for (i=0; i < c.hops; i++) {
-		ts = &tunes[tune_count + i];
-		/* copy common values */
-		ts->rate = c.bw_needed;
-		ts->gain = ms->gain;
-		ts->bin_e = c.bin_e;
+	for (i=0; i<tune_count; i++) {
+		ts = &tunes[i];
+		ts->freq = lower + i*bw_seen + bw_seen/2;
+		ts->rate = bw_used;
+		ts->bin_e = bin_e;
 		ts->samples = 0;
-		ts->bin_spec = c.bin_spec;
-		ts->crop = c.crop;
-		ts->downsample = c.downsample;
-		ts->downsample_passes = c.downsample_passes;
-		ts->comp_fir_size = ms->comp_fir_size;
-		ts->peak_hold = ms->peak_hold;
-		ts->linear = ms->linear;
-		ts->avg = (int64_t*)malloc((1<<c.bin_e) * sizeof(int64_t));
+		ts->crop = crop;
+		ts->downsample = downsample;
+		ts->downsample_passes = downsample_passes;
+		ts->avg = (long*)malloc((1<<bin_e) * sizeof(long));
 		if (!ts->avg) {
 			fprintf(stderr, "Error: malloc.\n");
 			exit(1);
 		}
-		for (j=0; j<(1<<c.bin_e); j++) {
+		for (j=0; j<(1<<bin_e); j++) {
 			ts->avg[j] = 0L;
 		}
 		ts->buf8 = (uint8_t*)malloc(buf_len * sizeof(uint8_t));
@@ -693,88 +515,29 @@ void frequency_range(char *arg, struct misc_settings *ms)
 			exit(1);
 		}
 		ts->buf_len = buf_len;
-		length = 1 << c.bin_e;
-		ts->window_coefs = malloc(length * sizeof(int));
-		for (j=0; j<length; j++) {
-			ts->window_coefs[j] = (int)(256*ms->window_fn(j, length));
-		}
-		/* calculate unique values */
-		ts->freq_low = lower_edge;
-		hop_bins = c.bw_wanted / c.bin_spec;
-		actual_bw = hop_bins * c.bin_spec;
-		ts->freq_high = lower_edge + actual_bw;
-		upper_perfect = c.lower + (i+1) * c.bw_wanted;
-		if (ts->freq_high + c.bin_spec <= upper_perfect) {
-			hop_bins += 1;
-			actual_bw = hop_bins * c.bin_spec;
-			ts->freq_high = lower_edge + actual_bw;
-		}
-		remainder = planned_bins - logged_bins - hop_bins;
-		if (i == c.hops-1 && remainder > 0) {
-			hop_bins += remainder;
-			actual_bw = hop_bins * c.bin_spec;
-			ts->freq_high = lower_edge + actual_bw;
-		}
-		logged_bins += hop_bins;
-		ts->crop_i1 = (length - hop_bins) / 2;
-		ts->crop_i2 = ts->crop_i1 + hop_bins - 1;
-		ts->freq = (lower_edge - ts->crop_i1 * c.bin_spec) + c.bw_needed/(2*c.downsample);
-		/* prep for next hop */
-		lower_edge = ts->freq_high;
 	}
-	tune_count += c.hops;
 	/* report */
-	fprintf(stderr, "Number of frequency hops: %i\n", c.hops);
-	fprintf(stderr, "Dongle bandwidth: %iHz\n", c.bw_needed);
-	fprintf(stderr, "Downsampling by: %ix\n", c.downsample);
-	fprintf(stderr, "Cropping by: %0.2f%%\n", c.crop*100);
-	fprintf(stderr, "Total FFT bins: %i\n", c.hops * (1<<c.bin_e));
-	fprintf(stderr, "Logged FFT bins: %i\n", logged_bins);
-	fprintf(stderr, "FFT bin size: %iHz\n", c.bin_spec);
-	fprintf(stderr, "Buffer size: %i bytes (%0.2fms)\n", buf_len, 1000 * 0.5 * (float)buf_len / (float)c.bw_needed);
-	fprintf(stderr, "\n");
+	fprintf(stderr, "Number of frequency hops: %i\n", tune_count);
+	fprintf(stderr, "Dongle bandwidth: %iHz\n", bw_used);
+	fprintf(stderr, "Downsampling by: %ix\n", downsample);
+	fprintf(stderr, "Cropping by: %0.2f%%\n", crop*100);
+	fprintf(stderr, "Total FFT bins: %i\n", tune_count * (1<<bin_e));
+	fprintf(stderr, "Logged FFT bins: %i\n", \
+	  (int)((double)(tune_count * (1<<bin_e)) * (1.0-crop)));
+	fprintf(stderr, "FFT bin size: %0.2fHz\n", bin_size);
+	fprintf(stderr, "Buffer size: %i bytes (%0.2fms)\n", buf_len, 1000 * 0.5 * (float)buf_len / (float)bw_used);
 }
 
 void retune(rtlsdr_dev_t *d, int freq)
 {
 	uint8_t dump[BUFFER_DUMP];
-	int f, n_read;
-	f = (int)rtlsdr_get_center_freq(d);
-	if (f == freq) {
-		return;}
+	int n_read;
 	rtlsdr_set_center_freq(d, (uint32_t)freq);
 	/* wait for settling and flush buffer */
 	usleep(5000);
 	rtlsdr_read_sync(d, &dump, BUFFER_DUMP, &n_read);
 	if (n_read != BUFFER_DUMP) {
 		fprintf(stderr, "Error: bad retune.\n");}
-}
-
-void rerate(rtlsdr_dev_t *d, int rate)
-{
-	uint32_t r;
-	r = rtlsdr_get_sample_rate(d);
-	if ((int)r == rate) {
-		return;}
-	rtlsdr_set_sample_rate(dev, (uint32_t)rate);
-}
-
-void regain(rtlsdr_dev_t *d, int gain)
-{
-	int g;
-	g = rtlsdr_get_tuner_gain(dev);
-	if (g == gain) {
-		return;}
-	if (gain == AUTO_GAIN) {
-		/* switch to auto */
-		rtlsdr_set_tuner_gain_mode(dev, 0);
-		return;
-	}
-	if (g == AUTO_GAIN) {
-		/* switch to manual */
-		rtlsdr_set_tuner_gain_mode(dev, 1);
-	}
-	rtlsdr_set_tuner_gain(dev, gain);
 }
 
 void fifth_order(int16_t *data, int length)
@@ -809,11 +572,11 @@ void remove_dc(int16_t *data, int length)
 {
 	int i;
 	int16_t ave;
-	int64_t sum = 0L;
+	long sum = 0L;
 	for (i=0; i < length; i+=2) {
 		sum += data[i];
 	}
-	ave = (int16_t)(sum / (int64_t)(length));
+	ave = (int16_t)(sum / (long)(length));
 	if (ave == 0) {
 		return;}
 	for (i=0; i < length; i+=2) {
@@ -859,18 +622,17 @@ void downsample_iq(int16_t *data, int length)
 	//remove_dc(data+1, length-1);
 }
 
-int64_t real_conj(int16_t real, int16_t imag)
+long real_conj(int16_t real, int16_t imag)
 /* real(n * conj(n)) */
 {
-	return ((int64_t)real*(int64_t)real + (int64_t)imag*(int64_t)imag);
+	return ((long)real*(long)real + (long)imag*(long)imag);
 }
 
 void scanner(void)
 {
-	int i, j, j2, n_read, offset, bin_e, bin_len, buf_len, ds, ds_p;
+	int i, j, j2, f, n_read, offset, bin_e, bin_len, buf_len, ds, ds_p;
 	int32_t w;
 	struct tuning_state *ts;
-	int16_t *fft_buf;
 	bin_e = tunes[0].bin_e;
 	bin_len = 1 << bin_e;
 	buf_len = tunes[0].buf_len;
@@ -878,10 +640,9 @@ void scanner(void)
 		if (do_exit >= 2)
 			{return;}
 		ts = &tunes[i];
-		fft_buf = ts->fft_buf;
-		regain(dev, ts->gain);
-		rerate(dev, ts->rate);
-		retune(dev, ts->freq);
+		f = (int)rtlsdr_get_center_freq(dev);
+		if (f != ts->freq) {
+			retune(dev, ts->freq);}
 		rtlsdr_read_sync(dev, ts->buf8, buf_len, &n_read);
 		if (n_read != buf_len) {
 			fprintf(stderr, "Error: dropped samples.\n");}
@@ -896,16 +657,7 @@ void scanner(void)
 		}
 		ds = ts->downsample;
 		ds_p = ts->downsample_passes;
-		if (ds_p) {  /* recursive */
-			for (j=0; j < ds_p; j++) {
-				downsample_iq(fft_buf, buf_len >> j);
-			}
-			/* droop compensation */
-			if (ts->comp_fir_size == 9 && ds_p <= CIC_TABLE_MAX) {
-				generic_fir(fft_buf, buf_len >> j, cic_9_tables[ds_p]);
-				generic_fir(fft_buf+1, (buf_len >> j)-1, cic_9_tables[ds_p]);
-			}
-		} else if (ds > 1) {  /* boxcar */
+		if (boxcar && ds > 1) {
 			j=2, j2=0;
 			while (j < buf_len) {
 				fft_buf[j2]   += fft_buf[j];
@@ -916,6 +668,15 @@ void scanner(void)
 				if (j % (ds*2) == 0) {
 					j2 += 2;}
 			}
+		} else if (ds_p) {  /* recursive */
+			for (j=0; j < ds_p; j++) {
+				downsample_iq(fft_buf, buf_len >> j);
+			}
+			/* droop compensation */
+			if (comp_fir_size == 9 && ds_p <= CIC_TABLE_MAX) {
+				generic_fir(fft_buf, buf_len >> j, cic_9_tables[ds_p]);
+				generic_fir(fft_buf+1, (buf_len >> j)-1, cic_9_tables[ds_p]);
+			}
 		}
 		remove_dc(fft_buf, buf_len / ds);
 		remove_dc(fft_buf+1, (buf_len / ds) - 1);
@@ -924,16 +685,16 @@ void scanner(void)
 			// todo, let rect skip this
 			for (j=0; j<bin_len; j++) {
 				w =  (int32_t)fft_buf[offset+j*2];
-				w *= (int32_t)(ts->window_coefs[j]);
+				w *= (int32_t)(window_coefs[j]);
 				//w /= (int32_t)(ds);
 				fft_buf[offset+j*2]   = (int16_t)w;
 				w =  (int32_t)fft_buf[offset+j*2+1];
-				w *= (int32_t)(ts->window_coefs[j]);
+				w *= (int32_t)(window_coefs[j]);
 				//w /= (int32_t)(ds);
 				fft_buf[offset+j*2+1] = (int16_t)w;
 			}
-			fix_fft(fft_buf+offset, bin_e, ts->sine);
-			if (!ts->peak_hold) {
+			fix_fft(fft_buf+offset, bin_e);
+			if (!peak_hold) {
 				for (j=0; j<bin_len; j++) {
 					ts->avg[j] += real_conj(fft_buf[offset+j*2], fft_buf[offset+j*2+1]);
 				}
@@ -949,11 +710,11 @@ void scanner(void)
 
 void csv_dbm(struct tuning_state *ts)
 {
-	int i, len;
-	int64_t tmp;
+	int i, len, ds, i1, i2, bw2, bin_count;
+	long tmp;
 	double dbm;
-	char *sep = ", ";
 	len = 1 << ts->bin_e;
+	ds = ts->downsample;
 	/* fix FFT stuff quirks */
 	if (ts->bin_e > 0) {
 		/* nuke DC component (not effective for all windows) */
@@ -966,43 +727,30 @@ void csv_dbm(struct tuning_state *ts)
 		}
 	}
 	/* Hz low, Hz high, Hz step, samples, dbm, dbm, ... */
-	fprintf(file, "%i, %i, %i, %i, ", ts->freq_low, ts->freq_high,
-		ts->bin_spec, ts->samples);
+	bin_count = (int)((double)len * (1.0 - ts->crop));
+	bw2 = (int)(((double)ts->rate * (double)bin_count) / (len * 2 * ds));
+	fprintf(file, "%i, %i, %.2f, %i, ", ts->freq - bw2, ts->freq + bw2,
+		(double)ts->rate / (double)(len*ds), ts->samples);
 	// something seems off with the dbm math
-	for (i=ts->crop_i1; i<=ts->crop_i2; i++) {
-		if (i == ts->crop_i2) {
-			sep = "\n";
-		}
+	i1 = 0 + (int)((double)len * ts->crop * 0.5);
+	i2 = (len-1) - (int)((double)len * ts->crop * 0.5);
+	for (i=i1; i<=i2; i++) {
 		dbm  = (double)ts->avg[i];
 		dbm /= (double)ts->rate;
-		if (!ts->peak_hold) {
-			dbm /= (double)ts->samples;
-		}
-		if (ts->linear) {
-			fprintf(file, "%.5g%s", dbm, sep);
-		} else {
-			dbm = 10 * log10(dbm);
-			fprintf(file, "%.2f%s", dbm, sep);
-		}
+		dbm /= (double)ts->samples;
+		dbm  = 10 * log10(dbm);
+		fprintf(file, "%.2f, ", dbm);
 	}
+	dbm = (double)ts->avg[i2] / ((double)ts->rate * (double)ts->samples);
+	if (ts->bin_e == 0) {
+		dbm = ((double)ts->avg[0] / \
+		((double)ts->rate * (double)ts->samples));}
+	dbm  = 10 * log10(dbm);
+	fprintf(file, "%.2f\n", dbm);
 	for (i=0; i<len; i++) {
 		ts->avg[i] = 0L;
 	}
 	ts->samples = 0;
-}
-
-void init_misc(struct misc_settings *ms)
-{
-	ms->target_rate = DEFAULT_TARGET;
-	ms->boxcar = 1;
-	ms->comp_fir_size = 0;
-	ms->crop = 0.0;
-	ms->gain = AUTO_GAIN;
-	ms->window_fn = rectangle;
-	ms->smoothing = 0;
-	ms->peak_hold = 0;
-	ms->linear = 0;
-	ms->time_mode = VERBOSE_TIME;
 }
 
 int main(int argc, char **argv)
@@ -1011,109 +759,95 @@ int main(int argc, char **argv)
 	struct sigaction sigact;
 #endif
 	char *filename = NULL;
-	int i, r, opt;
+	int i, length, r, opt, wb_mode = 0;
 	int f_set = 0;
+	int gain = AUTO_GAIN; // tenths of a dB
 	int dev_index = 0;
-	char dev_label[255];
 	int dev_given = 0;
 	int ppm_error = 0;
-	int custom_ppm = 0;
-	double interval = 10.0;
+	int interval = 10;
 	int fft_threads = 1;
+	int smoothing = 0;
 	int single = 0;
 	int direct_sampling = 0;
 	int offset_tuning = 0;
+	double crop = 0.0;
 	char *freq_optarg;
 	time_t next_tick;
 	time_t time_now;
 	time_t exit_time = 0;
 	char t_str[50];
 	struct tm *cal_time;
-	struct misc_settings ms;
+	double (*window_fn)(int, int) = rectangle;
 	freq_optarg = "";
-	init_misc(&ms);
-	strcpy(dev_label, "DEFAULT");
 
-	while ((opt = getopt(argc, argv, "f:i:s:r:t:d:g:p:e:w:c:F:1EPLD:Oh")) != -1) {
+	while ((opt = getopt(argc, argv, "f:i:s:t:d:g:p:e:w:c:F:1PDOh")) != -1) {
 		switch (opt) {
 		case 'f': // lower:upper:bin_size
-			if (f_set) {
-				frequency_range(freq_optarg, &ms);}
 			freq_optarg = strdup(optarg);
 			f_set = 1;
 			break;
 		case 'd':
 			dev_index = verbose_device_search(optarg);
-			strncpy(dev_label, optarg, 255);
 			dev_given = 1;
 			break;
 		case 'g':
-			ms.gain = (int)(atof(optarg) * 10);
+			gain = (int)(atof(optarg) * 10);
 			break;
 		case 'c':
-			ms.crop = atofp(optarg);
+			crop = atofp(optarg);
 			break;
 		case 'i':
-			interval = (double)round(atoft(optarg));
+			interval = (int)round(atoft(optarg));
 			break;
 		case 'e':
 			exit_time = (time_t)((int)round(atoft(optarg)));
 			break;
 		case 's':
 			if (strcmp("avg",  optarg) == 0) {
-				ms.smoothing = 0;}
+				smoothing = 0;}
 			if (strcmp("iir",  optarg) == 0) {
-				ms.smoothing = 1;}
+				smoothing = 1;}
 			break;
 		case 'w':
 			if (strcmp("rectangle",  optarg) == 0) {
-				ms.window_fn = rectangle;}
+				window_fn = rectangle;}
 			if (strcmp("hamming",  optarg) == 0) {
-				ms.window_fn = hamming;}
+				window_fn = hamming;}
 			if (strcmp("blackman",  optarg) == 0) {
-				ms.window_fn = blackman;}
+				window_fn = blackman;}
 			if (strcmp("blackman-harris",  optarg) == 0) {
-				ms.window_fn = blackman_harris;}
+				window_fn = blackman_harris;}
 			if (strcmp("hann-poisson",  optarg) == 0) {
-				ms.window_fn = hann_poisson;}
+				window_fn = hann_poisson;}
 			if (strcmp("youssef",  optarg) == 0) {
-				ms.window_fn = youssef;}
+				window_fn = youssef;}
 			if (strcmp("kaiser",  optarg) == 0) {
-				ms.window_fn = kaiser;}
+				window_fn = kaiser;}
 			if (strcmp("bartlett",  optarg) == 0) {
-				ms.window_fn = bartlett;}
+				window_fn = bartlett;}
 			break;
 		case 't':
 			fft_threads = atoi(optarg);
 			break;
 		case 'p':
 			ppm_error = atoi(optarg);
-			custom_ppm = 1;
-			break;
-		case 'r':
-			ms.target_rate = (int)atofs(optarg);
 			break;
 		case '1':
 			single = 1;
 			break;
-		case 'E':
-			ms.time_mode = EPOCH_TIME;
-			break;
 		case 'P':
-			ms.peak_hold = 1;
-			break;
-		case 'L':
-			ms.linear = 1;
+			peak_hold = 1;
 			break;
 		case 'D':
-			direct_sampling = atoi(optarg);
+			direct_sampling = 1;
 			break;
 		case 'O':
 			offset_tuning = 1;
 			break;
 		case 'F':
-			ms.boxcar = 0;
-			ms.comp_fir_size = atoi(optarg);
+			boxcar = 0;
+			comp_fir_size = atoi(optarg);
 			break;
 		case 'h':
 		default:
@@ -1127,7 +861,12 @@ int main(int argc, char **argv)
 		exit(1);
 	}
 
-	frequency_range(freq_optarg, &ms);
+	if ((crop < 0.0) || (crop > 1.0)) {
+		fprintf(stderr, "Crop value outside of 0 to 1.\n");
+		exit(1);
+	}
+
+	frequency_range(freq_optarg, crop);
 
 	if (tune_count == 0) {
 		usage();}
@@ -1138,10 +877,10 @@ int main(int argc, char **argv)
 		filename = argv[optind];
 	}
 
-	// if (interval < 1) {
-	// 	interval = 1;}
+	if (interval < 1) {
+		interval = 1;}
 
-	fprintf(stderr, "Reporting every %f seconds\n", interval);
+	fprintf(stderr, "Reporting every %i seconds\n", interval);
 
 	if (!dev_given) {
 		dev_index = verbose_device_search("0");
@@ -1164,13 +903,12 @@ int main(int argc, char **argv)
 	sigaction(SIGTERM, &sigact, NULL);
 	sigaction(SIGQUIT, &sigact, NULL);
 	sigaction(SIGPIPE, &sigact, NULL);
-	signal(SIGPIPE, SIG_IGN);
 #else
 	SetConsoleCtrlHandler( (PHANDLER_ROUTINE) sighandler, TRUE );
 #endif
 
 	if (direct_sampling) {
-		verbose_direct_sampling(dev, direct_sampling);
+		verbose_direct_sampling(dev, 1);
 	}
 
 	if (offset_tuning) {
@@ -1178,21 +916,13 @@ int main(int argc, char **argv)
 	}
 
 	/* Set the tuner gain */
-	for (i=0; i<tune_count; i++) {
-		if (tunes[i].gain == AUTO_GAIN) {
-			continue;}
-		tunes[i].gain = nearest_gain(dev, tunes[i].gain);
-	}
-	if (ms.gain == AUTO_GAIN) {
+	if (gain == AUTO_GAIN) {
 		verbose_auto_gain(dev);
 	} else {
-		ms.gain = nearest_gain(dev, ms.gain);
-		verbose_gain_set(dev, ms.gain);
+		gain = nearest_gain(dev, gain);
+		verbose_gain_set(dev, gain);
 	}
 
-	if (!custom_ppm) {
-		verbose_ppm_eeprom(dev, &ppm_error);
-	}
 	verbose_ppm_set(dev, ppm_error);
 
 	if (strcmp(filename, "-") == 0) { /* Write log to stdout */
@@ -1209,16 +939,21 @@ int main(int argc, char **argv)
 		}
 	}
 
-	generate_sine_tables();
-
 	/* Reset endpoint before we start reading from it (mandatory) */
 	verbose_reset_buffer(dev);
 
 	/* actually do stuff */
 	rtlsdr_set_sample_rate(dev, (uint32_t)tunes[0].rate);
+	sine_table(tunes[0].bin_e);
 	next_tick = time(NULL) + interval;
 	if (exit_time) {
 		exit_time = time(NULL) + exit_time;}
+	fft_buf = malloc(tunes[0].buf_len * sizeof(int16_t));
+	length = 1 << tunes[0].bin_e;
+	window_coefs = malloc(length * sizeof(int));
+	for (i=0; i<length; i++) {
+		window_coefs[i] = (int)(256*window_fn(i, length));
+	}
 	while (!do_exit) {
 		scanner();
 		time_now = time(NULL);
@@ -1226,12 +961,7 @@ int main(int argc, char **argv)
 			continue;}
 		// time, Hz low, Hz high, Hz step, samples, dbm, dbm, ...
 		cal_time = localtime(&time_now);
-		if (ms.time_mode == VERBOSE_TIME) {
-			strftime(t_str, 50, "%Y-%m-%d, %H:%M:%S", cal_time);
-		}
-		if (ms.time_mode == EPOCH_TIME) {
-			snprintf(t_str, 50, "%u, %s", (unsigned)time_now, dev_label);
-		}
+		strftime(t_str, 50, "%Y-%m-%d, %H:%M:%S", cal_time);
 		for (i=0; i<tune_count; i++) {
 			fprintf(file, "%s, ", t_str);
 			csv_dbm(&tunes[i]);
@@ -1256,7 +986,8 @@ int main(int argc, char **argv)
 		fclose(file);}
 
 	rtlsdr_close(dev);
-	//free(fft_buf);
+	free(fft_buf);
+	free(window_coefs);
 	//for (i=0; i<tune_count; i++) {
 	//	free(tunes[i].avg);
 	//	free(tunes[i].buf8);
