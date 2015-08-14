@@ -146,7 +146,7 @@ int main(int argc, char*argv[])
             total_samples_out++;
 #endif
         }
-    } while (!feof(fid) && total_samples_in < 34000L);
+    } while (!feof(fid)); // && total_samples_in < 34000L);
 #if PROCESS
     printf("\n");
 #endif

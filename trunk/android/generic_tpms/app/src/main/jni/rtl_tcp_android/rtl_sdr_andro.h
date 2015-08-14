@@ -35,6 +35,7 @@ void thread_detach();
 extern void save_sample_rate(uint32_t);
 extern int analyze_input(uint8_t *, uint32_t, uint32_t);
 extern int analyze_file(char *);
+extern int analyze_iq_pairs(unsigned char *buf, uint32_t buf_length);
 
 
 #endif

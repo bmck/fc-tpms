@@ -15,13 +15,13 @@
 #include <string.h>
 
 #include "universal_defines.h"
-#include "liquid_analysis.h"
+#include "analyze_tpms.h"
 
 #define DEFAULT_BUF_LENGTH    (16 * 16384)
 #define MINIMAL_BUF_LENGTH    512
 #define MAXIMAL_BUF_LENGTH    (256 * 16384)
 
-static volatile int do_exit = 0;
+// static volatile int do_exit = 0;
 
 int main(int argc, char **argv) {
 
@@ -33,26 +33,28 @@ int main(int argc, char **argv) {
   char sourcefile[200];
   strcpy(sourcefile, argv[1]);
 
-  FILE *i;
-  if ((i = fopen(sourcefile, "rb")) == NULL) {
-    printf("Sourcefile %s could not be opened for reading.\n", sourcefile);
-    exit(2);
-  }
+  // FILE *i;
+  // if ((i = fopen(sourcefile, "rb")) == NULL) {
+  //   printf("Sourcefile %s could not be opened for reading.\n", sourcefile);
+  //   exit(2);
+  // }
 
-  uint32_t out_block_size = DEFAULT_BUF_LENGTH;
-  uint8_t *buffer;
-  uint32_t n_read = 0L;
-  uint32_t bytes_read;
-  buffer = malloc(out_block_size * sizeof(uint8_t));
+  // uint32_t out_block_size = DEFAULT_BUF_LENGTH;
+  // uint8_t *buffer;
+  // uint32_t n_read = 0L;
+  // uint32_t bytes_read;
+  // buffer = malloc(out_block_size * sizeof(uint8_t));
 
-  while (!feof(i) && !do_exit) {
-    bytes_read = fread((void*)(buffer), sizeof(uint8_t), out_block_size, i);
+  // while (!feof(i) && !do_exit) {
+  //   bytes_read = fread((void*)(buffer), sizeof(uint8_t), out_block_size, i);
 
-    do_exit |= analyze_input(buffer, bytes_read, n_read);
+  //   do_exit |= analyze_input(buffer, bytes_read, n_read);
 
-    n_read += bytes_read;
-  }
+  //   n_read += bytes_read;
+  // }
 
+
+  analyze_file(sourcefile);
 
   if (get_success()) {
     char addr[10]; strcpy(addr, "");

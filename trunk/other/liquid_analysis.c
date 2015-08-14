@@ -11,14 +11,13 @@
 #include "liquid_analysis.h"
 #include "universal_defines.h"
 
-#define SAMPLERATE 2048000.0f
-// #define CUTOFF_HZ 80000.0f
-// #define FSK_DEVIATION_HZ 35000.0f
-#define SYMBOLS_PER_MSG 69
+#define SYMBOLS_PER_MSG BITS_PER_FREESCALE_MSG
 #define SAMPLES_PER_BIT 40.0f
 #define UINT_SAMPLES_PER_BIT (unsigned int)SAMPLES_PER_BIT
 
-#define HIGHFREQ -1
+#define CLOCK_SLOT 0
+
+#define HIGHFREQ 1
 #define LOWFREQ (-1 * HIGHFREQ)
 #define HIGHBIT 1
 #define LOWBIT (1-HIGHBIT)
@@ -28,13 +27,16 @@ static uint32_t sample_rate = 1;
 
 static iirfilt_crcf  filter;
 static msresamp_crcf resamp;
-static symsync_crcf syncresamp;
+// static symsync_crcf  syncresamp;
 static nco_crcf 	 nco;
 static firfilt_rrrf  mf;
 static freqdem       fmdemod;
+// static agc_crcf      agc;
 
-static iirfilt_rrrf  loopfilter;
-static nco_crcf      signal_nco;
+// #ifdef CHECK_FREQUENCY
+// static iirfilt_rrrf  loopfilter;
+// static nco_crcf      signal_nco;
+// #endif
 
 static int curr_state;
 
@@ -42,21 +44,21 @@ static float high_freq;
 static bool high_freq_set = false;
 static float low_freq;
 static bool low_freq_set = false;
-static float phase = UNK;
+// static float phase = UNK;
 
 static char basebit_vals[SYMBOLS_PER_MSG * 2 + 2];
 static bool valid_pkt;
 static char symbols[SYMBOLS_PER_MSG];
 
-static float complex prev_x;
-static float prev_phase, prev_phase_error;
 static uint32_t total_samples_in = 0;
 static uint32_t total_samples_out = 0;
 
-static unsigned int clock_slot = 0; //UINT_SAMPLES_PER_BIT;
-static windowf phase_errors;
-static const int max_phase_errors = 8;
-static int num_phase_errors = 0;
+// #ifdef CHECK_FREQUENCY
+// static windowf phase_errors;
+// static const int max_phase_errors = 8;
+// static int num_phase_errors = 0;
+// #endif
+
 static unsigned int prelude_hf_start;
 static unsigned int prelude_lf_start;
 
@@ -74,8 +76,6 @@ void save_sample_rate(uint32_t samp_rate) {
 
 void reset_vars() {
 	valid_pkt = false;
-	windowf_clear(phase_errors);
-	num_phase_errors = 0;
 	curr_state = -99;
 
 	int j;
@@ -84,34 +84,40 @@ void reset_vars() {
 		basebit_vals[j] = '\0';
 	}
 
-	nco_crcf_reset(signal_nco);
-
 	high_freq_set = false;
 	low_freq_set = false;
 
 	prelude_lf_start = UNK;
 	prelude_hf_start = UNK;
 	strcpy(basebit_vals, "");
+
+// #ifdef CHECK_FREQUENCY
+// 	nco_crcf_reset(signal_nco);
+// 	windowf_clear(phase_errors);
+// 	num_phase_errors = 0;
+// #endif
 }
 
 void init_analysis() {
-	float phase_offset      = 0.8f;     // initial phase offset
-	float frequency_offset  = 0.01f;    // initial frequency offset
-	float wn                = 0.10f;    // pll bandwidth
-	float zeta              = 0.707f;   // pll damping factor
-	float K                 = 1000.0f;  // pll loop gain
-
-	float Fs              = 2048.0f; // sample rate [kHz]
+	float Fs              = SAMPLE_RATE * 0.001; // sample rate [kHz]
 	float fsk_symbol_rate = 10.0f * (1.0f - 0.0089f) / Fs; // apx 0.004839355..
 	float fsk_freq_offset = (HIGHFREQ) * 102.40 / Fs; // 0.05
 
-	float b[3];     // feedforward coefficients
-	float a[3];     // feedback coefficients
-	iirdes_pll_active_lag(wn, zeta, K, b, a);
+// #ifdef CHECK_FREQUENCY
+// 	float phase_offset      = 0.8f;     // initial phase offset
+// 	float frequency_offset  = 0.01f;    // initial frequency offset
+// 	float wn                = 0.10f;    // pll bandwidth
+// 	float zeta              = 0.707f;   // pll damping factor
+// 	float K                 = 1000.0f;  // pll loop gain
 
-	// create the loop filter object for pll using above coeffs
-	loopfilter = iirfilt_rrrf_create(b, 3, a, 3);
-	signal_nco = nco_crcf_create(LIQUID_VCO);
+// 	float b[3];     // feedforward coefficients
+// 	float a[3];     // feedback coefficients
+// 	iirdes_pll_active_lag(wn, zeta, K, b, a);
+
+// 	// create the loop filter object for pll using above coeffs
+// 	loopfilter = iirfilt_rrrf_create(b, 3, a, 3);
+// 	signal_nco = nco_crcf_create(LIQUID_VCO);
+// #endif
 
 	// objects
 	// inf impulse respose filter w feedfwd coeff = 7 & feedback coeff = 0.05
@@ -134,13 +140,14 @@ void init_analysis() {
 	mf      = firfilt_rrrf_create_kaiser(4 * UINT_SAMPLES_PER_BIT + 1,
 	                                     2.0f / (float)SAMPLES_PER_BIT, 60.0f, 0.0f);
 
-	// properties
+	//	 properties
 	nco_crcf_set_frequency(nco, fsk_freq_offset);
 	firfilt_rrrf_set_scale(mf, 0.5f);
 
-	phase_errors = windowf_create(8);
-	num_phase_errors = 0;
-
+// #ifdef CHECK_FREQUENCY
+// 	phase_errors = windowf_create(8);
+// 	num_phase_errors = 0;
+// #endif
 	total_samples_in = 0;
 	total_samples_out = 0;
 }
@@ -152,10 +159,11 @@ void end_analysis() {
 	msresamp_crcf_destroy(resamp);
 	iirfilt_crcf_destroy(filter);
 
-	nco_crcf_destroy(signal_nco);
-	iirfilt_rrrf_destroy(loopfilter);
-
-	windowf_destroy(phase_errors);
+// #ifdef CHECK_FREQUENCY
+// 	nco_crcf_destroy(signal_nco);
+// 	iirfilt_rrrf_destroy(loopfilter);
+// 	windowf_destroy(phase_errors);
+// #endif
 }
 
 int analyze_input(unsigned char *buf, uint32_t len, uint32_t sample_offset) {
@@ -207,8 +215,8 @@ int analyze_iq_pairs(unsigned char *buf, uint32_t buf_length) {
 	uint8_t           *buf2;
 	float complex     x;
 	float complex     bias =  0.0011370 + 0.0043801 * _Complex_I;
-	float             prev_phase_error, phase_error;
-	float             freq_est;
+	// float             prev_phase_error, phase_error;
+	// float             freq_est;
 
 	float complex buf_resamp[16];
 	float         buf_demod[16];
@@ -217,17 +225,18 @@ int analyze_iq_pairs(unsigned char *buf, uint32_t buf_length) {
 	unsigned int  i;
 	int           ret_val;
 
-	unsigned int p = 0;     // starting sample
+	unsigned int p = 42;     		// starting sample
+	// unsigned int q = 2713000+50000;     // ending sample
 
 	// While there are frames in the input buffer, read and process them
 	for (b = 0; (b < (unsigned long) (buf_length / 2)); b++) {
 		total_samples_in++;
 		if (total_samples_in < p) continue;
+		// if (total_samples_in > q) continue;
 
 		buf2 = &(buf[b * 2]);
 
 		xi = buf2[0]; xq = buf2[1];
-
 		// convert to float complex type
 		x = ((float)(xi) - 127.0f) + ((float)(xq) - 127.0f) * _Complex_I;
 
@@ -238,12 +247,11 @@ int analyze_iq_pairs(unsigned char *buf, uint32_t buf_length) {
 		iirfilt_crcf_execute(filter, x, &x);
 
 		// remove carrier offset
-		nco_crcf_mix_down(nco, x, &x);
-		nco_crcf_step(nco);
+		// nco_crcf_mix_down(nco, x, &x);
+		// nco_crcf_step(nco);
 
 		// resample
 		msresamp_crcf_execute(resamp, &x, 1, buf_resamp, &num_resamp);
-		// symsync_crcf_execute(syncresamp, &x, 1, buf_resamp, &num_resamp);
 
 		// apply frequency discriminator
 		freqdem_demodulate_block(fmdemod, buf_resamp, num_resamp, buf_demod);
@@ -253,10 +261,11 @@ int analyze_iq_pairs(unsigned char *buf, uint32_t buf_length) {
 
 		// save resulting sample(s)
 		for (i = 0; i < num_resamp; i++) {
-			if ((total_samples_out % UINT_SAMPLES_PER_BIT) == clock_slot) {
+			if ((total_samples_out % UINT_SAMPLES_PER_BIT) == CLOCK_SLOT) {
 				bit_val = (((buf_demod[i] * (float)HIGHFREQ) > 0.0f) ? HIGHBIT : LOWBIT);
 				// printf("%u", bit_val > 0.0f ? 1 : 0);
-				// printf("%d", bit_val);
+				printf("%d", bit_val);
+//				LOGI("%d", bit_val);
 
 				ret_val = update_state(x, bit_val, b);
 				if (ret_val == 1) {
@@ -268,9 +277,9 @@ int analyze_iq_pairs(unsigned char *buf, uint32_t buf_length) {
 			total_samples_out++;
 		}
 
-		prev_x = creal(x) + cimag(x) * _Complex_I;
-
+#ifdef CHECK_FREQUENCY
 		nco_crcf_step(signal_nco);
+#endif
 	}
 
 	return 0;
@@ -334,7 +343,7 @@ int analyze_iq_pairs(unsigned char *buf, uint32_t buf_length) {
 // 	}
 
 // 	// printf("(state: %d) %u : x = %f+j(%f), phase = %f, error = %12.8f, freq = %f rad/sample = %f Hz\n",
-// 	//        bits_collected, b, crealf(x), cimagf(x), phase_hat, phase_error, *freq_var, fabs(*freq_var / (2 * M_PI) * SAMPLERATE));
+// 	//        bits_collected, b, crealf(x), cimagf(x), phase_hat, phase_error, *freq_var, fabs(*freq_var / (2 * M_PI) * SAMPLE_RATE));
 // 	prev_phase_error = phase_error; prev_phase_hat = phase_hat;
 
 // 	return is_locked;
@@ -367,11 +376,17 @@ int analyze_iq_pairs(unsigned char *buf, uint32_t buf_length) {
 
 unsigned int update_state(complex float x, int b, unsigned int sample_num) {
 
-#ifdef CHECK_FREQUENCY
-	bool pll_is_locked = is_pll_locked();
-#else
+  if (0 == 1) {
+    x=1;
+    high_freq = 0.0;
+    low_freq = 0.0;
+  }
+
+// #ifdef CHECK_FREQUENCY
+// 	bool pll_is_locked = is_pll_locked();
+// #else
 	bool pll_is_locked = true;
-#endif
+// #endif
 
 	int bit_in_process = strlen(basebit_vals);
 
@@ -381,9 +396,11 @@ unsigned int update_state(complex float x, int b, unsigned int sample_num) {
 			if (prelude_hf_start == UNK)
 				prelude_hf_start = sample_num;
 			if ((pll_is_locked == true) &&
-			        (sample_num >= prelude_hf_start + 0.0005 * SAMPLERATE) &&
-			        (sample_num < prelude_hf_start + 0.0007 * SAMPLERATE)) {
-				high_freq = nco_crcf_get_frequency(signal_nco);
+			        (sample_num >= prelude_hf_start + 0.0005 * SAMPLE_RATE) &&
+			        (sample_num < prelude_hf_start + 0.0007 * SAMPLE_RATE)) {
+// #ifdef CHECK_FREQUENCY
+// 				high_freq = nco_crcf_get_frequency(signal_nco);
+// #endif
 				high_freq_set = true;
 			}
 		}
@@ -399,17 +416,19 @@ unsigned int update_state(complex float x, int b, unsigned int sample_num) {
 				prelude_lf_start = sample_num;
 			}
 			if ((pll_is_locked == true) &&
-			        (sample_num >= prelude_lf_start + 0.0005 * SAMPLERATE) &&
-			        (sample_num < prelude_lf_start + 0.0007 * SAMPLERATE)) {
-				low_freq = nco_crcf_get_frequency(signal_nco);
+			        (sample_num >= prelude_lf_start + 0.0005 * SAMPLE_RATE) &&
+			        (sample_num < prelude_lf_start + 0.0007 * SAMPLE_RATE)) {
+// #ifdef CHECK_FREQUENCY
+// 				low_freq = nco_crcf_get_frequency(signal_nco);
+// #endif
 				low_freq_set = true;
 				curr_state = -3;
 			}
 		}
 		else {
 			if ((pll_is_locked == true) &&
-			        (sample_num >= prelude_hf_start + 0.0005 * SAMPLERATE) &&
-			        (sample_num < prelude_hf_start + 0.0007 * SAMPLERATE)) {
+			        (sample_num >= prelude_hf_start + 0.0005 * SAMPLE_RATE) &&
+			        (sample_num < prelude_hf_start + 0.0007 * SAMPLE_RATE)) {
 				CONTINUE;
 			}
 			else {
@@ -423,8 +442,8 @@ unsigned int update_state(complex float x, int b, unsigned int sample_num) {
 			return 0;
 		}
 		else if (b == HIGHBIT) {
-			if ((sample_num >= prelude_lf_start + 0.0005 * SAMPLERATE) &&
-			        (sample_num < prelude_lf_start + 0.0007 * SAMPLERATE)) {
+			if ((sample_num >= prelude_lf_start + 0.0005 * SAMPLE_RATE) &&
+			        (sample_num < prelude_lf_start + 0.0007 * SAMPLE_RATE)) {
 				strcat(basebit_vals, "0");
 				bit_in_process++;
 			}
