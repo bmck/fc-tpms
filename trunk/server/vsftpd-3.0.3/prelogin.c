@@ -21,7 +21,7 @@
 #include "banner.h"
 #include "logging.h"
 #include "ssl.h"
-#include "features.h"
+#include "vsf_features.h"
 #include "defs.h"
 #include "opts.h"
 
@@ -105,7 +105,7 @@ emit_greeting(struct vsf_session* p_sess)
   }
   else if (tunable_ftpd_banner == 0)
   {
-    vsf_cmdio_write(p_sess, FTP_GREET, "(vsFTPd " VSF_VERSION 
+    vsf_cmdio_write(p_sess, FTP_GREET, "(vsFTPd " VSF_VERSION
                     ")");
   }
   else
@@ -233,7 +233,7 @@ handle_user_command(struct vsf_session* p_sess)
   }
   if (tunable_ssl_enable && is_anon && !p_sess->control_use_ssl &&
       tunable_force_anon_logins_ssl)
-  { 
+  {
     vsf_cmdio_write_exit(
       p_sess, FTP_LOGINERR, "Anonymous sessions must use encryption.", 1);
   }

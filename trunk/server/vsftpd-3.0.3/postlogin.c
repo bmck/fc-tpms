@@ -23,7 +23,7 @@
 #include "sysdeputil.h"
 #include "ipaddrparse.h"
 #include "access.h"
-#include "features.h"
+#include "vsf_features.h"
 #include "ssl.h"
 #include "vsftpver.h"
 #include "opts.h"
@@ -1863,15 +1863,15 @@ handle_stat(struct vsf_session* p_sess)
   }
   if (p_sess->control_use_ssl)
   {
-    vsf_cmdio_write_raw(p_sess, "     Control connection is encrypted\r\n"); 
+    vsf_cmdio_write_raw(p_sess, "     Control connection is encrypted\r\n");
   }
   else
   {
-    vsf_cmdio_write_raw(p_sess, "     Control connection is plain text\r\n"); 
+    vsf_cmdio_write_raw(p_sess, "     Control connection is plain text\r\n");
   }
   if (p_sess->data_use_ssl)
   {
-    vsf_cmdio_write_raw(p_sess, "     Data connections will be encrypted\r\n"); 
+    vsf_cmdio_write_raw(p_sess, "     Data connections will be encrypted\r\n");
   }
   else
   {
