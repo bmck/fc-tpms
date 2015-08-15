@@ -7,13 +7,13 @@
 #include <complex.h>
 #include <math.h>
 
+inline int __inline_cisnan(const double complex x);
+inline int __inline_cisnanf(const float complex x);
+inlien int __inline_cisnanl(const long double complex x);
+
 #if !defined(__clang__) && (!defined(__GNUC__) || \
     (defined(__GNUC__) && ((__GNUC__ < 4) || \
                       (__GNUC__ == 4 && (__GNUC_MINOR__ < 9)))))
-
-inline int __inline_cisnan(const double complex x) { return (isnan(creal(x))||isnan(cimag(x))); }
-inline int __inline_cisnanf(const float complex x) { return (isnanf(crealf(x))||isnanf(cimagf(x))); }
-inline int __inline_cisnanl(const long double complex x) { return (isnanl(creall(x))||isnanl(cimagl(x))); }
 
 #undef isnan
 #define isnan(x) \
