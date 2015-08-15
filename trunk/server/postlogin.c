@@ -1,13 +1,12 @@
-/*
- * Part of Very Secure FTPd
- * Licence: GPL v2
- * Author: Chris Evans
- * postlogin.c
- */
+// *
+// * Part of Very Secure FTPd
+// * Licence: GPL v2
+// * Author: Chris Evans
+// * postlogin.c
+// *
 
-#include <stdio.h>
-#include <string.h>
 #include <stdlib.h>
+#include <stdio.h>
 #include <unistd.h>
 #include <fcntl.h>
 #include <string.h>
@@ -37,7 +36,7 @@
 #include "sysdeputil.h"
 #include "ipaddrparse.h"
 #include "access.h"
-#include "features.h"
+#include "vsf_features.h"
 #include "ssl.h"
 #include "vsftpver.h"
 #include "opts.h"
