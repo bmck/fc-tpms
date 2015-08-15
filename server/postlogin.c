@@ -1246,7 +1246,7 @@ handle_upload_common(struct vsf_session* p_sess, int is_append, int is_unique)
 				curl = curl_easy_init();
 				if (curl) {
 					curl_easy_setopt(curl, CURLOPT_URL, url);
-					res = curl_easy_perform(curl);
+						res = curl_easy_perform(curl);
 					if (res == CURLE_OK)
 						url_accessed = 1;
 				}

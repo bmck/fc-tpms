@@ -43,7 +43,7 @@ OBJS	=	\
 	vsftpd/tcpwrap.o \
 	vsftpd/ipaddrparse.o \
 	vsftpd/access.o \
-	vsftpd/features.o \
+	vsftpd/vsf_features.o \
 	vsftpd/readwrite.o \
 	vsftpd/opts.o \
 	vsftpd/ssl.o \
@@ -62,6 +62,7 @@ OBJS	=	\
 BIN = fleet_server
 
 $(BIN): $(OBJS)
+	make -C liquid
 	$(CC) -o $(BIN) $(OBJS) $(LINK) $(LDFLAGS) $(LIBS)
 
 install:
@@ -80,5 +81,6 @@ install:
 	chmod 777 /var/empty/fleet_server
 
 clean:
+	make clean -C liquid
 	rm -f vsftpd/*.o *.o *.swp $(BIN)
 
