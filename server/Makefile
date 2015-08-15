@@ -1,15 +1,15 @@
 # Makefile for systems with GNU tools
-CC 	=	gcc
-INSTALL	=	install
+CC 	= gcc
+INSTALL	= install
 IFLAGS  = -Ivsftpd/dummyinc
 #CFLAGS = -g
-CFLAGS	=	-O2 -fPIE -fstack-protector --param=ssp-buffer-size=4 \
+CFLAGS	= -g -O2 -fPIE -fstack-protector --param=ssp-buffer-size=4 \
 	-Wall -W -Wshadow -Werror -Wformat-security \
-	-D_FORTIFY_SOURCE=2 -I. -Ivsftpd -Iliquid/include \
+	-D_FORTIFY_SOURCE=2 -I. -Ivsftpd -Iliquid/include 
 	#-pedantic -Wconversion
 
 LIBS	=	`./vsf_findlibs.sh`
-LINK	=	-Wl
+LINK	=#	-Wl
 CURL_CONFIG = `curl-config --libs`
 LDFLAGS	=	-fPIE -Lliquid -lliquid $(CURL_CONFIG)
 
@@ -17,8 +17,8 @@ OBJS	=	\
 	vsftpd/main.o \
 	vsftpd/utility.o \
 	vsftpd/prelogin.o \
-	vsftpd/ftpcmdio.o \
 	./postlogin.o \
+	vsftpd/ftpcmdio.o \
 	vsftpd/privsock.o \
 	vsftpd/tunables.o \
 	vsftpd/ftpdataio.o \
