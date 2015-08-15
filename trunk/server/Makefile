@@ -71,7 +71,7 @@ install:
 	else \
 		$(INSTALL) -m 755 $(BIN) /usr/sbin/$(BIN); fi
 	if [ -x /etc/xinetd.d ]; then \
-		$(INSTALL) -m 644 vsftpd/xinetd.d/$(BIN) /etc/xinetd.d/$(BIN); fi
+		$(INSTALL) -m 644 xinetd.d/fleetd /etc/xinetd.d/fleetd; fi
 	if [ -x /etc ]; then \
 		$(INSTALL) -m 644 vsftpd.conf /etc/vsftpd.conf; fi
 
