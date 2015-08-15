@@ -19,7 +19,7 @@
 /* #undef HAVE_FEC_H */
 
 /* Define to 1 if you have the <fftw3.h> header file. */
-#define HAVE_FFTW3_H 1
+/* #undef HAVE_FFTW3_H */
 
 /* Define to 1 if you have the <float.h> header file. */
 #define HAVE_FLOAT_H 1
@@ -40,7 +40,7 @@
 /* #undef HAVE_LIBFEC */
 
 /* Define to 1 if you have the `fftw3f' library (-lfftw3f). */
-#define HAVE_LIBFFTW3F 1
+/* #undef HAVE_LIBFFTW3F */
 
 /* Define to 1 if you have the `m' library (-lm). */
 #define HAVE_LIBM 1
@@ -69,7 +69,7 @@
 #define HAVE_REALLOC 1
 
 /* Define to 1 if you have the <smmintrin.h> header file. */
-#define HAVE_SMMINTRIN_H 1
+/* #undef HAVE_SMMINTRIN_H */
 
 /* Support SSE (Streaming SIMD Extensions) instructions */
 #define HAVE_SSE /**/
@@ -81,7 +81,7 @@
 #define HAVE_SSE3 /**/
 
 /* Support SSE4.1 (Streaming SIMD Extensions 4.1) instructions */
-#define HAVE_SSE41 /**/
+/* #undef HAVE_SSE41 */
 
 /* Support SSE4.2 (Streaming SIMD Extensions 4.2) instructions */
 /* #undef HAVE_SSE42 */
@@ -141,7 +141,7 @@
 #define PACKAGE_TARNAME "liquid-dsp"
 
 /* Define to the home page for this package. */
-#define PACKAGE_URL ""
+/* #undef PACKAGE_URL */
 
 /* Define to the version of this package. */
 #define PACKAGE_VERSION "1.2.0"
