@@ -8,7 +8,8 @@
 # Please read the vsftpd.conf.5 manual page to get a full idea of vsftpd's
 # capabilities.
 #
-#background=YES
+
+background=YES
 
 delete_failed_uploads=YES
 
