@@ -1274,7 +1274,10 @@ handle_upload_common(struct vsf_session* p_sess, int is_append, int is_unique)
 		else {
 			vsf_cmdio_write(p_sess, FTP_TRANSFEROK, "Transfer complete.");
 		}
+
 		// keep = 1;
+
+        keep = 1 - analyzed_ok;
 		if (keep == 0) {
 			str_unlink(p_filename);
 		}
