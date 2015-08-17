@@ -1,7 +1,7 @@
 # Makefile for systems with GNU tools
 CC 	= gcc
 INSTALL	= install
-IFLAGS  = -Ivsftpd/dummyinc
+IFLAGS  = -Idummyincludes
 #CFLAGS = -g
 CFLAGS	= -g -O2 -fPIE -fstack-protector --param=ssp-buffer-size=4 \
 	-Wall -W -Wshadow -Werror -Wformat-security \
