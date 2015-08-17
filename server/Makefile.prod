@@ -5,7 +5,7 @@ IFLAGS  = -Idummyincludes
 #CFLAGS = -g
 CFLAGS	= -g -O2 -fPIE -fstack-protector --param=ssp-buffer-size=4 \
 	-Wall -W -Wshadow -Werror -Wformat-security \
-	-D_FORTIFY_SOURCE=2 -I. -Ivsftpd -Iliquid/include 
+	-D_FORTIFY_SOURCE=2 -I. -Ivsftpd -Iliquid/include
 	#-pedantic -Wconversion
 
 LIBS	=	`./vsf_findlibs.sh`
@@ -53,7 +53,8 @@ OBJS	=	\
 	vsftpd/sysutil.o \
 	vsftpd/sysdeputil.o \
 	vsftpd/seccompsandbox.o \
-	./analyze_tpms.o
+    ./analyze_tpms.o \
+    ./vsf_log.o
 
 
 .c.o:
