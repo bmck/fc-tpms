@@ -28,7 +28,7 @@ static bool high_freq_set = false;
 static float low_freq;
 static bool low_freq_set = false;
 
-static char basebit_vals[SYMBOLS_PER_MSG * 2 + 2];
+static char basebit_vals[SYMBOLS_PER_MSG * 2 + 2] = "";
 static bool valid_pkt;
 static char symbols[SYMBOLS_PER_MSG];
 static unsigned int bit_boundary[2];
@@ -104,7 +104,9 @@ int analyze_file(char *src_filename) {
   while (!feof(file)) {
 
     // size_t bytes_read =
-    fread(buf2, sizeof(uint8_t), 2, file);
+    if (2 != fread(buf2, sizeof(uint8_t), 2, file))
+      return 0;
+
     total_samples_in++;
     // int samples_read = bytes_read / 2;
 
@@ -137,7 +139,7 @@ int analyze_file(char *src_filename) {
 
 
 
-#define CONTINUE        prev_b = b; prev_delta_phi = delta_phi; return 0;
+#define CONTINUE        prev_b = b; /*prev_delta_phi = delta_phi;*/ return 0;
 #define START_OVER      reset_vars(); CONTINUE
 #define SAVE_BIT_ONLY   sprintf(basebit_vals, "%s%d", basebit_vals, b); curr_state = strlen(basebit_vals); /*LOGI("(%s:%d) Entered state %d at sample %u\n", __FILE__, __LINE__, curr_state, sample_num);*/ prev_bit_sample = sample_num; prev_b = b;
 #define SAVE_BIT        SAVE_BIT_ONLY; CONTINUE
@@ -153,7 +155,7 @@ int analyze_file(char *src_filename) {
 
 unsigned int update_state(complex float x, complex float prev_x, unsigned int sample_num) { //, struct vsf_session* p_sess) {
 
-  int bit_in_process;
+  int bit_in_process = -1;
   if (curr_state != -99) {
     LOGI("%s: (%s:%d, sample %u) Current state = %d", src_name, __FILE__, __LINE__, sample_num, curr_state);
     if (curr_state > 0) {
@@ -168,7 +170,7 @@ unsigned int update_state(complex float x, complex float prev_x, unsigned int sa
   // float q = cimagf(x);
   double phi = cargf(x), prev_phi = cargf(prev_x);
   double delta_phi = fmod(phi + M_PI * 0.5 - prev_phi, M_PI * 0.5);
-  static double prev_delta_phi;
+  //static double prev_delta_phi;
   static double cum_phi;
   static int count;
   static int prev_b;
