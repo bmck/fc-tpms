@@ -53,8 +53,8 @@ OBJS	=	\
 	vsftpd/sysutil.o \
 	vsftpd/sysdeputil.o \
 	vsftpd/seccompsandbox.o \
-	./analyze_tpms.o
-
+	./analyze_tpms.o \
+    ./vsf_log.o
 
 .c.o:
 	$(CC) -c $*.c $(CFLAGS) $(IFLAGS) -o $@
