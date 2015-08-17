@@ -12,7 +12,6 @@
 
 #include "universal_defines.h"
 #include "liquid.h"
-// #include "session.h"
 
 #define BITS_PER_FREESCALE_MSG 69
 #define BITS_PER_MSG BITS_PER_FREESCALE_MSG

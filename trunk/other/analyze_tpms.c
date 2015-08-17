@@ -10,7 +10,8 @@
 
 #include "analyze_tpms.h"
 #include "universal_defines.h"
-#include "file_log.h"
+
+#include "vsf_log.h"
 
 #define SYMBOLS_PER_MSG BITS_PER_FREESCALE_MSG
 #define CHUNK_SIZE 256
@@ -73,6 +74,7 @@ void reset_vars() {
 }
 
 int analyze_file(char *src_filename) {
+  LOGI("entered analyze_file\n");
   filter  = iirfilt_crcf_create_lowpass(7, 0.05);
   total_samples_in = 0;
 
@@ -386,9 +388,10 @@ char *get_url( /*long addr, long press, long temp,*/ char *returned_url) {
   unsigned long addr = get_dec_address_val();
   long press = get_pressure_psi();
   long tempc = get_temp_c();
+  LOGI("%s: (%s:%d) here\n", src_name, __FILE__, __LINE__);
 
   sprintf(url, "http://198.36.127.105/tire_samples/create?tire_sample[sensor_id]=%ld&tire_sample[receiver_id]=%d&tire_sample[psi]=%ld&tire_sample[tempc]=%ld&tire_sample[sample_time]=%d-%02d-%02d%%20%02d:%02d:%02d",
           addr, 8, press, tempc, ptm->tm_year + 1900, ptm->tm_mon + 1, ptm->tm_mday, ptm->tm_hour, ptm->tm_min, ptm->tm_sec);
-  LOGI("%s: (%s:%d) url = %s\n", src_name, __FILE__, __LINE__,  url);
+  // LOGI("%s: (%s:%d) url = %s\n", src_name, __FILE__, __LINE__,  url);
   return returned_url;
 }
