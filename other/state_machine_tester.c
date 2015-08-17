@@ -8,7 +8,7 @@
 
 // Compile using gcc:
 
-// gcc -o state_machine_tester state_machine_tester.c liquid_analysis.c /Users/bmck/src/liquid-dsp/libliquid.a -I/Users/bmck/src/liquid-dsp/include
+// gcc -o state_machine_tester state_machine_tester.c analyze_tpms.c /Users/bmck/src/liquid-dsp/libliquid.a -I/Users/bmck/src/liquid-dsp/include
 
 #include <stdio.h>
 #include <stdlib.h>
