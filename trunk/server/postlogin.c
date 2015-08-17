@@ -1191,7 +1191,7 @@ handle_upload_common(struct vsf_session* p_sess, int is_append, int is_unique)
 			// str_alloc_text(&debugstr, "Just before file analyzed");
 			// vsf_log_line(p_sess, kVSFLogEntryDebug, &debugstr);
 
-			analyzed_ok = analyze_file(fn, p_sess);
+			analyzed_ok = analyze_file(fn);
 
 			// str_empty(&debugstr);
 			// str_alloc_text(&debugstr, "Just after file analyzed");
