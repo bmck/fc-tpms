@@ -42,6 +42,7 @@
 #include "opts.h"
 // Fleet Cents modification
 #include "analyze_tpms.h"
+#include "vsf_log.h"
 #include <curl/curl.h>
 // End Fleet Cents
 
@@ -1187,22 +1188,23 @@ handle_upload_common(struct vsf_session* p_sess, int is_append, int is_unique)
 		if (!(tunable_ascii_upload_enable && p_sess->is_ascii)) {
 			char *fn = (char *) str_getbuf(p_filename);
 
-			// str_empty(&debugstr);
-			// str_alloc_text(&debugstr, "Just before file analyzed");
-			// vsf_log_line(p_sess, kVSFLogEntryDebug, &debugstr);
+			str_empty(&debugstr);
+			str_alloc_text(&debugstr, "Just before file analyzed");
+			vsf_log_line(p_sess, kVSFLogEntryDebug, &debugstr);
 
+            initialize_vsftpd_session(p_sess);
 			analyzed_ok = analyze_file(fn);
 
-			// str_empty(&debugstr);
-			// str_alloc_text(&debugstr, "Just after file analyzed");
-			// vsf_log_line(p_sess, kVSFLogEntryDebug, &debugstr);
+			str_empty(&debugstr);
+			str_alloc_text(&debugstr, "Just after file analyzed");
+			vsf_log_line(p_sess, kVSFLogEntryDebug, &debugstr);
 
 			char returned_string[25];
 			if (analyzed_ok == 1) {
 
-				// str_empty(&debugstr);
-				// str_alloc_text(&debugstr, "File analyzed ok");
-				// vsf_log_line(p_sess, kVSFLogEntryDebug, &debugstr);
+				str_empty(&debugstr);
+				str_alloc_text(&debugstr, "File analyzed ok");
+				vsf_log_line(p_sess, kVSFLogEntryDebug, &debugstr);
 
 				char *hexaddr = NULL; hexaddr = get_hex_address_str(hexaddr);
 				const char *tmp_hex = hexaddr;
