@@ -10,14 +10,14 @@
 
 #include "analyze_tpms.h"
 #include "universal_defines.h"
-#include "str.h"
-#include "logging.h"
+#include "file_log.h"
 
 #define SYMBOLS_PER_MSG BITS_PER_FREESCALE_MSG
 #define CHUNK_SIZE 256
 
 static char app_dir[200];
 static uint32_t sample_rate = 1;
+static char src_name[200];
 
 static iirfilt_crcf  filter;
 
@@ -39,13 +39,6 @@ static uint32_t total_samples_in = 0;
 
 static unsigned int prelude_hf_start;
 static unsigned int prelude_lf_start;
-
-void log_msg(struct vsf_session* p_sess, const char *msg) {
-  struct mystr debugstr = INIT_MYSTR;
-  str_empty(&debugstr);
-  str_alloc_text(&debugstr, msg);
-  vsf_log_line(p_sess, kVSFLogEntryDebug, &debugstr);
-}
 
 int get_success() {
   return (valid_pkt ? 1 : 0);
@@ -79,15 +72,16 @@ void reset_vars() {
   first_bit_start = UNK;
 }
 
-int analyze_file(char *src_filename, struct vsf_session* p_sess) {
+int analyze_file(char *src_filename) {
   filter  = iirfilt_crcf_create_lowpass(7, 0.05);
   total_samples_in = 0;
 
+  strcpy(src_name, src_filename);
 
   FILE *file;
   if ((file = fopen(src_filename, "rb")) == NULL) {
-    log_msg(p_sess, "source file could not be opened for reading.\n");
-    exit(2);
+    LOGE("%s: source file could not be opened for reading.\n", src_name);
+    return (0);
   }
 
   // uint32_t          b;
@@ -124,10 +118,10 @@ int analyze_file(char *src_filename, struct vsf_session* p_sess) {
     // apply pre-processing
     iirfilt_crcf_execute(filter, x, &x);
 
-    ret_val = update_state(x, prev_x, total_samples_in); //, p_sess);
+    ret_val = update_state(x, prev_x, total_samples_in);
     if (ret_val == 1) {
-      // log_msg(p_sess, "(%s:%d) FINAL basebit_vals = %s\n", __FILE__, __LINE__, basebit_vals);
-      // log_msg(p_sess, "(%s:%d) FINAL symbols = %s\n", __FILE__, __LINE__, symbols);
+      LOGI("%s: (%s:%d) FINAL basebit_vals = %s\n", src_name, __FILE__, __LINE__, basebit_vals);
+      LOGI("%s: (%s:%d) FINAL symbols = %s\n", src_name, __FILE__, __LINE__, symbols);
       return ret_val;
     }
 
@@ -145,7 +139,7 @@ int analyze_file(char *src_filename, struct vsf_session* p_sess) {
 
 #define CONTINUE        prev_b = b; prev_delta_phi = delta_phi; return 0;
 #define START_OVER      reset_vars(); CONTINUE
-#define SAVE_BIT_ONLY   sprintf(basebit_vals, "%s%d", basebit_vals, b); curr_state = strlen(basebit_vals); /*log_msg(p_sess, "(%s:%d) Entered state %d at sample %u\n", __FILE__, __LINE__, curr_state, sample_num);*/ prev_bit_sample = sample_num; prev_b = b;
+#define SAVE_BIT_ONLY   sprintf(basebit_vals, "%s%d", basebit_vals, b); curr_state = strlen(basebit_vals); /*LOGI("(%s:%d) Entered state %d at sample %u\n", __FILE__, __LINE__, curr_state, sample_num);*/ prev_bit_sample = sample_num; prev_b = b;
 #define SAVE_BIT        SAVE_BIT_ONLY; CONTINUE
 
 #define HIGHFREQ(x) (fabs((x / high_freq) - 1.0) <= 0.1)
@@ -161,12 +155,12 @@ unsigned int update_state(complex float x, complex float prev_x, unsigned int sa
 
   int bit_in_process;
   if (curr_state != -99) {
-    // log_msg(p_sess, "(%s:%d, sample %u) Current state = %d", __FILE__, __LINE__, sample_num, curr_state);
+    LOGI("%s: (%s:%d, sample %u) Current state = %d", src_name, __FILE__, __LINE__, sample_num, curr_state);
     if (curr_state > 0) {
       bit_in_process = strlen(basebit_vals);
-      // log_msg(p_sess, ", Working on bit %d (basebit_vals = %s)", bit_in_process, basebit_vals);
+      LOGI(", Working on bit %d (basebit_vals = %s)", bit_in_process, basebit_vals);
     }
-    // log_msg(p_sess, "\n");
+    LOGI("\n");
   }
 
   int b = -1;
@@ -197,14 +191,14 @@ unsigned int update_state(complex float x, complex float prev_x, unsigned int sa
     }
 
     high_freq = cum_phi / (double) count;
-    // log_msg(p_sess, "(%s:%d) cum_phi = %lf, count = %d, high_freq = %lf,   ", __FILE__, __LINE__, cum_phi, count, high_freq);
-    // log_msg(p_sess, "(sample_num - prelude_hf_start) / SAMPLE_RATE = %lf,   ", (sample_num - prelude_hf_start) / SAMPLE_RATE);
-    // log_msg(p_sess, "delta_phi / high_freq = %lf\n", delta_phi / high_freq);
+    LOGI("%s: (%s:%d) cum_phi = %lf, count = %d, high_freq = %lf,   ", src_name, __FILE__, __LINE__, cum_phi, count, high_freq);
+    LOGI("(sample_num - prelude_hf_start) / SAMPLE_RATE = %lf,   ", (sample_num - prelude_hf_start) / SAMPLE_RATE);
+    LOGI("delta_phi / high_freq = %lf\n", delta_phi / high_freq);
     if ((sample_num >= prelude_hf_start + 0.0006 * SAMPLE_RATE) &&
         (LOWFREQ(delta_phi))) {
       high_freq_set = true;
       bit_boundary[0] = sample_num;
-      // log_msg(p_sess, "(%s:%d) High frequency = %lf radians per sample = %f kHz\n", __FILE__, __LINE__, high_freq, high_freq / (2000.0f * M_PI) * SAMPLE_RATE);
+      LOGI("%s: (%s:%d) High frequency = %lf radians per sample = %f kHz\n", src_name, __FILE__, __LINE__, high_freq, high_freq / (2000.0f * M_PI) * SAMPLE_RATE);
     }
 
     CONTINUE;
@@ -227,16 +221,16 @@ unsigned int update_state(complex float x, complex float prev_x, unsigned int sa
     }
 
     low_freq = cum_phi / (double) count;
-    // log_msg(p_sess, "(%s:%d) cum_phi = %lf, count = %d, low_freq = %lf,   ", __FILE__, __LINE__, cum_phi, count, low_freq);
-    // log_msg(p_sess, "sample_num - prelude_lf_start / SAMPLE_RATE = %lf,   ", (sample_num - prelude_lf_start) / SAMPLE_RATE);
-    // log_msg(p_sess, "delta_phi / low_freq = %lf\n", delta_phi / low_freq);
+    LOGI("%s: (%s:%d) cum_phi = %lf, count = %d, low_freq = %lf,   ", src_name, __FILE__, __LINE__, cum_phi, count, low_freq);
+    LOGI("sample_num - prelude_lf_start / SAMPLE_RATE = %lf,   ", (sample_num - prelude_lf_start) / SAMPLE_RATE);
+    LOGI("delta_phi / low_freq = %lf\n", delta_phi / low_freq);
     if ((sample_num >= prelude_lf_start + 0.0006 * SAMPLE_RATE) &&
         (HIGHFREQ(delta_phi))) {
       low_freq_set = true;
       bit_boundary[0] = sample_num;
-      // log_msg(p_sess, "(%s:%d) Low frequency = %lf radians per sample = %f kHz,   ", __FILE__, __LINE__, low_freq, low_freq / (2000.0f * M_PI) * SAMPLE_RATE);
+      LOGI("%s: (%s:%d) Low frequency = %lf radians per sample = %f kHz,   ", src_name, __FILE__, __LINE__, low_freq, low_freq / (2000.0f * M_PI) * SAMPLE_RATE);
       curr_state = -3;
-      // log_msg(p_sess, "(%s:%d) Entering state -3 at sample %u\n", __FILE__, __LINE__, sample_num);
+      LOGI("%s: (%s:%d) Entering state -3 at sample %u\n", src_name, __FILE__, __LINE__, sample_num);
     }
 
     CONTINUE;
@@ -249,32 +243,32 @@ unsigned int update_state(complex float x, complex float prev_x, unsigned int sa
       bit_boundary[1] = sample_num;
       samples_per_bit = (bit_boundary[1] - bit_boundary[0]) * 0.5 - 1;
       first_bit_start = bit_boundary[0] - samples_per_bit;
-      // log_msg(p_sess, "(%s:%d) first_bit_start = %u,   ", __FILE__, __LINE__, first_bit_start);
-      // log_msg(p_sess, "samples_per_bit = %u,   ", samples_per_bit);
-      // log_msg(p_sess, "basebit_vals = %s\n", basebit_vals);
+      LOGI("%s: (%s:%d) first_bit_start = %u,   ", src_name, __FILE__, __LINE__, first_bit_start);
+      LOGI("samples_per_bit = %u,   ", samples_per_bit);
+      LOGI("basebit_vals = %s\n", basebit_vals);
     }
   }
   else {
     if (HIGHFREQ(delta_phi)) {
       b = HIGHBIT;
-      // log_msg(p_sess, "(%s:%d) High frequency period found at sample %u\n", __FILE__, __LINE__, sample_num);
+      LOGI("%s: (%s:%d) High frequency period found at sample %u\n", src_name, __FILE__, __LINE__, sample_num);
     }
     else if (LOWFREQ(delta_phi)) {
       b = LOWBIT;
-      // log_msg(p_sess, "(%s:%d) Low frequency period found at sample %u\n", __FILE__, __LINE__, sample_num);
+      LOGI("%s: (%s:%d) Low frequency period found at sample %u\n", src_name, __FILE__, __LINE__, sample_num);
     }
 
     if ((high_freq_set == true) && (low_freq_set == true)) {
-      // log_msg(p_sess, "(%s:%d) high_freq_set and low_freq_set are true.\n", __FILE__, __LINE__);
+      LOGI("%s: (%s:%d) high_freq_set and low_freq_set are true.\n", src_name, __FILE__, __LINE__);
       curr_state = bit_in_process;
-      // log_msg(p_sess, "(%s:%d) n = curr_state = bit_in_process = %d.\n", __FILE__, __LINE__, bit_in_process);
-      // log_msg(p_sess, "(%s:%d) sample_num = %u, first_bit_start + n * samples_per_bit = %u, first_bit_start + n * samples_per_bit = %u\n",
-           // __FILE__, __LINE__, sample_num, first_bit_start + (curr_state) * samples_per_bit, first_bit_start + (curr_state + 1) * samples_per_bit);
-      // log_msg(p_sess, "(%s:%d) sample_num = %u, first_bit_start + n * (samples_per_bit+1) = %u, first_bit_start + (n+1) * (samples_per_bit-1) = %u\n",
-           // __FILE__, __LINE__, sample_num, first_bit_start + curr_state * (samples_per_bit + 1), first_bit_start + (curr_state + 1) * (samples_per_bit - 1));
+      LOGI("%s: (%s:%d) n = curr_state = bit_in_process = %d.\n", src_name, __FILE__, __LINE__, bit_in_process);
+      LOGI("%s: (%s:%d) sample_num = %u, first_bit_start + n * samples_per_bit = %u, first_bit_start + n * samples_per_bit = %u\n",
+           src_name, __FILE__, __LINE__, sample_num, first_bit_start + (curr_state) * samples_per_bit, first_bit_start + (curr_state + 1) * samples_per_bit);
+      LOGI("%s: (%s:%d) sample_num = %u, first_bit_start + n * (samples_per_bit+1) = %u, first_bit_start + (n+1) * (samples_per_bit-1) = %u\n",
+           src_name, __FILE__, __LINE__, sample_num, first_bit_start + curr_state * (samples_per_bit + 1), first_bit_start + (curr_state + 1) * (samples_per_bit - 1));
 
       if (CURRENT_BIT(3)) {
-        // log_msg(p_sess, "(%s:%d) Bit in process = %u\n", __FILE__, __LINE__, bit_in_process);
+        LOGI("%s: (%s:%d) Bit in process = %u\n", src_name, __FILE__, __LINE__, bit_in_process);
         if (b == LOWBIT) {
           SAVE_BIT
         }
@@ -284,7 +278,7 @@ unsigned int update_state(complex float x, complex float prev_x, unsigned int sa
       }
       else if (!((b == prev_b) && (sample_num < prev_bit_sample + samples_per_bit + 5))) {
         if (bit_in_process % 2 == 1) {
-          // log_msg(p_sess, "(%s:%d) Bit in process = %u\n", __FILE__, __LINE__, bit_in_process);
+          LOGI("%s: (%s:%d) Bit in process = %u\n", src_name, __FILE__, __LINE__, bit_in_process);
           if ((bit_in_process > 136) ||
               (b != ((int)(basebit_vals[bit_in_process - 1]) - (int)('0')))) {
             SAVE_BIT_ONLY
@@ -344,14 +338,14 @@ unsigned int update_state(complex float x, complex float prev_x, unsigned int sa
 unsigned long get_dec_address_val( /*char *symbols, long num_bits*/ ) {
   unsigned long addr; addr = 0;
   int j; for (j = 2; j <= 29; j++) { addr = addr * 2 + ((symbols[j] == '1') ? 1 : 0); }
-  // log_msg(p_sess, "(%s:%d) addr = %ld\n", __FILE__, __LINE__, addr);
+  LOGI("%s: (%s:%d) addr = %ld\n", src_name, __FILE__, __LINE__, addr);
   return addr;
 }
 
 char *get_hex_address_str( /*char *symbols, long num_bits,*/ char *returned_url) {
   char *addr_str = malloc(sizeof(char) * 10);
   sprintf(addr_str, "%lX", get_dec_address_val( /*symbols, num_bits */));
-  // log_msg(p_sess, "(%s:%d) addr_str = %s\n", __FILE__, __LINE__, addr_str);
+  LOGI("%s: (%s:%d) addr_str = %s\n", src_name, __FILE__, __LINE__, addr_str);
   return (returned_url = addr_str);
 }
 
@@ -359,7 +353,7 @@ long get_temp_c( /*char *symbols, long num_bits*/ ) {
   long tempC; tempC = 0L;
   int j; for (j = 52; j <= 59; j++) { tempC = tempC * 2 + ((symbols[j] == '1') ? 1 : 0); }
   tempC -= 40;
-  // log_msg(p_sess, "(%s:%d) tempC = %ld\n", __FILE__, __LINE__, tempC);
+  LOGI("%s: (%s:%d) tempC = %ld\n", src_name, __FILE__, __LINE__, tempC);
   return tempC;
 }
 
@@ -372,7 +366,7 @@ double get_pressure_kpa( /*char *symbols, long num_bits*/ ) {
   double press; press = 0.0;
   int j; for (j = 36; j <= 43; j++) { press = press * 2.0 + (symbols[j] == '1' ? 1.0 : 0.0); };
   press = (press * 2.5 - 100.0);
-  // log_msg(p_sess, "(%s:%d) press = %lf\n", __FILE__, __LINE__,  press);
+  LOGI("%s: (%s:%d) press = %lf\n", src_name, __FILE__, __LINE__,  press);
   return press;
 }
 
@@ -393,6 +387,6 @@ char *get_url( /*long addr, long press, long temp,*/ char *returned_url) {
 
   sprintf(url, "http://198.36.127.105/tire_samples/create?tire_sample[sensor_id]=%ld&tire_sample[receiver_id]=%d&tire_sample[psi]=%ld&tire_sample[tempc]=%ld&tire_sample[sample_time]=%d-%02d-%02d%%20%02d:%02d:%02d",
           addr, 8, press, tempc, ptm->tm_year + 1900, ptm->tm_mon + 1, ptm->tm_mday, ptm->tm_hour, ptm->tm_min, ptm->tm_sec);
-  // log_msg(p_sess, "(%s:%d) url = %s\n", __FILE__, __LINE__,  url);
+  LOGI("%s: (%s:%d) url = %s\n", src_name, __FILE__, __LINE__,  url);
   return returned_url;
 }

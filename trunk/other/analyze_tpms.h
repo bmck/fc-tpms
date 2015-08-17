@@ -12,7 +12,7 @@
 
 #include "universal_defines.h"
 #include "liquid.h"
-#include "session.h"
+// #include "session.h"
 
 #define BITS_PER_FREESCALE_MSG 69
 #define BITS_PER_MSG BITS_PER_FREESCALE_MSG
@@ -26,7 +26,7 @@ unsigned int update_state(complex float x, complex float prev_x, unsigned int sa
 
 void init_analysis();
 void end_analysis();
-int analyze_file(char *src_filename, struct vsf_session* p_sess);
+int analyze_file(char *src_filename);
 
 unsigned long get_dec_address_val( /*char *bit_vals, long num_bits*/ );
 char *get_hex_address_str( /*char *bit_vals, long num_bits,*/ char *returned_url);
