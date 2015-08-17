@@ -10,7 +10,7 @@
 
 static FILE *logfp = NULL;
 
-#define LOGFILE (logfp ? logfp : (logfp=fopen("/tmp/fleet_analysis.log", "w")))
+#define LOGFILE (logfp ? logfp : (logfp=fopen("/tmp/fleet_analysis.log", "w+")))
 
 #ifdef LOGV
 #undef LOGV
