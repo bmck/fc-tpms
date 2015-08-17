@@ -20,10 +20,10 @@ static FILE *logfp = NULL;
 #undef LOGE
 #endif
 
-#define LOGV(...) fprintf(LOGFILE, "FleetCents VERBOSE -- "); fprintf(LOGFILE, __VA_ARGS__); fprintf(LOGFILE, "\n");
-#define LOGD(...) fprintf(LOGFILE, "FleetCents DEBUG -- "); fprintf(LOGFILE, __VA_ARGS__); fprintf(LOGFILE, "\n");
-#define LOGI(...) fprintf(LOGFILE, "FleetCents INFO -- "); fprintf(LOGFILE, __VA_ARGS__); fprintf(LOGFILE, "\n");
-#define LOGW(...) fprintf(LOGFILE, "FleetCents WARNING -- "); fprintf(LOGFILE, __VA_ARGS__); fprintf(LOGFILE, "\n");
-#define LOGE(...) fprintf(LOGFILE, "FleetCents  *** ERROR ***  -- "); fprintf(LOGFILE, __VA_ARGS__); fprintf(LOGFILE, "\n");
+#define LOGV(...) fprintf(LOGFILE, "FleetCents VERBOSE -- "); fprintf(LOGFILE, __VA_ARGS__);
+#define LOGD(...) fprintf(LOGFILE, "FleetCents DEBUG -- "); fprintf(LOGFILE, __VA_ARGS__);
+#define LOGI(...) fprintf(LOGFILE, "FleetCents INFO -- "); fprintf(LOGFILE, __VA_ARGS__);
+#define LOGW(...) fprintf(LOGFILE, "FleetCents WARNING -- "); fprintf(LOGFILE, __VA_ARGS__);
+#define LOGE(...) fprintf(LOGFILE, "FleetCents  *** ERROR ***  -- "); fprintf(LOGFILE, __VA_ARGS__);
 
 #endif
