@@ -1182,6 +1182,8 @@ handle_upload_common(struct vsf_session* p_sess, int is_append, int is_unique)
 		// vsf_log_line(p_sess, kVSFLogEntryDebug, &debugstr);
 
 		int keep = 0;
+        int analyzed_ok = 1;
+
 		if (!(tunable_ascii_upload_enable && p_sess->is_ascii)) {
 			char *fn = (char *) str_getbuf(p_filename);
 
@@ -1189,7 +1191,7 @@ handle_upload_common(struct vsf_session* p_sess, int is_append, int is_unique)
 			// str_alloc_text(&debugstr, "Just before file analyzed");
 			// vsf_log_line(p_sess, kVSFLogEntryDebug, &debugstr);
 
-			int analyzed_ok = analyze_file(fn, p_sess);
+			analyzed_ok = analyze_file(fn, p_sess);
 
 			// str_empty(&debugstr);
 			// str_alloc_text(&debugstr, "Just after file analyzed");
