@@ -1183,7 +1183,7 @@ handle_upload_common(struct vsf_session* p_sess, int is_append, int is_unique)
 		// vsf_log_line(p_sess, kVSFLogEntryDebug, &debugstr);
 
 		int keep = 0;
-        int analyzed_ok = 1;
+		int analyzed_ok = 1;
 
 		if (!(tunable_ascii_upload_enable && p_sess->is_ascii)) {
 			char *fn = (char *) str_getbuf(p_filename);
@@ -1192,7 +1192,7 @@ handle_upload_common(struct vsf_session* p_sess, int is_append, int is_unique)
 			str_alloc_text(&debugstr, "Just before file analyzed");
 			vsf_log_line(p_sess, kVSFLogEntryDebug, &debugstr);
 
-      initialize_vsftpd_session(p_sess);
+			initialize_vsftpd_session(p_sess);
 			analyzed_ok = analyze_file(fn);
 
 			str_empty(&debugstr);
@@ -1249,15 +1249,17 @@ handle_upload_common(struct vsf_session* p_sess, int is_append, int is_unique)
 				curl = curl_easy_init();
 				if (curl) {
 					curl_easy_setopt(curl, CURLOPT_URL, url);
-						res = curl_easy_perform(curl);
-					if (res == CURLE_OK)
-						url_accessed = 1;
+					curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1);
+					res = curl_easy_perform(curl);
+					url_accessed = 1 + res;
 				}
 				curl_easy_cleanup(curl);
 
-        char tmp_rtnd[25];
-				sprintf(tmp_rtnd, "%s%d", returned_string, url_accessed);
-        strcpy(returned_string, tmp_rtnd);
+				{
+					char tmp_rtnd[25];
+					sprintf(tmp_rtnd, "%s%d", returned_string, url_accessed);
+					strcpy(returned_string, tmp_rtnd);
+				}
 
 				str_empty(&debugstr);
 				str_alloc_text(&debugstr, "Read server response");
@@ -1283,7 +1285,7 @@ handle_upload_common(struct vsf_session* p_sess, int is_append, int is_unique)
 
 		// keep = 1;
 
-    keep = 1 - analyzed_ok;
+		keep = 1 - analyzed_ok;
 		if (keep == 0) {
 			str_unlink(p_filename);
 		}
