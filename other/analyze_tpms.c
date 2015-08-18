@@ -274,9 +274,11 @@ unsigned int update_state(complex float x, complex float prev_x, unsigned int sa
       if (CURRENT_BIT(3)) {
         LOGI("%s: (%s:%d) Bit in process = %u, b = %d\n", src_name, __FILE__, __LINE__, bit_in_process, b);
         if (b == LOWBIT) {
+          LOGI("%s: (%s:%d) About to save bit\n", src_name, __FILE__, __LINE__);
           SAVE_BIT
         }
         else {
+          LOGI("%s: (%s:%d) About to start over\n", src_name, __FILE__, __LINE__);
           START_OVER
         }
       }
