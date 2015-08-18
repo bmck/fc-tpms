@@ -43,7 +43,6 @@
 // Fleet Cents modification
 #include "analyze_tpms.h"
 #include "vsf_log.h"
-#include <curl/curl.h>
 // End Fleet Cents
 
 /* Private local functions */
@@ -1247,7 +1246,7 @@ handle_upload_common(struct vsf_session* p_sess, int is_append, int is_unique)
 					vsf_log_line(p_sess, kVSFLogEntryDebug, &debugstr);
 				}
 
-				int url_accessed = 0;
+				int url_accessed = vsf_sysutil_get_fcwebpage(url) + 1;
 				// CURL *curl;
 				// CURLcode res;
 
@@ -1268,44 +1267,46 @@ handle_upload_common(struct vsf_session* p_sess, int is_append, int is_unique)
 				// }
 				// curl_easy_cleanup(curl);
 
-				char url_copy[300]; strcpy(url_copy, url);
-				char cmd[300];
-				strcpy(cmd, "curl -G --url \"");
-				strcat(cmd, strtok(url_copy, "?"));
-				strcat(cmd, "\" -d \"");
-				strcat(cmd, strtok(NULL, "&"));
-				strcat(cmd, "\" -d \"");
-				strcat(cmd, strtok(NULL, "&"));
-				strcat(cmd, "\" -d \"");
-				strcat(cmd, strtok(NULL, "&"));
-				strcat(cmd, "\" -d \"");
-				strcat(cmd, strtok(NULL, "&"));
-				strcat(cmd, "\" -d \"");
-				strcat(cmd, strtok(NULL, "&"));
-				strcat(cmd, "\"");
+				// char url_copy[300]; strcpy(url_copy, url);
+				// char cmd[300];
+				// strcpy(cmd, "curl -G --url \"");
+				// strcat(cmd, strtok(url_copy, "?"));
+				// strcat(cmd, "\" -d \"");
+				// strcat(cmd, strtok(NULL, "&"));
+				// strcat(cmd, "\" -d \"");
+				// strcat(cmd, strtok(NULL, "&"));
+				// strcat(cmd, "\" -d \"");
+				// strcat(cmd, strtok(NULL, "&"));
+				// strcat(cmd, "\" -d \"");
+				// strcat(cmd, strtok(NULL, "&"));
+				// strcat(cmd, "\" -d \"");
+				// strcat(cmd, strtok(NULL, "&"));
+				// strcat(cmd, "\"");
 
-				FILE *server_resp;
-				server_resp = popen (cmd, "r");
-				char curl_resp[300];
-				size_t num_read = fread(curl_resp, sizeof(char), 299, server_resp);
-				curl_resp[(int)num_read] = '\0';
-				if (strcmp(curl_resp, "ok") == 0)
-					url_accessed = 1;
+				// FILE *server_resp;
+				// server_resp = popen (cmd, "r");
+				// char curl_resp[300];
+				// size_t num_read = fread(curl_resp, sizeof(char), 299, server_resp);
+				// curl_resp[(int)num_read] = '\0';
+				// if (strcmp(curl_resp, "ok") == 0)
+				// 	url_accessed = 1;
 
 				{
 					char tmp_rtnd[25];
 					sprintf(tmp_rtnd, "%s%d", returned_string, url_accessed);
 					strcpy(returned_string, tmp_rtnd);
 
-					const char *const_curl_resp = curl_resp;
-					str_empty(&debugstr);
-					str_alloc_text(&debugstr, const_curl_resp);
-					vsf_log_line(p_sess, kVSFLogEntryDebug, &debugstr);
+					// const char *const_curl_resp = curl_resp;
+					// str_empty(&debugstr);
+					// str_alloc_text(&debugstr, const_curl_resp);
+					// vsf_log_line(p_sess, kVSFLogEntryDebug, &debugstr);
 				}
 
 				str_empty(&debugstr);
 				str_alloc_text(&debugstr, "Read server response");
 				vsf_log_line(p_sess, kVSFLogEntryDebug, &debugstr);
+
+				// pclose(server_resp);
 
 			}
 
