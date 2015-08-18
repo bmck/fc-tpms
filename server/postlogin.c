@@ -1259,7 +1259,7 @@ handle_upload_common(struct vsf_session* p_sess, int is_append, int is_unique)
 					curl_easy_setopt(curl, CURLOPT_TRANSFERTEXT, 1L);
 					curl_easy_setopt(curl, CURLOPT_USERAGENT, "curl/7.44.0");
 					curl_easy_setopt(curl, CURLOPT_MAXREDIRS, 50L);
-					curl_easy_setopt(curl, CURLOPT_TCP_KEEPALIVE, 1L);
+					// curl_easy_setopt(curl, CURLOPT_TCP_KEEPALIVE, 1L);
 					res = curl_easy_perform(curl);
 					url_accessed = 1 + res;
 
