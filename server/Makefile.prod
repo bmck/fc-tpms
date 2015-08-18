@@ -80,9 +80,10 @@ install:
 		mkdir /var/empty/fleet_server; fi
 	chown ftp /var/empty/fleet_server
 	chmod 777 /var/empty/fleet_server
-	mkdir /var/ftp/
-	chown root.root /var/ftp
-	chmod og-w /var/ftp
+	if ! [ -x /var/ftp ]; then \
+		mkdir /var/ftp/; \
+		chown root.root /var/ftp; \
+		chmod og-w /var/ftp ; fi
 
 clean:
 	make clean -C liquid
