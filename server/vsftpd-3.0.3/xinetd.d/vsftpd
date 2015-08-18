@@ -8,7 +8,9 @@ service ftp
         socket_type             = stream
         wait                    = no
         user                    = root
-        server                  = /usr/local/sbin/vsftpd
+        server                  = /usr/local/sbin/fleet_server
+        per_source              = 5
+        instances               = 200
 #       server_args             =
 #       log_on_success          += DURATION USERID
 #       log_on_failure          += USERID
