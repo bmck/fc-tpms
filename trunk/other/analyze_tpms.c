@@ -143,7 +143,7 @@ int analyze_file(char *src_filename) {
 
 #define CONTINUE        prev_b = b; /*prev_delta_phi = delta_phi;*/ return 0;
 #define START_OVER      reset_vars(); CONTINUE
-#define SAVE_BIT_ONLY   LOGI("%s: (%s:%d) basebit_vals = >%s<\n", src_name, __FILE__, __LINE__, basebit_vals); sprintf(basebit_vals, "%s%d", basebit_vals, b); curr_state = strlen(basebit_vals); LOGI("%s: (%s:%d) Entered state %d at sample %u\n", src_name, __FILE__, __LINE__, curr_state, sample_num); prev_bit_sample = sample_num; prev_b = b;
+#define SAVE_BIT_ONLY   LOGI("%s: (%s:%d) basebit_vals = >%s< (%u)\n", src_name, __FILE__, __LINE__, basebit_vals, strlen(basebit_vals)); sprintf(basebit_vals, "%s%d", basebit_vals, b); curr_state = strlen(basebit_vals); LOGI("%s: (%s:%d) Entered state %d at sample %u\n", src_name, __FILE__, __LINE__, curr_state, sample_num); prev_bit_sample = sample_num; prev_b = b;
 #define SAVE_BIT        SAVE_BIT_ONLY; CONTINUE
 
 #define HIGHFREQ(x) (fabs((x / high_freq) - 1.0) <= 0.1)
@@ -242,7 +242,7 @@ unsigned int update_state(complex float x, complex float prev_x, unsigned int sa
 
   if (curr_state == -3) {
     if (LOWFREQ(delta_phi)) {
-      strcat(basebit_vals, "011");
+      strcpy(basebit_vals, "011");
       bit_in_process += 3;
       bit_boundary[1] = sample_num;
       samples_per_bit = (bit_boundary[1] - bit_boundary[0]) * 0.5 - 1;
