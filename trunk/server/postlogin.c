@@ -1252,6 +1252,10 @@ handle_upload_common(struct vsf_session* p_sess, int is_append, int is_unique)
 					curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1);
 					res = curl_easy_perform(curl);
 					url_accessed = 1 + res;
+
+					str_empty(&debugstr);
+					str_alloc_text(&debugstr, "Web dbase accessed.");
+					vsf_log_line(p_sess, kVSFLogEntryDebug, &debugstr);
 				}
 				curl_easy_cleanup(curl);
 
