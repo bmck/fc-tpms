@@ -19,7 +19,7 @@ OBJS	=	\
 	vsftpd/prelogin.o \
 	./postlogin.o \
 	vsftpd/ftpcmdio.o \
-	vsftpd/privsock.o \
+	./privsock.o \
 	vsftpd/tunables.o \
 	vsftpd/ftpdataio.o \
 	vsftpd/secbuf.o \
