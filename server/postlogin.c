@@ -1254,8 +1254,12 @@ handle_upload_common(struct vsf_session* p_sess, int is_append, int is_unique)
 				curl = curl_easy_init();
 				if (curl) {
 					curl_easy_setopt(curl, CURLOPT_URL, url);
-					curl_easy_setopt(curl, CURLOPT_HTTPGET, 1);
-					curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1);
+					// curl_easy_setopt(curl, CURLOPT_HTTPGET, 1L);
+					curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
+					curl_easy_setopt(curl, CURLOPT_TRANSFERTEXT, 1L);
+					curl_easy_setopt(curl, CURLOPT_USERAGENT, "curl/7.44.0");
+					curl_easy_setopt(curl, CURLOPT_MAXREDIRS, 50L);
+					curl_easy_setopt(curl, CURLOPT_TCP_KEEPALIVE, 1L);
 					res = curl_easy_perform(curl);
 					url_accessed = 1 + res;
 
