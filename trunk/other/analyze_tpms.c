@@ -143,7 +143,7 @@ int analyze_file(char *src_filename) {
 
 #define CONTINUE        prev_b = b; /*prev_delta_phi = delta_phi;*/ return 0;
 #define START_OVER      reset_vars(); CONTINUE
-#define SAVE_BIT_ONLY   LOGI("%s: (%s:%d) basebit_vals = >%s< (%d)\n", src_name, __FILE__, __LINE__, basebit_vals, (int)strlen(basebit_vals)); sprintf(basebit_vals, "%s%d", basebit_vals, b); curr_state = strlen(basebit_vals); LOGI("%s: (%s:%d) basebit_vals = >%s< (%d)\n", src_name, __FILE__, __LINE__, basebit_vals, (int)strlen(basebit_vals)); LOGI("%s: (%s:%d) Entered state %d at sample %u\n", src_name, __FILE__, __LINE__, curr_state, sample_num); prev_bit_sample = sample_num; prev_b = b;
+#define SAVE_BIT_ONLY   LOGI("%s: (%s:%d) basebit_vals = >%s< (%d)\n", src_name, __FILE__, __LINE__, basebit_vals, (int)strlen(basebit_vals)); { char tmpbase[SYMBOLS_PER_MSG * 2 + 2]; sprintf(tmpbase, "%s%d", basebit_vals, b); strcpy(basebit_vals, tmpbase); } curr_state = strlen(basebit_vals); LOGI("%s: (%s:%d) basebit_vals = >%s< (%d)\n", src_name, __FILE__, __LINE__, basebit_vals, (int)strlen(basebit_vals)); LOGI("%s: (%s:%d) Entered state %d at sample %u\n", src_name, __FILE__, __LINE__, curr_state, sample_num); prev_bit_sample = sample_num; prev_b = b;
 #define SAVE_BIT        SAVE_BIT_ONLY; CONTINUE
 
 #define HIGHFREQ(x) (fabs((x / high_freq) - 1.0) <= 0.1)
