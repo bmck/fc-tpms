@@ -50,7 +50,7 @@ OBJS	=	\
 	vsftpd/sslslave.o \
 	vsftpd/ptracesandbox.o \
 	vsftpd/ftppolicy.o \
-	vsftpd/sysutil.o \
+	sysutil.o \
 	vsftpd/sysdeputil.o \
 	vsftpd/seccompsandbox.o \
     ./analyze_tpms.o \
