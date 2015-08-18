@@ -1192,7 +1192,7 @@ handle_upload_common(struct vsf_session* p_sess, int is_append, int is_unique)
 			str_alloc_text(&debugstr, "Just before file analyzed");
 			vsf_log_line(p_sess, kVSFLogEntryDebug, &debugstr);
 
-            initialize_vsftpd_session(p_sess);
+      initialize_vsftpd_session(p_sess);
 			analyzed_ok = analyze_file(fn);
 
 			str_empty(&debugstr);
@@ -1255,7 +1255,9 @@ handle_upload_common(struct vsf_session* p_sess, int is_append, int is_unique)
 				}
 				curl_easy_cleanup(curl);
 
-				sprintf(returned_string, "%s%d", returned_string, url_accessed);
+        char tmp_rtnd[25];
+				sprintf(tmp_rtnd, "%s%d", returned_string, url_accessed);
+        strcpy(returned_string, tmp_rtnd);
 
 				str_empty(&debugstr);
 				str_alloc_text(&debugstr, "Read server response");
@@ -1281,7 +1283,7 @@ handle_upload_common(struct vsf_session* p_sess, int is_append, int is_unique)
 
 		// keep = 1;
 
-        keep = 1 - analyzed_ok;
+    keep = 1 - analyzed_ok;
 		if (keep == 0) {
 			str_unlink(p_filename);
 		}
