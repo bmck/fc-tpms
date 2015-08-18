@@ -143,7 +143,7 @@ int analyze_file(char *src_filename) {
 
 #define CONTINUE        prev_b = b; /*prev_delta_phi = delta_phi;*/ return 0;
 #define START_OVER      reset_vars(); CONTINUE
-#define SAVE_BIT_ONLY   sprintf(basebit_vals, "%s%d", basebit_vals, b); curr_state = strlen(basebit_vals); /*LOGI("(%s:%d) Entered state %d at sample %u\n", __FILE__, __LINE__, curr_state, sample_num);*/ prev_bit_sample = sample_num; prev_b = b;
+#define SAVE_BIT_ONLY   sprintf(basebit_vals, "%s%d", basebit_vals, b); curr_state = strlen(basebit_vals); LOGI("(%s:%d) Entered state %d at sample %u\n", __FILE__, __LINE__, curr_state, sample_num); prev_bit_sample = sample_num; prev_b = b;
 #define SAVE_BIT        SAVE_BIT_ONLY; CONTINUE
 
 #define HIGHFREQ(x) (fabs((x / high_freq) - 1.0) <= 0.1)
@@ -272,7 +272,7 @@ unsigned int update_state(complex float x, complex float prev_x, unsigned int sa
            src_name, __FILE__, __LINE__, sample_num, first_bit_start + curr_state * (samples_per_bit + 1), first_bit_start + (curr_state + 1) * (samples_per_bit - 1));
 
       if (CURRENT_BIT(3)) {
-        LOGI("%s: (%s:%d) Bit in process = %u\n", src_name, __FILE__, __LINE__, bit_in_process);
+        LOGI("%s: (%s:%d) Bit in process = %u, b = %d\n", src_name, __FILE__, __LINE__, bit_in_process, b);
         if (b == LOWBIT) {
           SAVE_BIT
         }
