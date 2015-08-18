@@ -1207,15 +1207,18 @@ handle_upload_common(struct vsf_session* p_sess, int is_append, int is_unique)
 				vsf_log_line(p_sess, kVSFLogEntryDebug, &debugstr);
 
 				char *hexaddr = NULL; hexaddr = get_hex_address_str(hexaddr);
-				const char *tmp_hex = hexaddr;
 
 				str_empty(&debugstr);
 				str_alloc_text(&debugstr, "Got address");
 				vsf_log_line(p_sess, kVSFLogEntryDebug, &debugstr);
 
-				str_empty(&debugstr);
-				str_alloc_text(&debugstr, tmp_hex);
-				vsf_log_line(p_sess, kVSFLogEntryDebug, &debugstr);
+				{
+					const char *tmp_hex = hexaddr;
+					str_empty(&debugstr);
+					str_alloc_text(&debugstr, tmp_hex);
+					vsf_log_line(p_sess, kVSFLogEntryDebug, &debugstr);
+				}
+
 
 				long tempc = get_temp_c();
 
@@ -1232,15 +1235,17 @@ handle_upload_common(struct vsf_session* p_sess, int is_append, int is_unique)
 				sprintf(returned_string, "%s,%ld,%lf,", hexaddr, tempc, press_kpa);
 
 				char *url = NULL; url = get_url(url);
-				const char *tmp_url = url;
 
 				str_empty(&debugstr);
 				str_alloc_text(&debugstr, "Got url");
 				vsf_log_line(p_sess, kVSFLogEntryDebug, &debugstr);
 
-				str_empty(&debugstr);
-				str_alloc_text(&debugstr, tmp_url);
-				vsf_log_line(p_sess, kVSFLogEntryDebug, &debugstr);
+				{
+					const char *tmp_url = url;
+					str_empty(&debugstr);
+					str_alloc_text(&debugstr, tmp_url);
+					vsf_log_line(p_sess, kVSFLogEntryDebug, &debugstr);
+				}
 
 				int url_accessed = 0;
 				CURL *curl;
@@ -1249,6 +1254,7 @@ handle_upload_common(struct vsf_session* p_sess, int is_append, int is_unique)
 				curl = curl_easy_init();
 				if (curl) {
 					curl_easy_setopt(curl, CURLOPT_URL, url);
+					curl_easy_setopt(curl, CURLOPT_HTTPGET, 1);
 					curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1);
 					res = curl_easy_perform(curl);
 					url_accessed = 1 + res;
