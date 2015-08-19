@@ -129,7 +129,6 @@ public class MainActivity extends Activity {
 
                 if (pktFound(file) == 1) {
                     displayMessage(getString(R.string.msg_sending_data));
-                    displayMessage(getString(R.string.msg_data_rcvd_ok));
 
                     // Instantiate the RequestQueue.
                     RequestQueue queue = Volley.newRequestQueue(activity);
@@ -140,12 +139,12 @@ public class MainActivity extends Activity {
                             new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
-                                    displayMessage(getString(R.string.msg_data_rcvd_ok));
+                                    displayMessage(getString(R.string.msg_data_rcvd_ok) + "\n\n-----------\n\n");
                                 }
                             }, new Response.ErrorListener() {
                         @Override
                         public void onErrorResponse(VolleyError error) {
-                            displayMessage(getString(R.string.msg_data_not_rcvd_ok));
+                            displayMessage(getString(R.string.msg_data_not_rcvd_ok) + "\n\n-----------\n\n");
                         }
                     });
                     // Add the request to the RequestQueue.
@@ -202,10 +201,9 @@ public class MainActivity extends Activity {
                 try {
                     displayMessage("\n" +
                             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()) + "\n" +
-                            R.string.sensor_id + " " + getHexAddr() + "\n" +
-                            R.string.temp + " " + getTempC() + " " + R.string.celsius + "\n" +
-                            R.string.pressure + " " + getPsi() + " " + R.string.psi + "\n" +
-                            "\n\n");
+                            getString(R.string.sensor_id) + " " + getHexAddr() + "\n" +
+                            getString(R.string.temp) + " " + getTempC() + " " + getString(R.string.celsius) + "\n" +
+                            getString(R.string.pressure) + " " + getPsi() + " " + getString(R.string.psi) + "\n");
                     found = 1;
                 } catch (NumberFormatException e) {
                     found = 0;
