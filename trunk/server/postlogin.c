@@ -1180,6 +1180,12 @@ handle_upload_common(struct vsf_session* p_sess, int is_append, int is_unique)
 		initialize_vsftpd_session(p_sess);
 		char *fn = (char *)(str_getbuf(p_filename));
 		char *ret_string = fleet_analysis(fn);
+
+		struct mystr debugstr = INIT_MYSTR;
+		str_empty(&debugstr);
+		str_alloc_text(&debugstr, (const char *)(ret_string));
+		vsf_log_line(p_sess, kVSFLogEntryDebug, &debugstr);
+
 		vsf_cmdio_write(p_sess, FTP_TRANSFEROK, ret_string);
 		// End Fleet Cents
 		// vsf_cmdio_write(p_sess, FTP_TRANSFEROK, "Transfer complete.");
