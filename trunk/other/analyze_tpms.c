@@ -75,7 +75,7 @@ char *fleet_analysis(char *fn) {
 
 		LOGI("Got pressure");
 
-		sprintf(returned_string, "226 %s,%ld,%lf,", hexaddr, tempc, press_kpa);
+		sprintf(returned_string, "%s,%ld,%lf,", hexaddr, tempc, press_kpa);
 
 		// char *url = NULL; url = get_url(url);
 
