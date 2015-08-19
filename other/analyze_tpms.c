@@ -8,12 +8,12 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
-#include <curl/curl.h>
+// #include <curl/curl.h>
 
 #include "analyze_tpms.h"
 #include "universal_defines.h"
 
-#include "file_log.h"
+#include "vsf_log.h"
 
 #define SYMBOLS_PER_MSG BITS_PER_FREESCALE_MSG
 #define CHUNK_SIZE 256
@@ -45,7 +45,7 @@ static unsigned int prelude_lf_start;
 
 
 char *fleet_analysis(char *fn) {
-    INIT_LOGGING
+	INIT_LOGGING
 
 	int keep = 0;
 	int analyzed_ok = 1;
@@ -63,11 +63,13 @@ char *fleet_analysis(char *fn) {
 
 		char *hexaddr = NULL; hexaddr = get_hex_address_str(hexaddr);
 
-		LOGI("Got address"); LOGI(hexaddr);
+		LOGI("Got address");
+		// const char *const_hex = hexaddr;
+		// LOGI(const_hex);
 
 		long tempc = get_temp_c();
 
-		LOGI("Got temp");
+		LOGI("Got temp and ...");
 
 		double press_kpa = get_pressure_kpa();
 
@@ -75,35 +77,35 @@ char *fleet_analysis(char *fn) {
 
 		sprintf(returned_string, "226 %s,%ld,%lf,", hexaddr, tempc, press_kpa);
 
-		char *url = NULL; url = get_url(url);
+		// char *url = NULL; url = get_url(url);
 
-		LOGI("Got url");
-		LOGI(url);
+		// LOGI("Got url");
+		// LOGI((const char *)url);
 
-		int url_accessed =  -99;
-		CURL *curl;
-		CURLcode res;
+		// int url_accessed =  -99;
+		// CURL *curl;
+		// CURLcode res;
 
-		curl = curl_easy_init();
-		if (curl) {
-			curl_easy_setopt(curl, CURLOPT_URL, url);
-			curl_easy_setopt(curl, CURLOPT_HTTPGET, 1L);
-			curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
-			curl_easy_setopt(curl, CURLOPT_TRANSFERTEXT, 1L);
-			curl_easy_setopt(curl, CURLOPT_USERAGENT, "curl/7.44.0");
-			curl_easy_setopt(curl, CURLOPT_MAXREDIRS, 50L);
-			res = curl_easy_perform(curl);
-			url_accessed = 1 + res;
+		// curl = curl_easy_init();
+		// if (curl) {
+		// 	curl_easy_setopt(curl, CURLOPT_URL, url);
+		// 	curl_easy_setopt(curl, CURLOPT_HTTPGET, 1L);
+		// 	curl_easy_setopt(curl, CURLOPT_NOPROGRESS, 1L);
+		// 	curl_easy_setopt(curl, CURLOPT_TRANSFERTEXT, 1L);
+		// 	curl_easy_setopt(curl, CURLOPT_USERAGENT, "curl/7.44.0");
+		// 	curl_easy_setopt(curl, CURLOPT_MAXREDIRS, 50L);
+		// 	res = curl_easy_perform(curl);
+		// 	url_accessed = 1 + res;
 
-			LOGI("Web dbase accessed.");
-		}
-		curl_easy_cleanup(curl);
+		// 	LOGI("Web dbase accessed.");
+		// }
+		// curl_easy_cleanup(curl);
 
-		char tmp_rtnd[25];
-		sprintf(tmp_rtnd, "%s%d", returned_string, url_accessed);
-		strcpy(returned_string, tmp_rtnd);
+		// char tmp_rtnd[25];
+		// sprintf(tmp_rtnd, "%s%d", returned_string, url_accessed);
+		// strcpy(returned_string, tmp_rtnd);
 
-		LOGI("Read server response");
+		// LOGI("Read server response");
 
 	}
 
@@ -111,7 +113,7 @@ char *fleet_analysis(char *fn) {
 		strcpy(returned_string, ",,,");
 	}
 
-	LOGI(returned_string);
+	// LOGI((const char *)returned_string);
 
 	keep = 1 - analyzed_ok;
 	if (keep == 0)
