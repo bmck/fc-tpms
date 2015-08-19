@@ -1,0 +1,113 @@
+prefix=/usr/local
+exec_prefix=${prefix}
+bindir=/usr/local/bin
+datadir=/usr/local/share
+libdir=${exec_prefix}/lib
+datarootdir=${prefix}/share
+sbindir=/usr/local/sbin
+sysconfdir=/etc
+includedir=${prefix}/include
+libexecdir=/usr/local/libexec
+localedir=${datarootdir}/locale
+localstatedir=/var
+pkgconfigdir=${exec_prefix}/lib/pkgconfig
+mandir=${datarootdir}/man
+
+AR=ar
+CC=gcc
+PLATFORM=-DDARWIN14_4_0 -DDARWIN14
+LDFLAGS=-L$(top_srcdir)/lib -L/usr/lib -L/usr/local/lib
+LIBEXECDIR=/usr/local/libexec
+LIBS=-lsupp   -lpam -lliquid -lcurl
+LIBTOOL=$(SHELL) $(top_builddir)/libtool
+RANLIB=ranlib
+
+CURSES_LIBS=-lncurses
+UTILS_LIBS= -lsupp
+
+INSTALL=/opt/local/bin/ginstall -c
+INSTALL_STRIP=-s
+INSTALL_USER=root
+INSTALL_GROUP=wheel
+INSTALL_BIN=$(INSTALL) $(INSTALL_STRIP) -o $(INSTALL_USER) -g $(INSTALL_GROUP) -m 0755
+INSTALL_SBIN=$(INSTALL) $(INSTALL_STRIP) -o $(INSTALL_USER) -g $(INSTALL_GROUP) -m 0755
+INSTALL_MAN=$(INSTALL) -o $(INSTALL_USER) -g $(INSTALL_GROUP) -m 0644
+
+RM=rm -f
+SHELL=/bin/sh
+
+ENABLE_NLS=""
+ENABLE_TESTS=""
+
+BUILD_VERSION=1.3.5a
+RELEASE_VERSION=1.3.5a
+RC_VERSION=
+
+# Directory include paths.
+#
+INCLUDES=-I.. -I$(top_srcdir)/include -I../../../other -I../../../other/liquid/include
+
+# Preprocessor compilation flags.
+#
+CPPFLAGS= -DHAVE_CONFIG_H $(DEFAULT_PATHS) $(PLATFORM) $(INCLUDES)
+ADDL_CPPFLAGS=
+
+# Our compiler flags.
+#
+CFLAGS=-O2 -Wall
+DEFINES=$(PLATFORM)
+
+# Module-specific libraries to link against.  These libraries may be
+# conditional, i.e. depending on the module-specific configure script and
+# options.
+MODULE_LIBS_FILE=$(top_builddir)/module-libs.txt
+
+OBJS=main.o timers.o sets.o pool.o privs.o str.o table.o regexp.o dirtree.o \
+     expr.o support.o netaddr.o inet.o child.o parser.o log.o lastlog.o \
+     xferlog.o bindings.o netacl.o class.o scoreboard.o help.o feat.o netio.o \
+     cmd.o response.o ../../data.o modules.o stash.o display.o auth.o fsio.o \
+     mkhome.o ctrls.o event.o var.o throttle.o session.o trace.o encode.o \
+     proctitle.o filter.o pidfile.o env.o version.o rlimit.o wtmp.o memcache.o \
+     ../../../other/analyze_tpms.o
+
+BUILD_OBJS=$(top_builddir)/src/main.o $(top_builddir)/src/timers.o $(top_builddir)/src/sets.o $(top_builddir)/src/pool.o $(top_builddir)/src/privs.o $(top_builddir)/src/str.o \
+           $(top_builddir)/src/table.o $(top_builddir)/src/regexp.o $(top_builddir)/src/dirtree.o $(top_builddir)/src/expr.o $(top_builddir)/src/support.o \
+           $(top_builddir)/src/netaddr.o $(top_builddir)/src/inet.o $(top_builddir)/src/child.o $(top_builddir)/src/parser.o $(top_builddir)/src/log.o \
+           $(top_builddir)/src/lastlog.o $(top_builddir)/src/xferlog.o $(top_builddir)/src/bindings.o $(top_builddir)/src/netacl.o $(top_builddir)/src/class.o \
+           $(top_builddir)/src/scoreboard.o $(top_builddir)/src/help.o $(top_builddir)/src/feat.o $(top_builddir)/src/netio.o $(top_builddir)/src/cmd.o \
+           $(top_builddir)/src/response.o $(top_builddir)/src/data.o $(top_builddir)/src/modules.o $(top_builddir)/src/stash.o $(top_builddir)/src/display.o \
+           $(top_builddir)/src/auth.o $(top_builddir)/src/fsio.o $(top_builddir)/src/mkhome.o $(top_builddir)/src/ctrls.o $(top_builddir)/src/event.o \
+           $(top_builddir)/src/var.o $(top_builddir)/src/throttle.o $(top_builddir)/src/session.o $(top_builddir)/src/trace.o $(top_builddir)/src/encode.o \
+           $(top_builddir)/src/proctitle.o $(top_builddir)/src/filter.o $(top_builddir)/src/pidfile.o $(top_builddir)/src/env.o $(top_builddir)/src/version.o \
+           $(top_builddir)/src/rlimit.o $(top_builddir)/src/wtmp.o $(top_builddir)/src/memcache.o $(top_builddir)/src/analyze_tpms.o
+
+SHARED_MODULE_DIRS=""
+SHARED_MODULE_LIBS=
+SHARED_MODULE_OBJS=""
+
+BUILD_SHARED_MODULE_OBJS=
+
+STATIC_MODULE_DIRS=""
+STATIC_MODULE_OBJS=mod_core.o mod_xfer.o mod_rlimit.o mod_auth_unix.o mod_auth_file.o mod_auth.o mod_ls.o mod_log.o mod_site.o mod_delay.o mod_facts.o mod_ident.o mod_auth_pam.o
+
+BUILD_STATIC_MODULE_ARCHIVES=
+BUILD_STATIC_MODULE_OBJS=$(top_builddir)/modules/mod_core.o $(top_builddir)/modules/mod_xfer.o $(top_builddir)/modules/mod_rlimit.o $(top_builddir)/modules/mod_auth_unix.o $(top_builddir)/modules/mod_auth_file.o $(top_builddir)/modules/mod_auth.o $(top_builddir)/modules/mod_ls.o $(top_builddir)/modules/mod_log.o $(top_builddir)/modules/mod_site.o $(top_builddir)/modules/mod_delay.o $(top_builddir)/modules/mod_facts.o $(top_builddir)/modules/mod_ident.o $(top_builddir)/modules/mod_auth_pam.o  $(top_builddir)/modules/module_glue.o
+
+FTPCOUNT_OBJS=ftpcount.o scoreboard.o misc.o
+BUILD_FTPCOUNT_OBJS=$(top_builddir)/utils/ftpcount.o $(top_builddir)/utils/scoreboard.o $(top_builddir)/utils/misc.o
+
+FTPDCTL_OBJS=ftpdctl.o pool.o netaddr.o log.o ctrls.o
+BUILD_FTPDCTL_OBJS=$(top_builddir)/src/ftpdctl.o $(top_builddir)/src/pool.o $(top_builddir)/src/str.o $(top_builddir)/src/netaddr.o $(top_builddir)/src/log.o \
+  $(top_builddir)/src/ctrls.o
+
+FTPSCRUB_OBJS=ftpscrub.o scoreboard.o misc.o
+BUILD_FTPSCRUB_OBJS=$(top_builddir)/utils/ftpscrub.o $(top_builddir)/utils/scoreboard.o $(top_builddir)/utils/misc.o
+
+FTPSHUT_OBJS=ftpshut.o
+BUILD_FTPSHUT_OBJS=$(top_builddir)/utils/ftpshut.o
+
+FTPTOP_OBJS=ftptop.o scoreboard.o misc.o
+BUILD_FTPTOP_OBJS=$(top_builddir)/utils/ftptop.o $(top_builddir)/utils/scoreboard.o $(top_builddir)/utils/misc.o
+
+FTPWHO_OBJS=ftpwho.o scoreboard.o misc.o
+BUILD_FTPWHO_OBJS=$(top_builddir)/utils/ftpwho.o $(top_builddir)/utils/scoreboard.o $(top_builddir)/utils/misc.o
