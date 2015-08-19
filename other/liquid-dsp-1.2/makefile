@@ -54,17 +54,17 @@ include_dirs	:= . include
 CC		:= gcc
 MV		:= mv -f
 RM		:= rm -f
-SED		:= /bin/sed
-GREP		:= /bin/grep
+SED		:= /opt/local/bin/gsed
+GREP		:= /opt/local/bin/grep
 AR		:= ar
 RANLIB		:= ranlib
 
 # flags
 INCLUDE_CFLAGS	= $(addprefix -I ,$(include_dirs))
-CONFIG_CFLAGS	= -g -O2 -march=core2  
+CONFIG_CFLAGS	= -g -O2 -march=penryn  
 # -g : debugging info
 CFLAGS		+= $(INCLUDE_CFLAGS) -Wall -fPIC $(CONFIG_CFLAGS)
-LDFLAGS		+= -lm -lc 
+LDFLAGS		+= -lfftw3f -lm -lc 
 ARFLAGS		= r
 PATHSEP		= /
 
@@ -1178,7 +1178,7 @@ benchmark_sources :=						\
 .PHONY: all
 
 # Shared library
-SHARED_LIB	= libliquid.so
+SHARED_LIB	= libliquid.dylib
 
 # liquid library definition
 libliquid.a: $(objects)
