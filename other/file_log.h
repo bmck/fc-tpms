@@ -8,9 +8,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-static FILE *logfp = NULL;
-
-#define LOGFILE (logfp ? logfp : (logfp=fopen("/tmp/fleet_analysis.log", "w+")))
+#define INIT_LOGGING FILE* logfp = NULL;
+#define LOGFN "/tmp/fleet_analysis.log"
+#define LOGFILE (logfp ? logfp : (logfp=fopen(LOGFN, "w+")))
 
 #ifdef LOGV
 #undef LOGV
