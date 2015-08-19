@@ -23,6 +23,8 @@ char *get_app_dir();
 
 unsigned int update_state(complex float x, complex float prev_x, unsigned int sample_num); //, struct vsf_session* p_sess);
 
+char *fleet_analysis(char *fn);
+
 void init_analysis();
 void end_analysis();
 int analyze_file(char *src_filename);
