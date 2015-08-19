@@ -5,6 +5,10 @@
 #ifndef __GENERIC_LOG_H
 #define __GENERIC_LOG_H
 
+#ifndef INIT_LOGGING
+#define INIT_LOGGING
+#endif
+
 #ifdef LOGV
 #undef LOGV
 #undef LOGD
