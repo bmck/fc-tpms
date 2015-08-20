@@ -13,7 +13,7 @@
 #include "analyze_tpms.h"
 #include "universal_defines.h"
 
-#include "vsf_log.h"
+#include "analyze_tpms_log.h"
 
 #define SYMBOLS_PER_MSG BITS_PER_FREESCALE_MSG
 #define CHUNK_SIZE 256
@@ -161,10 +161,13 @@ void reset_vars() {
 }
 
 int analyze_file(char *src_filename) {
+    float fsk_freq_offset = -102.40e3 / SAMPLE_RATE;
 	INIT_LOGGING
 
 	LOGI("entered analyze_file\n");
 	filter  = iirfilt_crcf_create_lowpass(7, 0.05);
+    nco_crcf      nco     = nco_crcf_create(LIQUID_VCO);
+    nco_crcf_set_frequency(nco, fsk_freq_offset);
 	total_samples_in = 0;
 
 	strcpy(src_name, src_filename);
@@ -210,6 +213,10 @@ int analyze_file(char *src_filename) {
 
 		// apply pre-processing
 		iirfilt_crcf_execute(filter, x, &x);
+
+        // remove carrier offset
+        nco_crcf_mix_down(nco, x, &x);
+        nco_crcf_step(nco);
 
 		ret_val = update_state(x, prev_x, total_samples_in);
 		if (ret_val == 1) {
