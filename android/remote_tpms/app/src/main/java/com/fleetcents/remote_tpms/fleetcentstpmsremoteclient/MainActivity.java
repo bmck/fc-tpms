@@ -58,26 +58,6 @@ public class MainActivity extends Activity {
     private boolean running = false;
     private boolean testing = false;
 
-//   public static native void setCacheDir(String str);
-
-//    public static native int pktFound();
-
-//    public static native void convertAndGetPkt();
-
-//    public static native double getKpa();
-//
-//    public static native double getPsi();
-//
-//    public static native long getTempF();
-//
-//    public static native long getTempC();
-//
-//    public static native long getDecAddr();
-//
-//    public static native String getHexAddr();
-//
-//    public static native String getFullUrl();
-
     private String arguments = "";
     private String uspfs_path = null;
     private int fd = -1;
@@ -88,6 +68,8 @@ public class MainActivity extends Activity {
 
     public MainActivity activity = this;
 
+    // TODO: Add client diagnostic data
+    // TODO: Add client error modal dialog boxes
     private class WorkerThread extends Thread {
         public String resp;
 
