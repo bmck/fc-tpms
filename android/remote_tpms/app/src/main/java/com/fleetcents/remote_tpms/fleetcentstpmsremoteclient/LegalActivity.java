@@ -33,25 +33,43 @@ public class LegalActivity extends Activity {
 
         TextView aboutTextView = (TextView) findViewById(R.id.about_text_view);
 
-        String gpls = "libusb-andro\n\n" +
-                getResources().openRawResource(R.raw.libusbandro) +
-                "\n\n" +
-                "rtl-sdr\n\n" +
-                getResources().openRawResource(R.raw.rtlsdr);
-//        BufferedReader r = new BufferedReader(new InputStreamReader(is));
-//        StringBuilder total = new StringBuilder();
-//        String line;
-//        try {
-//            while ((line = r.readLine()) != null) {
-//                total.append(line);
-//            }
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
+        InputStream is = getResources().openRawResource(R.raw.libusbandro);
+        BufferedReader r = new BufferedReader(new InputStreamReader(is));
+        StringBuilder total = new StringBuilder();
+        String line;
+        try {
+            while ((line = r.readLine()) != null) {
+                total.append(line + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-        String aboutText = "Your App Name, Version " + versionName + "\n\n" +
-                "Included Packages and Relevant Licenses\n\n"
-                + gpls;
+        String gpls = "\nlibusb-andro\n\n" + total.toString() + "\n\n";
+
+        is = getResources().openRawResource(R.raw.rtlsdr);
+        r = new BufferedReader(new InputStreamReader(is));
+        total = new StringBuilder();
+        try {
+            while ((line = r.readLine()) != null) {
+                total.append(line + "\n");
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        gpls += "\n" +
+                "\n" +
+                "\n" +
+                "\n" +
+                "------------------------\n" +
+                "\n" +
+                "\n" +
+                "\nrtl-sdr\n\n" + total.toString() + "\n\n";
+
+        String aboutText = getString(R.string.app_name) + "\n" +
+                "Version " + getString(R.string.version) + "\n\n" +
+                "Included Packages and Relevant Licenses\n\n" + gpls;
         aboutTextView.setText(aboutText);
     }
 
