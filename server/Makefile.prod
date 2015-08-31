@@ -16,7 +16,7 @@ LDFLAGS	=	-fPIE -Lliquid -lliquid # $(CURL_CONFIG)
 OBJS	=	\
 	vsftpd/main.o \
 	vsftpd/utility.o \
-	vsftpd/prelogin.o \
+	./prelogin.o \
 	./postlogin.o \
 	vsftpd/ftpcmdio.o \
 	vsftpd/privsock.o \

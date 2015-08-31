@@ -35,6 +35,6 @@ long get_temp_c( /*char *bit_vals, long num_bits*/ );
 long get_temp_f( /*char *bit_vals, long num_bits*/ );
 double get_pressure_kpa( /*char *bit_vals, long num_bits*/ );
 double get_pressure_psi( /*char *bit_vals, long num_bits */ );
-char *get_url( /*long addr, long press, long temp,*/ char *returned_url);
+// char *get_url( /*long addr, long press, long temp,*/ char *returned_url);
 
 #endif

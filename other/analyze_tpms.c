@@ -243,6 +243,7 @@ int analyze_file(char *src_filename) {
 #define SAVE_BIT        SAVE_BIT_ONLY; CONTINUE
 
 #define HIGHFREQ(x) (fabs((x / high_freq) - 1.0) <= 0.1)
+// TODO: Check that curr freq is close to low_freq, not far fr high_freq
 #define LOWFREQ(x)  (fabs((x / high_freq) - 1.0) >  0.1)
 #define HIGHBIT 1
 #define LOWBIT 0
@@ -250,7 +251,7 @@ int analyze_file(char *src_filename) {
 #define CURRENT_BIT(n) (strlen(basebit_vals) == n)
 #define BIT_SLOT(n) ((sample_num > first_bit_start + n * samples_per_bit) && (sample_num < first_bit_start + (n+1) * samples_per_bit))
 
-
+// TODO: Reduce logging.
 unsigned int update_state(complex float x, complex float prev_x, unsigned int sample_num) { //, struct vsf_session* p_sess) {
 	INIT_LOGGING
 
@@ -379,6 +380,7 @@ unsigned int update_state(complex float x, complex float prev_x, unsigned int sa
 					START_OVER
 				}
 			}
+      // TODO: Check more than a single sample per bit
 			else if (!((b == prev_b) && (sample_num < prev_bit_sample + samples_per_bit + 5))) {
 				if (bit_in_process % 2 == 1) {
 					LOGI("%s: (%s:%d) Bit in process = %u\n", src_name, __FILE__, __LINE__, bit_in_process);
@@ -391,9 +393,12 @@ unsigned int update_state(complex float x, complex float prev_x, unsigned int sa
 							for (k = 1; k < SYMBOLS_PER_MSG - 1; k++)
 								symbols[k] = ((basebit_vals[2 * k] == basebit_vals[2 * k - 1]) ? '1' : '0');
 							symbols[SYMBOLS_PER_MSG - 1] = '1';
+              // TODO: Check both pressure readings in a packet
 							if ((symbols[0] == '1') && (symbols[1] == '1') && (symbols[68] == '1')) {
 								valid_pkt = true;
 								iirfilt_crcf_destroy(filter);
+                // TODO: Are there any cases in which we want to look for a second copy of data,
+                // but report what we have if not? (e.g., tempC < 0)
 								return 1;
 							}
 							else {
@@ -481,21 +486,21 @@ double get_pressure_psi( /*char *symbols, long num_bits */ ) {
 	return get_pressure_kpa( /*symbols, num_bits */) * 0.145037738;
 }
 
-char *get_url( /*long addr, long press, long temp,*/ char *returned_url) {
-	INIT_LOGGING
-	char *url = malloc(sizeof(char) * 2048);
-	returned_url = url;
+// char *get_url( /*long addr, long press, long temp,*/ char *returned_url) {
+// 	INIT_LOGGING
+// 	char *url = malloc(sizeof(char) * 2048);
+// 	returned_url = url;
 
-	time_t rawtime; time ( &rawtime );
-	struct tm * ptm; ptm = gmtime ( &rawtime );
+// 	time_t rawtime; time ( &rawtime );
+// 	struct tm * ptm; ptm = gmtime ( &rawtime );
 
-	unsigned long addr = get_dec_address_val();
-	long press = get_pressure_psi();
-	long tempc = get_temp_c();
-	LOGI("%s: (%s:%d) here\n", src_name, __FILE__, __LINE__);
+// 	unsigned long addr = get_dec_address_val();
+// 	long press = get_pressure_psi();
+// 	long tempc = get_temp_c();
+// 	LOGI("%s: (%s:%d) here\n", src_name, __FILE__, __LINE__);
 
-	sprintf(url, "http://198.36.127.105/tire_samples/create?tire_sample[sensor_id]=%ld&tire_sample[receiver_id]=%d&tire_sample[psi]=%ld&tire_sample[tempc]=%ld&tire_sample[sample_time]=%d-%02d-%02d%%20%02d:%02d:%02d",
-	        addr, 8, press, tempc, ptm->tm_year + 1900, ptm->tm_mon + 1, ptm->tm_mday, ptm->tm_hour, ptm->tm_min, ptm->tm_sec);
-	// LOGI("%s: (%s:%d) url = %s\n", src_name, __FILE__, __LINE__,  url);
-	return returned_url;
-}
+// 	sprintf(url, "http://198.36.127.105/tire_samples/create?tire_sample[sensor_id]=%ld&tire_sample[receiver_id]=%d&tire_sample[psi]=%ld&tire_sample[tempc]=%ld&tire_sample[sample_time]=%d-%02d-%02d%%20%02d:%02d:%02d",
+// 	        addr, 8, press, tempc, ptm->tm_year + 1900, ptm->tm_mon + 1, ptm->tm_mday, ptm->tm_hour, ptm->tm_min, ptm->tm_sec);
+// 	// LOGI("%s: (%s:%d) url = %s\n", src_name, __FILE__, __LINE__,  url);
+// 	return returned_url;
+// }
