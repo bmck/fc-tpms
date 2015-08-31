@@ -1,0 +1,4 @@
+v.0.2.0, (open)
+* Added Changelog
+* Added Legal and ChangeLog dialogs
+* Added internal versioning

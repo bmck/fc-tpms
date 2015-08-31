@@ -5,5 +5,8 @@
     <header
         android:fragment="com.fleetcents.remote_tpms.fleetcentstpmsremoteclient.BaseStationSettingsFragment"
         android:title="@string/pref_header_basestation" />
+    <header
+        android:fragment="com.fleetcents.remote_tpms.fleetcentstpmsremoteclient.AboutSettingsFragment"
+        android:title="@string/pref_header_about" />
 
 </preference-headers>
