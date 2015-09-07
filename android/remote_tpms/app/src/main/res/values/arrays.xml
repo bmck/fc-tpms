@@ -1,4 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+<string-array name="secssendArray">
+    <item>@string/quarter</item>
+    <item>@string/half</item>
+    <item>@string/three_quarter</item>
+    <item>@string/one</item>
+    <item>@string/one_and_quarter</item>
+    <item>@string/one_and_half</item>
+    <item>@string/one_and_three_quarter</item>
+    <item>@string/two</item>
+    <item>@string/two_and_half</item>
+    <item>@string/three</item>
+    <item>@string/three_and_half</item>
+    <item>@string/four</item>
+    <item>@string/four_and_half</item>
+    <item>@string/five</item>
+</string-array>
 
+<string-array name="tempOptionsArray">
+    <item>@string/celsius</item>
+    <item>@string/fahrenheit</item>
+</string-array>
+
+<string-array name="pressureOptionsArray">
+    <item>@string/kpa</item>
+    <item>@string/psi</item>
+</string-array>
 </resources>

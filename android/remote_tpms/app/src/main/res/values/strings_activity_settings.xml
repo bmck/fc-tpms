@@ -60,11 +60,16 @@
 
     <string name="pref_header_settings">Settings</string>
     <string name="pref_header_basestation">Base Station</string>
+    <string name="pref_header_units">Units</string>
+
     <string name="pref_basestation_secssent">Seconds of Data Collected Per Sample</string>
     <string name="pref_basestation_secssent_summary">Enter the number of seconds
       of data collected and forwarded to the base station for processing.</string>
     <string name="pref_basestation_hostname">Hostname or IP Address</string>
     <string name="pref_basestation_hostname_summary">Enter the fully qualified hostname, or IP address, of the base station that can be reached by your TPMS readers, and that can access the internet.</string>
+
+    <string name="pref_units_temp">Displayed Temperature Units</string>
+    <string name="pref_units_pressure">Displayed Pressure Units</string>
 
     <string name="pref_header_about">About this App</string>
     <string name="pref_about_changelog">Version &amp; ChangeLog</string>
