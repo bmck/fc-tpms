@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">FleetCents TPMS Remote Client</string>
-    <string name="version">0.2.1</string>
     <string name="hello_world">\n\nPress the play button above to generate an activation tone and begin receiving data from your TPMS sensor for processing.\n\n</string>
 
     <string name="action_settings">Settings</string>
@@ -67,9 +66,11 @@
     <string name="exception_FAILED_TO_OPEN_DEVICE">A compatible device was found, but cannot be opened.</string>
     <string name="exception_CANNOT_RESTART">Internal error: Cannot restart service</string>
     <string name="exception_CANNOT_CLOSE">Internal error: Cannot stop service</string>
-    <string name="exception_UNKNOWN">Unknown error!</string>
+    <string name="exception_UNKNOWN">An unexpected error has occurred.  If this error continues, please contact the application developer.</string>
     <string name="exception_SIGNAL_CAUGHT">Signal was caught!</string>
     <string name="exception_NOT_ENOUGH_POWER">Your Android device does not provide enough power to the dongle. You must use an externally powered USB hub or an externally powered USB OTG cable.</string>
     <string name="exception_RTLSDR_FILENAME_NOT_SPECIFIED">Internal error: A filename for temporarily storing RF samples was not provided</string>
     <string name="exception_RTLSDR_FILE_NOT_SAVED">Internal error: A file for temporarily storing RF samples could not be written to the file system in the location identified</string>
+    <string name="exception_NO_NETWORK_ACCESS">No network access found.  Enable internet access and please try again.</string>
+    <string name="exception_NO_FTP_SERVER">Processing server not found; check the Base Station in the Preferences, and your internet access, and please try again.</string>
 </resources>
