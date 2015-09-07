@@ -1,4 +1,4 @@
-package com.fleetcents.remote_tpms.fleetcentstpmsremoteclient.core;
+package com.fleetcents.remote_tpms.fleetcentstpmsremoteclient;
 
 /*
  * rtl_tcp_andro is an Android port of the famous rtl_tcp driver for

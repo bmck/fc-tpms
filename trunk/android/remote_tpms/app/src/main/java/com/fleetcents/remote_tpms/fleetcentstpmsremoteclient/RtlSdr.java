@@ -1,4 +1,4 @@
-package com.fleetcents.remote_tpms.fleetcentstpmsremoteclient.core;
+package com.fleetcents.remote_tpms.fleetcentstpmsremoteclient;
 
 import java.util.ArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -9,32 +9,32 @@ import android.util.Log;
 public class RtlSdr {
 	private final static String TAG = "RTLSDR";
 
-	final static int LIBUSB_ERROR_IO = -1;
-	final static int LIBUSB_ERROR_INVALID_PARAM = -2;
-	final static int LIBUSB_ERROR_ACCESS = -3;
-	final static int LIBUSB_ERROR_NO_DEVICE = -4;
-	final static int LIBUSB_ERROR_NOT_FOUND = -5;
-	final static int LIBUSB_ERROR_BUSY = -6;
-	final static int LIBUSB_ERROR_TIMEOUT = -7;
-	final static int LIBUSB_ERROR_OVERFLOW = -8;
-	final static int LIBUSB_ERROR_PIPE = -9;
-	final static int LIBUSB_ERROR_INTERRUPTED = -10;
-	final static int LIBUSB_ERROR_NO_MEM = -11;
-	final static int LIBUSB_ERROR_NOT_SUPPORTED = -12;
-	final static int LIBUSB_ERROR_OTHER = -99;
+	public final static int LIBUSB_ERROR_IO = -1;
+	public final static int LIBUSB_ERROR_INVALID_PARAM = -2;
+	public final static int LIBUSB_ERROR_ACCESS = -3;
+	public final static int LIBUSB_ERROR_NO_DEVICE = -4;
+	public final static int LIBUSB_ERROR_NOT_FOUND = -5;
+	public final static int LIBUSB_ERROR_BUSY = -6;
+	public final static int LIBUSB_ERROR_TIMEOUT = -7;
+	public final static int LIBUSB_ERROR_OVERFLOW = -8;
+	public final static int LIBUSB_ERROR_PIPE = -9;
+	public final static int LIBUSB_ERROR_INTERRUPTED = -10;
+	public final static int LIBUSB_ERROR_NO_MEM = -11;
+	public final static int LIBUSB_ERROR_NOT_SUPPORTED = -12;
+	public final static int LIBUSB_ERROR_OTHER = -99;
 
-	final static int EXIT_OK = 0;
-	final static int EXIT_WRONG_ARGS = 1;
-	final static int EXIT_INVALID_FD = 2;
-	final static int EXIT_NO_DEVICES = 3;
-	final static int EXIT_FAILED_TO_OPEN_DEVICE = 4;
-	final static int EXIT_CANNOT_RESTART = 5;
-	final static int EXIT_CANNOT_CLOSE = 6;
-	final static int EXIT_UNKNOWN = 7;
-	final static int EXIT_SIGNAL_CAUGHT = 8;
-  final static int EXIT_NOT_ENOUGH_POWER = 9;
-  final static int RTLSDR_FILENAME_NOT_SPECIFIED = 10;
-  final static int RTLSDR_FILE_NOT_SAVED = 11;
+	public final static int EXIT_OK = 0;
+	public final static int EXIT_WRONG_ARGS = 1;
+	public final static int EXIT_INVALID_FD = 2;
+	public final static int EXIT_NO_DEVICES = 3;
+	public final static int EXIT_FAILED_TO_OPEN_DEVICE = 4;
+	public final static int EXIT_CANNOT_RESTART = 5;
+	public final static int EXIT_CANNOT_CLOSE = 6;
+	public final static int EXIT_UNKNOWN = 7;
+	public final static int EXIT_SIGNAL_CAUGHT = 8;
+	public final static int EXIT_NOT_ENOUGH_POWER = 9;
+	public final static int RTLSDR_FILENAME_NOT_SPECIFIED = 10;
+	public final static int RTLSDR_FILE_NOT_SAVED = 11;
 
 	private final static Object locker = new Object();
 	private final static Object exitcode_locker = new Object();
