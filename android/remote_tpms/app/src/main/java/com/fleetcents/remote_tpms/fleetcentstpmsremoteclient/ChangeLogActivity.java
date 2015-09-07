@@ -25,13 +25,12 @@ public class ChangeLogActivity extends Activity {
             PackageInfo pinfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             versionName = pinfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
         TextView aboutTextView = (TextView) findViewById(R.id.about_text_view);
 
-        InputStream is = getResources().openRawResource(R.raw.changelog);
+        InputStream is = getResources().openRawResource(R.raw.changelog_raw);
         BufferedReader r = new BufferedReader(new InputStreamReader(is));
         StringBuilder total = new StringBuilder();
         String line;

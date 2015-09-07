@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.text.Html;
 import android.widget.TextView;
 
 import java.io.BufferedReader;
@@ -27,13 +26,12 @@ public class LegalActivity extends Activity {
             PackageInfo pinfo = getPackageManager().getPackageInfo(getPackageName(), 0);
             versionName = pinfo.versionName;
         } catch (PackageManager.NameNotFoundException e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
 
         TextView aboutTextView = (TextView) findViewById(R.id.about_text_view);
 
-        InputStream is = getResources().openRawResource(R.raw.libusbandro);
+        InputStream is = getResources().openRawResource(R.raw.libusbandro_lgpl_raw);
         BufferedReader r = new BufferedReader(new InputStreamReader(is));
         StringBuilder total = new StringBuilder();
         String line;
@@ -47,7 +45,7 @@ public class LegalActivity extends Activity {
 
         String gpls = "\nlibusb-andro\n\n" + total.toString() + "\n\n";
 
-        is = getResources().openRawResource(R.raw.rtlsdr);
+        is = getResources().openRawResource(R.raw.rtlsdr_gpl_raw);
         r = new BufferedReader(new InputStreamReader(is));
         total = new StringBuilder();
         try {

@@ -1,4 +1,4 @@
-package com.fleetcents.remote_tpms.fleetcentstpmsremoteclient.core;
+package com.fleetcents.remote_tpms.fleetcentstpmsremoteclient;
 
 /*
  * rtl_tcp_andro is an Android port of the famous rtl_tcp driver for
@@ -25,15 +25,11 @@ import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 
-import com.fleetcents.remote_tpms.fleetcentstpmsremoteclient.R;
-import com.fleetcents.remote_tpms.fleetcentstpmsremoteclient.MainActivity;
-import com.fleetcents.remote_tpms.fleetcentstpmsremoteclient.core.RtlSdrStartException.err_info;
+import com.fleetcents.remote_tpms.fleetcentstpmsremoteclient.RtlSdrStartException.err_info;
 
 import org.xmlpull.v1.XmlPullParser;
 
-import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.XmlResourceParser;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
@@ -43,8 +39,6 @@ import android.util.Xml;
 import android.util.Log;
 
 public class UsbHelper {
-
-    public static boolean force_root = false;
     private static final String LOGTAG = "UsbHelper";
     private static final String TAG = "FleetCents";
 
@@ -65,14 +59,9 @@ public class UsbHelper {
                     case XmlPullParser.START_TAG:
                         if (xml.getName().equals("usb-device")) {
                             final AttributeSet as = Xml.asAttributeSet(xml);
-//                            final Integer vendorId = Integer.valueOf(as.getAttributeValue(null, "vendor-id"), 16);
-//                            final Integer productId = Integer.valueOf(as.getAttributeValue(null, "product-id"), 16);
-//                          Let's assume that these are decimal values until we see otherwise
-                            // If they really are hex values, then code in MainActivity @ ~line 216 should be modified
                             final Integer vendorId = Integer.valueOf(as.getAttributeValue(null, "vendor-id"), 10);
                             final Integer productId = Integer.valueOf(as.getAttributeValue(null, "product-id"), 10);
                             String dat = "v" + vendorId + "p" + productId;
-//                            Log.i(LOGTAG, "valid dat = " + dat);
                             ans.add(dat);
                         }
                         break;
@@ -94,6 +83,8 @@ public class UsbHelper {
         final HashMap<String, UsbDevice> deviceList = manager.getDeviceList();
 
         if (deviceList.isEmpty()) {
+            String str;
+            str = "No compatible SDR devices found (make sure your USB device is connected, properly powered and your phone/tablet supports USB host mode)."; //getString(R.string.exception_NO_DEVICES);
             throw new RuntimeException(String.valueOf(R.string.exception_NO_DEVICES));
 //            return STATUS.CANNOT_FIND;
         }
@@ -108,6 +99,8 @@ public class UsbHelper {
         }
 
         if (device == null) {
+            String str;
+            str = "No compatible SDR devices found (make sure your USB device is connected, properly powered and your phone/tablet supports USB host mode).";
             throw new RuntimeException(String.valueOf(R.string.exception_NO_DEVICES));
         }
 
@@ -129,23 +122,22 @@ public class UsbHelper {
                 }
             }
         }
-//            android.util.Log.i(LOGTAG, "manager = " + manager);
-//            android.util.Log.i(LOGTAG, "device = " + device);
+
         if ((device == null) || (!manager.hasPermission(device))) {
-            activity.finishWithError(err_info.permission_denied);
-//                android.util.Log.i(LOGTAG, "here");
+            throw new RuntimeException(String.valueOf(R.string.exception_LIBUSB_ERROR_ACCESS));
+//            activity.finishWithError(err_info.permission_denied);
         }
-//                android.util.Log.i(LOGTAG, "manager = " + manager);
-//                android.util.Log.i(LOGTAG, "device = " + device);
+
         final UsbDeviceConnection connection = manager.openDevice(device);
 
         if (connection == null) {
-            activity.finishWithError(err_info.unknown_error);
+            throw new RuntimeException(String.valueOf(R.string.exception_LIBUSB_ERROR_ACCESS));
+//            activity.finishWithError(err_info.unknown_error);
         } else {
             return connection;
         }
 
-        return null;
+//        return null;
     }
 
     public final static String properDeviceName(String deviceName) {
@@ -165,61 +157,5 @@ public class UsbHelper {
             return DEFAULT_USPFS_PATH;
         else
             return stripped_name;
-    }
-
-    private static void chmodRecursive(final String dir, final OutputStreamWriter osw) throws IOException {
-        osw.write("chmod 777 " + dir + "\n");
-        osw.flush();
-
-        final String[] files = new File(dir).list();
-        if (files == null) return;
-        for (final String s : files) {
-            final String fname = dir + s;
-            final File f = new File(fname);
-
-            if (f.isDirectory())
-                chmodRecursive(fname + "/", osw);
-            else {
-                osw.write("chmod 777 " + fname + "\n");
-                osw.flush();
-            }
-        }
-    }
-
-    public static void fixRootPermissions() throws RtlSdrStartException {
-        Runtime runtime = Runtime.getRuntime();
-        OutputStreamWriter osw = null;
-        Process proc = null;
-        try { // Run Script
-
-            proc = runtime.exec("su");
-
-            osw = new OutputStreamWriter(proc.getOutputStream());
-
-            chmodRecursive("/dev/bus/usb/", osw);
-
-            osw.close();
-
-        } catch (IOException ex) {
-            throw new RtlSdrStartException(err_info.root_required);
-        } finally {
-            if (osw != null) {
-                try {
-                    osw.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            }
-        }
-        try {
-            if (proc != null)
-                proc.waitFor();
-        } catch (InterruptedException e) {
-        }
-
-        if (proc.exitValue() != 0) {
-            Log.i(LOGTAG, "Root refused to give permissions.");
-            throw new RtlSdrStartException(err_info.permission_denied);
-        }
     }
 }
