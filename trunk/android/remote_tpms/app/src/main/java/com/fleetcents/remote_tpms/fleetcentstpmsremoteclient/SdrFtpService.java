@@ -33,9 +33,9 @@ import java.util.TimeZone;
  */
 public class SdrFtpService extends IntentService {
 
-    public String resp;
     private static final String LOGTAG = "SdrFtpService";
     private static final String TAG = "FleetCents";
+    public String resp;
     MainActivity activity = null;
 
     public SdrFtpService() {
@@ -69,18 +69,12 @@ public class SdrFtpService extends IntentService {
             try {
                 if (!testing) {
                     UsbDevice device = null;
-                    try {
-                        device = UsbHelper.findDevice(activity);
-                    } catch (RuntimeException e) {
-                        // TODO: Resolve why the error msgs in UsbHelper do not correctly render?
-                        errorModalBox(getString(Integer.parseInt(e.getMessage())));
-                        return;
-                    }
-
                     UsbDeviceConnection connection = null;
                     try {
+                        device = UsbHelper.findDevice(activity);
                         connection = UsbHelper.openDevice(activity, device);
                     } catch (RuntimeException e) {
+                        // TODO: Resolve why the error msgs in UsbHelper do not correctly render?
                         errorModalBox(getString(Integer.parseInt(e.getMessage())));
                         return;
                     }
@@ -116,6 +110,7 @@ public class SdrFtpService extends IntentService {
                 String addr = InetAddress.getByName(base).getHostAddress();
                 Log.i(LOGTAG, "connecting to " + addr);
                 ftpClient.connect(addr);
+                displayMessage(getString(R.string.msg_uploading_sensor_data) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
                 // TODO: use password field of login to identify user or hardware being used?
                 ftpClient.enterLocalPassiveMode();
                 ftpClient.login("anonymous", "guest");
@@ -194,12 +189,7 @@ public class SdrFtpService extends IntentService {
             Log.i(LOGTAG, "Exit postProcessRtlsdrData");
             Log.i(LOGTAG, "F @ " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()) + "\n");
 
-            activity.running = false;
-            activity.updateActionBarAnimation();
-            Log.i(LOGTAG, "G @ " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()) + "\n");
-
             displayMessage("Completed at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()) + "\n\n");
-
         }
 
         try {
@@ -227,7 +217,6 @@ public class SdrFtpService extends IntentService {
     }
 
     private void feedback(String feedbackType, String str) {
-        Log.d(LOGTAG, Log.getStackTraceString(new Exception()));
         // Puts the status into the Intent
         Intent localIntent = new Intent(RtlSdrFeedbackTypes.BROADCAST_ACTION).putExtra(feedbackType, str);
         // Broadcasts the Intent to receivers in this app.

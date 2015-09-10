@@ -27,6 +27,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class MainActivity extends Activity {
 
@@ -35,6 +37,7 @@ public class MainActivity extends Activity {
     private static final String TMPFCBINFN = "fc.bin";
     public static PendingIntent permissionIntent;
     public static Intent intent;
+    public static MainActivity activity = null;
 
     static {
         try {
@@ -47,10 +50,9 @@ public class MainActivity extends Activity {
         }
     }
 
-    public static MainActivity activity = null;
+    public boolean running = false;
     private MenuItem mi_startStop = null;
     private TextView myText = null;
-    public boolean running = false;
     private boolean testing = false;
     private String arguments = "";
     private String uspfs_path = null;
@@ -177,36 +179,6 @@ public class MainActivity extends Activity {
         startActivity(intent);
     }
 
-    // Broadcast receiver for receiving status updates from the IntentService
-    private class FeedbackReceiver extends BroadcastReceiver {
-        // Prevents instantiation
-        private FeedbackReceiver() {
-        }
-
-        // Called when the BroadcastReceiver gets an Intent it's registered to receive
-        @Override
-        public void onReceive(Context context, Intent intent) {
-            String str;
-
-            str = intent.getStringExtra(RtlSdrFeedbackTypes.EXTENDED_DATA_STATUS);
-            if (str != null) {
-                Log.i(LOGTAG, "received displayMessage, str = >" + str + "<");
-                displayMessage(str);
-            } else {
-                str = intent.getStringExtra(RtlSdrFeedbackTypes.EXTENDED_DATA_COMPLETEOK);
-                if (str != null) {
-                    updateActionBarAnimation();
-                } else {
-                    str = intent.getStringExtra(RtlSdrFeedbackTypes.EXTENDED_DATA_FAILURE);
-                    if (str == null)
-                        str = getString(R.string.exception_UNKNOWN);
-                    Log.i(LOGTAG, "received errorModalBox, status = >" + str + "<");
-                    errorModalBox(str);
-                }
-            }
-        }
-    }
-
     private void displayMessage(final String str) {
         runOnUiThread(new Runnable() {
             @Override
@@ -305,5 +277,36 @@ public class MainActivity extends Activity {
             getParent().setResult(RESULT_OK, data);
         }
         finish();
+    }
+
+    // Broadcast receiver for receiving status updates from the IntentService
+    private class FeedbackReceiver extends BroadcastReceiver {
+        // Prevents instantiation
+        private FeedbackReceiver() {
+        }
+
+        // Called when the BroadcastReceiver gets an Intent it's registered to receive
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            String str;
+
+            str = intent.getStringExtra(RtlSdrFeedbackTypes.EXTENDED_DATA_STATUS);
+            if (str != null) {
+                Log.i(LOGTAG, "received displayMessage, str = >" + str + "<");
+                displayMessage(str);
+            } else {
+                str = intent.getStringExtra(RtlSdrFeedbackTypes.EXTENDED_DATA_COMPLETEOK);
+                if (str != null) {
+                    running = false;
+                    updateActionBarAnimation();
+                } else {
+                    str = intent.getStringExtra(RtlSdrFeedbackTypes.EXTENDED_DATA_FAILURE);
+                    if (str == null)
+                        str = getString(R.string.exception_UNKNOWN);
+                    Log.i(LOGTAG, "received errorModalBox, status = >" + str + "<");
+                    errorModalBox(str);
+                }
+            }
+        }
     }
 }
