@@ -7,8 +7,6 @@ import java.util.concurrent.atomic.AtomicInteger;
 import android.util.Log;
 
 public class RtlSdr {
-	private final static String TAG = "RTLSDR";
-
 	public final static int LIBUSB_ERROR_IO = -1;
 	public final static int LIBUSB_ERROR_INVALID_PARAM = -2;
 	public final static int LIBUSB_ERROR_ACCESS = -3;
@@ -22,7 +20,6 @@ public class RtlSdr {
 	public final static int LIBUSB_ERROR_NO_MEM = -11;
 	public final static int LIBUSB_ERROR_NOT_SUPPORTED = -12;
 	public final static int LIBUSB_ERROR_OTHER = -99;
-
 	public final static int EXIT_OK = 0;
 	public final static int EXIT_WRONG_ARGS = 1;
 	public final static int EXIT_INVALID_FD = 2;
@@ -35,7 +32,7 @@ public class RtlSdr {
 	public final static int EXIT_NOT_ENOUGH_POWER = 9;
 	public final static int RTLSDR_FILENAME_NOT_SPECIFIED = 10;
 	public final static int RTLSDR_FILE_NOT_SAVED = 11;
-
+	private final static String TAG = "RTLSDR";
 	private final static Object locker = new Object();
 	private final static Object exitcode_locker = new Object();
 	private final static ArrayList<OnProcessTalkCallback> talk_callacks = new ArrayList<RtlSdr.OnProcessTalkCallback>();
@@ -46,45 +43,6 @@ public class RtlSdr {
 	public static native void open(final String args, final int fd, final String uspfs_path);// throws RtlSdrException;
 	public static native void close();// throws RtlSdrException;
 	public static native boolean isNativeRunning();
-
-	private static void printf_receiver(final String data) {
-		for (final OnProcessTalkCallback c : talk_callacks)
-			c.OnProcessTalk(data);
-		Log.d(TAG, data);
-	}
-
-	private static void printf_stderr_receiver(final String data) {
-		for (final OnProcessTalkCallback c : talk_callacks)
-			c.OnProcessTalk(data);
-		Log.w(TAG, data);
-	}
-
-	private static void onclose(int exitcode) {
-		RtlSdr.exitcode.set(exitcode);
-		exitcode_set.set(true);
-		synchronized (exitcode_locker) {
-			exitcode_locker.notifyAll();
-		}
-		if (exitcode != EXIT_OK)
-			Log.e(TAG, "Exitcode "+exitcode);
-		else
-			Log.d(TAG, "Exited with success");
-	}
-
-	private static void onopen() {
-		for (final OnProcessTalkCallback c : talk_callacks)
-			c.OnOpened();
-		Log.d(TAG, "Device open");
-	}
-
-	public static void registerWordCallback(final OnProcessTalkCallback callback) {
-		if (!talk_callacks.contains(callback)) talk_callacks.add(callback);
-	}
-
-	public static void unregisterWordCallback(final OnProcessTalkCallback callback) {
-		talk_callacks.remove(callback);
-	}
-
 
 	public static void start(final String args, final int fd, final String uspfs_path) throws RtlSdrException, InterruptedException {
 		if (isNativeRunning()) {
@@ -133,18 +91,8 @@ public class RtlSdr {
 		t.join();
 	}
 
-	public static void stop() {
-		if (!isNativeRunning()) return;
-		close();
-	}
-
 	public interface OnProcessTalkCallback {
-		/** Whenever the process writes something to its stdout, this will get called */
-		void OnProcessTalk(final String line);
-
 		void OnClosed(final int exitvalue, final RtlSdrException e);
-
-		void OnOpened();
 	}
 
 }

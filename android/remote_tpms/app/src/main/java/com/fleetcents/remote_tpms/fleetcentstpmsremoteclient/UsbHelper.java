@@ -19,13 +19,8 @@ package com.fleetcents.remote_tpms.fleetcentstpmsremoteclient;
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.HashSet;
-
-import com.fleetcents.remote_tpms.fleetcentstpmsremoteclient.RtlSdrStartException.err_info;
 
 import org.xmlpull.v1.XmlPullParser;
 
@@ -41,10 +36,7 @@ import android.util.Log;
 public class UsbHelper {
     private static final String LOGTAG = "UsbHelper";
     private static final String TAG = "FleetCents";
-
     private final static String DEFAULT_USPFS_PATH = "/dev/bus/usb";
-
-    public enum STATUS {SHOW_DEVICE_DIALOG, REQUESTED_OPEN_DEVICE, CANNOT_FIND, CANNOT_FIND_TRY_ROOT}
 
     public static HashSet<String> getAllowedDeviceData(final Context ctx) {
         final HashSet<String> ans = new HashSet<String>();
@@ -83,24 +75,18 @@ public class UsbHelper {
         final HashMap<String, UsbDevice> deviceList = manager.getDeviceList();
 
         if (deviceList.isEmpty()) {
-            String str;
-            str = "No compatible SDR devices found (make sure your USB device is connected, properly powered and your phone/tablet supports USB host mode)."; //getString(R.string.exception_NO_DEVICES);
             throw new RuntimeException(String.valueOf(R.string.exception_NO_DEVICES));
-//            return STATUS.CANNOT_FIND;
         }
 
         for (final String desc : deviceList.keySet()) {
             final UsbDevice candidate = deviceList.get(desc);
             final String candstr = "v" + candidate.getVendorId() + "p" + candidate.getProductId();
-//            Log.i(LOGTAG, "candidate str = " + candstr);
             if (allowed.contains(candstr)) {
                 device = candidate;
             }
         }
 
         if (device == null) {
-            String str;
-            str = "No compatible SDR devices found (make sure your USB device is connected, properly powered and your phone/tablet supports USB host mode).";
             throw new RuntimeException(String.valueOf(R.string.exception_NO_DEVICES));
         }
 
@@ -125,19 +111,15 @@ public class UsbHelper {
 
         if ((device == null) || (!manager.hasPermission(device))) {
             throw new RuntimeException(String.valueOf(R.string.exception_LIBUSB_ERROR_ACCESS));
-//            activity.finishWithError(err_info.permission_denied);
         }
 
         final UsbDeviceConnection connection = manager.openDevice(device);
 
         if (connection == null) {
             throw new RuntimeException(String.valueOf(R.string.exception_LIBUSB_ERROR_ACCESS));
-//            activity.finishWithError(err_info.unknown_error);
-        } else {
-            return connection;
         }
 
-//        return null;
+        return connection;
     }
 
     public final static String properDeviceName(String deviceName) {
@@ -153,9 +135,10 @@ public class UsbHelper {
             else
                 sb.append("/" + paths[i]);
         final String stripped_name = sb.toString().trim();
-        if (stripped_name.isEmpty())
+        if (stripped_name.isEmpty()) {
             return DEFAULT_USPFS_PATH;
-        else
-            return stripped_name;
+        }
+
+        return stripped_name;
     }
 }
