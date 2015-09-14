@@ -62,8 +62,10 @@ public class MainActivity extends Activity {
     public String cacheDir(String fn) {
         // emulator expects dir at /storage/sdcard/Android/data/com.fleetcents.remote_tpms.fleetcentstpmsremoteclient/cache
         File[] dirs = ContextCompat.getExternalFilesDirs(this, "rtlsdr");
-        File fdir = dirs[dirs.length - 1];
+
+        File fdir = (dirs.length >= 1) ? dirs[dirs.length - 1] : getFilesDir();
         String retVal = String.valueOf(fdir);
+
         if (!testing) {
             File f = new File(fdir, fn);
             f.mkdirs();
