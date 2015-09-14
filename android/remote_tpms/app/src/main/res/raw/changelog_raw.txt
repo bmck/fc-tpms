@@ -1,5 +1,5 @@
 Current $Revision$
-
+ 
 v.0.2.1, (open)
 * Added ChangeLog
 * Added Legal and ChangeLog dialogs
