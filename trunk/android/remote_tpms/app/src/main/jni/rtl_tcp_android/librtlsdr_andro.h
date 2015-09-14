@@ -20,6 +20,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+#include "log_macros.h"
 #include "rtl-sdr/include/rtl-sdr.h"
 
 #ifndef __RTL_ANDRO_SDR_H

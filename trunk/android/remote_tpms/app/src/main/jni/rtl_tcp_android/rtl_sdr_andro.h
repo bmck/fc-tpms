@@ -26,8 +26,8 @@ void rtlsdr_main(int usbfd, const char * uspfs_path_input, int argc, char **argv
 void rtlsdr_fc_close();
 int rtlsdr_isrunning();
 
-void aprintf( const char* format , ... );
-void aprintf_stderr( const char* format , ... );
+//void aprintf( const char* format , ... );
+//void aprintf_stderr( const char* format , ... );
 void announce_exceptioncode( const int exception_code );
 void announce_success( );
 void thread_detach();
