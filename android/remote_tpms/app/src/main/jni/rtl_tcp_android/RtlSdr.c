@@ -153,8 +153,7 @@ void allocate_args_from_string(const char * string, int nargslength, int * argc,
 	(*argc) = id;
 }
 
-JNIEXPORT void JNICALL Java_com_fleetcents_remote_1tpms_fleetcentstpmsremoteclient_core_RtlSdr_open
-(JNIEnv * env, jclass class, jstring args, jint fd, jstring uspfs_path) {
+JNIEXPORT void JNICALL Java_com_fleetcents_remote_1tpms_fleetcentstpmsremoteclient_RtlSdr_open(JNIEnv* env, jclass class, jstring args, jint fd, jstring uspfs_path) {
 	LOGI("Starting native code!");
 	(*env)->GetJavaVM(env, &jvm);
 	javaversion = (*env)->GetVersion(env);
@@ -179,12 +178,14 @@ JNIEXPORT void JNICALL Java_com_fleetcents_remote_1tpms_fleetcentstpmsremoteclie
 	free(argv);
 }
 
-JNIEXPORT void JNICALL Java_com_fleetcents_remote_1tpms_fleetcentstpmsremoteclient_core_RtlSdr_close
+JNIEXPORT void JNICALL
+Java_com_fleetcents_remote_1tpms_fleetcentstpmsremoteclient_RtlSdr_close
   (JNIEnv * env, jclass class) {
 	rtlsdr_fc_close();
 }
 
-JNIEXPORT jboolean JNICALL Java_com_fleetcents_remote_1tpms_fleetcentstpmsremoteclient_core_RtlSdr_isNativeRunning
+JNIEXPORT jboolean
+		JNICALL Java_com_fleetcents_remote_1tpms_fleetcentstpmsremoteclient_RtlSdr_isNativeRunning
   (JNIEnv * env, jclass class) {
 	return (jboolean) ((rtlsdr_isrunning()) ? (JNI_TRUE) : (JNI_FALSE));
 }

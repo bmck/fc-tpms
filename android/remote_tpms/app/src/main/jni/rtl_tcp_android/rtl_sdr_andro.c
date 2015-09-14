@@ -21,7 +21,6 @@
 
 // For exit codes
 #include "RtlSdr.h"
-
 #include "rtl_sdr_andro.h"
 #include "librtlsdr_andro.h"
 #include "rtl-sdr/src/convenience/convenience.h"
@@ -90,7 +89,8 @@ static void sighandler(int signum)
     rtlsdr_cancel_async(dev);
   if (signum != 0) {
     LOGE("Signal caught, exiting! (signal %d)", signum);
-    announce_exceptioncode(com_fleetcents_remote_1tpms_fleetcentstpmsremoteclient_core_RtlSdr_EXIT_SIGNAL_CAUGHT);
+    announce_exceptioncode(
+            com_fleetcents_remote_1tpms_fleetcentstpmsremoteclient_RtlSdr_EXIT_SIGNAL_CAUGHT);
   }
 
   do_exit = 1;
@@ -164,7 +164,8 @@ void rtlsdr_main(int usbfd, const char * uspfs_path_input, int argc, char **argv
 
   if (usbfd != -1 && (!(fcntl(usbfd, F_GETFL) != -1 || errno != EBADF))) {
     LOGE("Invalid file descriptor %d, - %s", usbfd, strerror(errno));
-    announce_exceptioncode(com_fleetcents_remote_1tpms_fleetcentstpmsremoteclient_core_RtlSdr_EXIT_INVALID_FD);
+    announce_exceptioncode(
+            com_fleetcents_remote_1tpms_fleetcentstpmsremoteclient_RtlSdr_EXIT_INVALID_FD);
     pthread_mutex_lock(&running_mutex);
     is_running = 0;
     pthread_mutex_unlock(&running_mutex);
@@ -212,7 +213,7 @@ void rtlsdr_main(int usbfd, const char * uspfs_path_input, int argc, char **argv
       break;
     default:
       LOGE("Unexpected argument '%c' with value '%s' received as an argument", opt, optarg);
-//      announce_exceptioncode(com_fleetcents_remote_1tpms_fleetcentstpmsremoteclient_core_RtlSdr_EXIT_WRONG_ARGS);
+//      announce_exceptioncode(com_fleetcents_remote_1tpms_fleetcentstpmsremoteclient_RtlSdr_EXIT_WRONG_ARGS);
 //      pthread_mutex_lock(&running_mutex);
 //      is_running = 0;
 //      pthread_mutex_unlock(&running_mutex);
@@ -224,7 +225,8 @@ void rtlsdr_main(int usbfd, const char * uspfs_path_input, int argc, char **argv
 //  LOGI("argc = %d, optind = %d, argv[%d] = %s", argc, optind, optind, argv[optind]);
   if (argc < optind) {
     LOGE("Expected at least %d arguments, but got %d", optind, argc);
-    announce_exceptioncode(com_fleetcents_remote_1tpms_fleetcentstpmsremoteclient_core_RtlSdr_EXIT_WRONG_ARGS);
+    announce_exceptioncode(
+            com_fleetcents_remote_1tpms_fleetcentstpmsremoteclient_RtlSdr_EXIT_WRONG_ARGS);
     pthread_mutex_lock(&running_mutex);
     is_running = 0;
     pthread_mutex_unlock(&running_mutex);
@@ -261,7 +263,8 @@ void rtlsdr_main(int usbfd, const char * uspfs_path_input, int argc, char **argv
 
     if (dev_index < 0) {
       LOGE("No supported devices found.");
-      announce_exceptioncode( com_fleetcents_remote_1tpms_fleetcentstpmsremoteclient_core_RtlSdr_EXIT_NO_DEVICES );
+      announce_exceptioncode(
+              com_fleetcents_remote_1tpms_fleetcentstpmsremoteclient_RtlSdr_EXIT_NO_DEVICES);
       pthread_mutex_lock(&running_mutex);
       is_running = 0;
       pthread_mutex_unlock(&running_mutex);
@@ -272,6 +275,7 @@ void rtlsdr_main(int usbfd, const char * uspfs_path_input, int argc, char **argv
   } else {
     LOGI("Opening device with fd %d at %s", usbfd, uspfs_path_input);
     r = rtlsdr_open2(&dev, dev_index, usbfd, uspfs_path_input);
+    LOGI("Opened device with fd %d at %s", usbfd, uspfs_path_input);
   }
 
   if (r < 0) {
@@ -285,7 +289,8 @@ void rtlsdr_main(int usbfd, const char * uspfs_path_input, int argc, char **argv
 
   if (NULL == dev) {
     LOGE("Failed to open rtlsdr device #%d.", dev_index);
-    announce_exceptioncode( com_fleetcents_remote_1tpms_fleetcentstpmsremoteclient_core_RtlSdr_EXIT_FAILED_TO_OPEN_DEVICE );
+    announce_exceptioncode(
+            com_fleetcents_remote_1tpms_fleetcentstpmsremoteclient_RtlSdr_EXIT_FAILED_TO_OPEN_DEVICE);
     pthread_mutex_lock(&running_mutex);
     is_running = 0;
     pthread_mutex_unlock(&running_mutex);
@@ -300,7 +305,8 @@ void rtlsdr_main(int usbfd, const char * uspfs_path_input, int argc, char **argv
   r = rtlsdr_set_sample_rate(dev, samp_rate);
   if (r < 0) {
     LOGE("WARNING: Failed to set sample rate.");
-    announce_exceptioncode( com_fleetcents_remote_1tpms_fleetcentstpmsremoteclient_core_RtlSdr_EXIT_NOT_ENOUGH_POWER );
+    announce_exceptioncode(
+            com_fleetcents_remote_1tpms_fleetcentstpmsremoteclient_RtlSdr_EXIT_NOT_ENOUGH_POWER);
     pthread_mutex_lock(&running_mutex);
     is_running = 0;
     pthread_mutex_unlock(&running_mutex);
@@ -342,7 +348,8 @@ void rtlsdr_main(int usbfd, const char * uspfs_path_input, int argc, char **argv
 
   if (strcmp(filename, "-") == 0) {
     LOGE("WARNING: Failed to set output filename.");
-    announce_exceptioncode( com_fleetcents_remote_1tpms_fleetcentstpmsremoteclient_core_RtlSdr_RTLSDR_FILENAME_NOT_SPECIFIED );
+    announce_exceptioncode(
+            com_fleetcents_remote_1tpms_fleetcentstpmsremoteclient_RtlSdr_RTLSDR_FILENAME_NOT_SPECIFIED);
     pthread_mutex_lock(&running_mutex);
     is_running = 0;
     pthread_mutex_unlock(&running_mutex);
@@ -352,7 +359,8 @@ void rtlsdr_main(int usbfd, const char * uspfs_path_input, int argc, char **argv
     LOGI("filename = %s\n", filename);
     if (!file) {
       LOGE("Failed to open %s\n", filename);
-      announce_exceptioncode( com_fleetcents_remote_1tpms_fleetcentstpmsremoteclient_core_RtlSdr_RTLSDR_FILENAME_NOT_SPECIFIED );
+      announce_exceptioncode(
+              com_fleetcents_remote_1tpms_fleetcentstpmsremoteclient_RtlSdr_RTLSDR_FILENAME_NOT_SPECIFIED);
       pthread_mutex_lock(&running_mutex);
       is_running = 0;
       pthread_mutex_unlock(&running_mutex);
@@ -398,9 +406,11 @@ void rtlsdr_main(int usbfd, const char * uspfs_path_input, int argc, char **argv
 
   fclose(file);
   rtlsdr_close(dev);
-  free (buffer);
+  free(buffer);
+  LOGI("c\n");
 
-  announce_exceptioncode(com_fleetcents_remote_1tpms_fleetcentstpmsremoteclient_core_RtlSdr_EXIT_OK);
+  announce_exceptioncode(com_fleetcents_remote_1tpms_fleetcentstpmsremoteclient_RtlSdr_EXIT_OK);
+  LOGI("d\n");
   pthread_mutex_lock(&running_mutex);
   is_running = 0;
   pthread_mutex_unlock(&running_mutex);
