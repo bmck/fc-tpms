@@ -44,6 +44,24 @@ public class RtlSdr {
 	public static native void close();// throws RtlSdrException;
 	public static native boolean isNativeRunning();
 
+	private static void onclose(int exitcode) {
+		RtlSdr.exitcode.set(exitcode);
+		exitcode_set.set(true);
+		synchronized (exitcode_locker) {
+			exitcode_locker.notifyAll();
+		}
+//		if (exitcode != EXIT_OK)
+//			LOGE(TAG, "Exitcode "+exitcode);
+//		else
+//			LOGE(TAG, "Exited with success");
+	}
+
+	private static void onopen() {
+//		for (final OnProcessTalkCallback c : talk_callacks)
+//			c.OnOpened();
+//		LOGD("Device open");
+	}
+
 	public static void start(final String args, final int fd, final String uspfs_path) throws RtlSdrException, InterruptedException {
 		if (isNativeRunning()) {
 			close();
