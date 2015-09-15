@@ -142,7 +142,6 @@ public class MainActivity extends Activity {
                         return false;
                     }
                     int sample_rate = 2048000;
-                    SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
                     double secs = Double.parseDouble(sharedPrefs.getString("basestation_secssent", "1.0"));
                     String base = sharedPrefs.getString("basestation_hostname", "127.0.0.1");
                     String tempDisplay = sharedPrefs.getString("units_temp", getString(R.string.celsius));
@@ -159,7 +158,7 @@ public class MainActivity extends Activity {
                     startService(mServiceIntent);
                 }
                 else if (abort_requested == false) {
-                  abort_requested = true
+                  abort_requested = true;
                 }
                 Log.i(LOGTAG, "Exit onOptionsItemSelected");
                 return true;
