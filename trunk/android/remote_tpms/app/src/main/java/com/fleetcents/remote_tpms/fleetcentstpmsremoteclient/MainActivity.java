@@ -58,6 +58,7 @@ public class MainActivity extends Activity {
     private String uspfs_path = null;
     private int fd = -1;
     private UsbManager mUsbManager = null;
+    private boolean detailed_logging = false;
 
     public String cacheDir(String fn) {
         // emulator expects dir at /storage/sdcard/Android/data/com.fleetcents.remote_tpms.fleetcentstpmsremoteclient/cache
@@ -86,6 +87,9 @@ public class MainActivity extends Activity {
         // Instantiates a new FeedbackReceiver, & register it and its intent filters
         FeedbackReceiver mFeedbackReceiver = new FeedbackReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(mFeedbackReceiver, mStatusIntentFilter);
+
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        detailed_logging = sharedPrefs.getBoolean("detailed_messages", false);
 
         Log.i(LOGTAG, "whats wrong with following line?");
         setContentView(R.layout.main_layout);
@@ -130,6 +134,7 @@ public class MainActivity extends Activity {
                     updateActionBarAnimation();
 
                     File file = new File(cacheDir(TMPFCBINFN), TMPFCBINFN);
+                    log_it("i", LOGTAG, "Temporary logfile: " + String.valueOf(file));
                     if (file == null) {
                         errorModalBox(getString(R.string.exception_RTLSDR_FILE_NOT_SAVED));
                         return false;
@@ -176,6 +181,16 @@ public class MainActivity extends Activity {
         Log.i(LOGTAG, "Exit updateActionBarAnimation");
     }
 
+    public void log_it(String log_lvl, String tag, String str) {
+        if (!("idwev".contains(log_lvl))) log_lvl = "i";
+        if (detailed_logging) displayMessage("(" + tag + ") " + str);
+        if (log_lvl == "i") Log.i(tag, str);
+        else if (log_lvl == "d") Log.d(tag, str);
+        else if (log_lvl == "w") Log.w(tag, str);
+        else if (log_lvl == "e") Log.e(tag, str);
+        else Log.v(tag, str);
+    }
+
     public void enterSettings(View view) {
         Intent intent = new Intent(this, SettingsActivity.class);
         startActivity(intent);
@@ -186,18 +201,14 @@ public class MainActivity extends Activity {
             @Override
             public void run() {
                 myText.append(str + "\n");
-                Log.d(LOGTAG, "displayed >" + str + "<?\n");
             }
         });
-        Log.d(LOGTAG, "display >" + str + "<?\n");
     }
 
     public void errorModalBox(final String str) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                Log.d(LOGTAG, ">>>> displaying modal box -- " + str + "\n");
-
                 AlertDialog.Builder builder = new AlertDialog.Builder(activity);
                 builder.setMessage(str).setTitle(R.string.error).setNeutralButton(
                         getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
@@ -283,7 +294,6 @@ public class MainActivity extends Activity {
 
     // Broadcast receiver for receiving status updates from the IntentService
     private class FeedbackReceiver extends BroadcastReceiver {
-        // Prevents instantiation
         private FeedbackReceiver() {
         }
 
@@ -294,7 +304,6 @@ public class MainActivity extends Activity {
 
             str = intent.getStringExtra(RtlSdrFeedbackTypes.EXTENDED_DATA_STATUS);
             if (str != null) {
-                Log.i(LOGTAG, "received displayMessage, str = >" + str + "<");
                 displayMessage(str);
             } else {
                 str = intent.getStringExtra(RtlSdrFeedbackTypes.EXTENDED_DATA_COMPLETEOK);
@@ -305,7 +314,6 @@ public class MainActivity extends Activity {
                     str = intent.getStringExtra(RtlSdrFeedbackTypes.EXTENDED_DATA_FAILURE);
                     if (str == null)
                         str = getString(R.string.exception_UNKNOWN);
-                    Log.i(LOGTAG, "received errorModalBox, status = >" + str + "<");
                     errorModalBox(str);
                 }
             }

@@ -60,7 +60,7 @@ public class SdrFtpService extends IntentService {
 
         String arguments = "-f " + freq + " -s " + sample_rate + " -n " + num_samples +
                 " -t " + (testing ? "1" : "0") + " " + fn + "";
-        Log.i(LOGTAG, "arguments = >" + arguments + "<");
+        activity.log_it("i", LOGTAG, "arguments = >" + arguments + "<");
 
         synchronized (this) {
             Log.i(LOGTAG, "A @ " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()) + "\n");
@@ -85,15 +85,15 @@ public class SdrFtpService extends IntentService {
 
                     displayMessage(getString(R.string.msg_wait_for_sensor_data));
 
-                    Log.d(LOGTAG, "B @ " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
+                    activity.log_it("d", LOGTAG, "Before beginning native code at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
                     RtlSdr.open(arguments, connection.getFileDescriptor(), UsbHelper.properDeviceName(device.getDeviceName()));
-                    Log.d(LOGTAG, "C @ " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
+                    activity.log_it("d", LOGTAG, "Completed native code " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
                 } else {
                     displayMessage(getString(R.string.msg_wait_for_sensor_data));
 
-                    Log.d(LOGTAG, "B @ " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
+                    activity.log_it("d", LOGTAG, "Before beginning native code at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
                     RtlSdr.open(arguments, -1, null);
-                    Log.d(LOGTAG, "C @ " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
+                    activity.log_it("d", LOGTAG, "Completed native code " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
 
                 }
                 displayMessage(getString(R.string.msg_rcving_sensor_data) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
@@ -108,22 +108,28 @@ public class SdrFtpService extends IntentService {
             int found = 0;
             try {
                 String addr = InetAddress.getByName(base).getHostAddress();
-                Log.i(LOGTAG, "connecting to " + addr);
+                activity.log_it("i", LOGTAG, "connecting to Fleet Cents server at " + addr);
                 ftpClient.connect(addr);
                 displayMessage(getString(R.string.msg_uploading_sensor_data) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
                 // TODO: use password field of login to identify user or hardware being used?
                 ftpClient.enterLocalPassiveMode();
                 ftpClient.login("anonymous", "guest");
-                Log.i(LOGTAG, ftpClient.getReplyString());
+                activity.log_it("i", LOGTAG, "Logged into Fleet Cents server");
+                activity.log_it("i", LOGTAG, ftpClient.getReplyString());
 
                 ftpClient.changeWorkingDirectory("fleet_server");
                 ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
                 BufferedInputStream buffIn = null;
                 buffIn = new BufferedInputStream(new FileInputStream(fn));
-                ftpClient.enterLocalPassiveMode();
+//                ftpClient.enterLocalPassiveMode();
+                activity.log_it("i", LOGTAG, "Before sending file to Fleet Cents server");
                 ftpClient.storeUniqueFile(buffIn);
+                activity.log_it("i", LOGTAG, "Completed sending file to Fleet Cents server");
                 buffIn.close();
-                resp = ftpClient.getReplyString().split(" ")[1];
+                resp = ftpClient.getReplyString();
+                activity.log_it("i", LOGTAG, "Complete response to upload: " + resp);
+                resp = resp.split(" ")[1];
+                activity.log_it("i", LOGTAG, "Relevant response to upload: " + resp);
 //                Log.i(LOGTAG, "resp = " + resp);
 //                Log.i(LOGTAG, "resp[0] = >" + resp.split(",")[0] + "<");
 //                Log.i(LOGTAG, "resp[1] = >" + resp.split(",")[1] + "<");
@@ -149,12 +155,15 @@ public class SdrFtpService extends IntentService {
                 ftpClient.logout();
                 ftpClient.disconnect();
             } catch (UnknownHostException e) {
+                activity.log_it("e", LOGTAG, "Unknown Host Exception: " + e.toString());
                 errorModalBox(getString(R.string.exception_NO_FTP_SERVER));
                 return;
             } catch (FileNotFoundException e) {
+                activity.log_it("e", LOGTAG, "File Not Found Exception: " + e.toString());
                 errorModalBox(getString(R.string.exception_RTLSDR_FILE_NOT_SAVED));
                 return;
             } catch (IOException e) {
+                activity.log_it("e", LOGTAG, "IO Exception: " + e.toString());
                 errorModalBox(getString(R.string.exception_NO_NETWORK_ACCESS));
                 return;
             }
@@ -165,7 +174,7 @@ public class SdrFtpService extends IntentService {
                 // Instantiate the RequestQueue.
                 RequestQueue queue = Volley.newRequestQueue(activity);
                 String url = getFullUrl();
-                Log.i(LOGTAG, "url is >" + url + "<");
+                activity.log_it("i", LOGTAG, "url is " + url);
                 // Request a string response from the provided URL.
                 StringRequest stringRequest = new StringRequest(StringRequest.Method.GET, url,
                         new Response.Listener<String>() {
@@ -202,17 +211,14 @@ public class SdrFtpService extends IntentService {
 
 
     private void completeOk() throws InterruptedException {
-        Thread.sleep(500);
         feedback(RtlSdrFeedbackTypes.EXTENDED_DATA_COMPLETEOK, "ok");
     }
 
     private void displayMessage(String str) {
-        Log.i(LOGTAG, "displayMessage, str = >" + str + "<");
         feedback(RtlSdrFeedbackTypes.EXTENDED_DATA_STATUS, str);
     }
 
     private void errorModalBox(String str) {
-        Log.i(LOGTAG, "errorModalBox, str = >" + str + "<");
         feedback(RtlSdrFeedbackTypes.EXTENDED_DATA_FAILURE, str);
     }
 
