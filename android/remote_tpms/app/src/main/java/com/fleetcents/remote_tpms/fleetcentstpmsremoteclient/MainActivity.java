@@ -51,6 +51,7 @@ public class MainActivity extends Activity {
     }
 
     public boolean running = false;
+    public boolean abort_requested = false;
     private MenuItem mi_startStop = null;
     private TextView myText = null;
     private boolean testing = false;
@@ -88,9 +89,6 @@ public class MainActivity extends Activity {
         FeedbackReceiver mFeedbackReceiver = new FeedbackReceiver();
         LocalBroadcastManager.getInstance(this).registerReceiver(mFeedbackReceiver, mStatusIntentFilter);
 
-        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
-        detailed_logging = sharedPrefs.getBoolean("detailed_messages", false);
-
         Log.i(LOGTAG, "whats wrong with following line?");
         setContentView(R.layout.main_layout);
 
@@ -122,14 +120,18 @@ public class MainActivity extends Activity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         Log.i(LOGTAG, "Enter onOptionsItemSelected");
-        // Handle presses on the action bar items
+
         switch (item.getItemId()) {
             case R.id.action_settings:
                 enterSettings(findViewById(R.id.action_settings));
                 return true;
 
             case R.id.action_startstop:
-                if (!running) {
+                // TODO: Handle 3 cases -- stopped (press to start), started (press to request abort), abort requested (press to ignore)
+                if (running == false) {
+                    SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+                    detailed_logging = sharedPrefs.getBoolean("detailed_messages", false);
+
                     running = true;
                     updateActionBarAnimation();
 
@@ -156,6 +158,9 @@ public class MainActivity extends Activity {
                     mServiceIntent.setData(Uri.parse("rtlsdr://" + arguments));
                     startService(mServiceIntent);
                 }
+                else if (abort_requested == false) {
+                  abort_requested = true
+                }
                 Log.i(LOGTAG, "Exit onOptionsItemSelected");
                 return true;
             default:
@@ -168,7 +173,10 @@ public class MainActivity extends Activity {
         Log.i(LOGTAG, "Enter updateActionBarAnimation");
         // Set icon of the start/stop button according to the state:
         if (mi_startStop != null) {
-            if (running) {
+            if (abort_requested) {
+              // TODO: What goes here?
+            }
+            else if (running) {
                 LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
                 ImageView imageView = (ImageView) inflater.inflate(R.layout.start_stop_layout, null);
                 Animation fade = AnimationUtils.loadAnimation(this, R.anim.fade);
