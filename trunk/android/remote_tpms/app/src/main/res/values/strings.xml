@@ -7,47 +7,10 @@
     <string name="action_start">Start</string>
     <string name="action_stop">Stop</string>
 
-    <string name="msg_send_activation">Sending Activation Signal</string>
-    <string name="msg_wait_for_sensor_data">Receiving Sensor Data</string>
-    <string name="msg_rcving_sensor_data">Finished Receiving Sensor Data</string>
-    <string name="msg_uploading_sensor_data">Uploading Sensor Data for Processing</string>
-    <string name="sensor_id">Sensor ID:</string>
-    <string name="temp">Temperature:</string>
-    <string name="pressure">Pressure:</string>
-    <string name="kpa">(kPa)</string>
-    <string name="psi">(psi)</string>
-    <string name="celsius">deg C</string>
-    <string name="fahrenheit">deg F</string>
-    <string name="msg_sdr_not_found">No compatible SDR device found</string>
-    <string name="msg_valid_pkt_not_found">Valid Binary String Not Received from TPMS; please try again</string>
-    <string name="msg_sending_data">Sending Sensor Data to Fleet Cents</string>
-    <string name="msg_data_rcvd_ok">Sensor Data Received OK</string>
-    <string name="msg_data_not_rcvd_ok">Sensor Data Not Stored OK</string>
-
     <string name="rtl_tcp_andro_exec">rtl_sdr_andro</string>
     <string name="quickinfo">This application provides for reading and archiving TPMS data from contemporary tire samples. For more information, please contact Fleet Cents.</string>
     <string name="license">License</string>
     <string name="help">Help</string>
     <string name="error">Error</string>
     <string name="btn_ok">OK</string>
-
-    <string name="exception_LIBUSB_GENERIC">libusb exception %s</string>
-    <string name="exception_LIBUSB_ERROR_ACCESS">Cannot access device</string>
-    <string name="exception_DEFAULT">Exception id %d</string>
-    <string name="exception_OK">No exception :)</string>
-    <string name="exception_WRONG_ARGS">Wrong arguments were supplied! Please, check the rtl_sdr manual!</string>
-    <string name="exception_INVALID_FD">Invalid USB file descriptor passed via Java.</string>
-    <string name="exception_NO_DEVICES">No compatible SDR devices found (make sure your USB device is connected, properly powered and your phone/tablet supports USB host mode). </string>
-    <string name="exception_FAILED_TO_OPEN_DEVICE">A compatible device was found, but cannot be opened.</string>
-    <string name="exception_CANNOT_RESTART">Internal error: Cannot restart service</string>
-    <string name="exception_CANNOT_CLOSE">Internal error: Cannot stop service</string>
-    <string name="exception_SIGNAL_CAUGHT">Signal was caught!</string>
-    <string name="exception_NOT_ENOUGH_POWER">Your Android device does not provide enough power to the dongle. You must use an externally powered USB hub or an externally powered USB OTG cable.</string>
-    <string name="exception_RTLSDR_FILENAME_NOT_SPECIFIED">Internal error: A filename for temporarily storing RF samples was not provided</string>
-    <string name="exception_RTLSDR_FILE_NOT_SAVED">Internal error: A file for temporarily storing RF samples could not be written to the file system in the location identified</string>
-    <string name="exception_NO_NETWORK_ACCESS">No network access found.  Enable internet access and please try again.</string>
-    <string name="exception_NO_FTP_SERVER">Processing server not found; check the Base Station in the Preferences, and your internet access, and please try again.</string>
-
-    <string name="msg_unknown_error">An Unknown Error Has Occurred</string>
-    <string name="exception_UNKNOWN">An unexpected error has occurred.  If this error continues, please contact the application developer.</string>
 </resources>
