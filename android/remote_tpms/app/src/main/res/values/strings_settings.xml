@@ -11,9 +11,8 @@
     <string name="pref_units_temp">Displayed Temperature Units</string>
     <string name="pref_units_pressure">Displayed Pressure Units</string>
 
-    <string name="pref_normal_or_detailed_messages">Feedback Level</string>
-    <string name="pref_normal_messages">Normal</string>
-    <string name="pref_detailed_messages">Detailed</string>
+    <string name="pref_normal_or_detailed_messages">Generate Detailed Messages (leave unchecked for normal messages)</string>
+    <string name="pref_normal_or_detailed_message_summary">Check this box to generate additional feedback for debugging the application</string>
 
     <string name="pref_header_about">About this App</string>
     <string name="pref_about_changelog">Version &amp; ChangeLog</string>
