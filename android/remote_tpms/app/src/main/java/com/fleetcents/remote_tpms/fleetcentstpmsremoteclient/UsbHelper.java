@@ -75,6 +75,7 @@ public class UsbHelper {
         final HashMap<String, UsbDevice> deviceList = manager.getDeviceList();
 
         if (deviceList.isEmpty()) {
+            activity.log_it("e", TAG, activity.getString(R.string.exception_NO_DEVICES) + " due to no devices found");
             throw new RuntimeException(String.valueOf(R.string.exception_NO_DEVICES));
         }
 
@@ -87,6 +88,7 @@ public class UsbHelper {
         }
 
         if (device == null) {
+            activity.log_it("e", TAG, activity.getString(R.string.exception_NO_DEVICES) + " due to no _acceptable_ devices found");
             throw new RuntimeException(String.valueOf(R.string.exception_NO_DEVICES));
         }
 
@@ -110,12 +112,14 @@ public class UsbHelper {
         }
 
         if ((device == null) || (!manager.hasPermission(device))) {
+            activity.log_it("e", TAG, activity.getString(R.string.exception_LIBUSB_ERROR_ACCESS) + " due to either no device, or device manager could not get permission to use device");
             throw new RuntimeException(String.valueOf(R.string.exception_LIBUSB_ERROR_ACCESS));
         }
 
         final UsbDeviceConnection connection = manager.openDevice(device);
 
         if (connection == null) {
+            activity.log_it("e", TAG, activity.getString(R.string.exception_LIBUSB_ERROR_ACCESS) + " due to device manager not being able to open device");
             throw new RuntimeException(String.valueOf(R.string.exception_LIBUSB_ERROR_ACCESS));
         }
 
