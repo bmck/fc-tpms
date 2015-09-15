@@ -4,3 +4,5 @@ v.0.2.1, (open)
 * Added ChangeLog
 * Added Legal and ChangeLog dialogs
 * Added internal versioning
+* Support for devices w/o external storage
+* Added detailed debugging messages
