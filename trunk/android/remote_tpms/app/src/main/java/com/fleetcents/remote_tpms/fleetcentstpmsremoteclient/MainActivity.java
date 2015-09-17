@@ -127,7 +127,7 @@ public class MainActivity extends Activity {
                 return true;
 
             case R.id.action_startstop:
-                // TODO: Handle 3 cases -- stopped (press to start), started (press to request abort), abort requested (press to ignore)
+                // TODO: Handle 3 cases -- stopped (show play, press to start), started (show pause or stop, press to request abort), abort requested (show flashing pause or stop, press to ignore)
                 if (running == false) {
                     SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
                     detailed_logging = sharedPrefs.getBoolean("detailed_messages", false);
@@ -146,8 +146,7 @@ public class MainActivity extends Activity {
                     String base = sharedPrefs.getString("basestation_hostname", "127.0.0.1");
                     String tempDisplay = sharedPrefs.getString("units_temp", getString(R.string.celsius));
                     String pressDisplay = sharedPrefs.getString("units_pressure", getString(R.string.psi));
-                    // String arguments = "-f 314980000 -s " + sample_rate + " -n " + Math.round(secs * sample_rate) + " -t " + (testing ? "1" : "0") + " " + file + "";
-                    // Log.i(LOGTAG, "arguments = >" + arguments + "<");
+
                     String arguments = "?f=314980000&s=" + sample_rate + "&n=" + Math.round(secs * sample_rate) +
                             "&base=" + base + "&c=" + (tempDisplay == getString(R.string.celsius) ? 1 : 0) +
                             "&p=" + (pressDisplay == getString(R.string.psi) ? 1 : 0) +
@@ -190,7 +189,7 @@ public class MainActivity extends Activity {
 
     public void log_it(String log_lvl, String tag, String str) {
         if (!("idwev".contains(log_lvl))) log_lvl = "i";
-        if (detailed_logging) displayMessage("(" + tag + ") " + str);
+        if (detailed_logging) displayMessage(str);
         if (log_lvl == "i") Log.i(tag, str);
         else if (log_lvl == "d") Log.d(tag, str);
         else if (log_lvl == "w") Log.w(tag, str);
