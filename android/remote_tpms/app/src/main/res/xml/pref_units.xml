@@ -1,19 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <ListPreference
-        android:key="units_temp"
-        android:title="@string/pref_units_temp"
-        android:defaultValue="@string/celsius"
-        android:entries="@array/tempOptionsArray"
-        android:entryValues="@array/tempOptionsArray"
-        android:negativeButtonText="@null"
-        android:positiveButtonText="@null" />
-    <ListPreference
-        android:key="units_pressure"
-        android:title="@string/pref_units_pressure"
-        android:defaultValue="@string/psi"
-        android:entries="@array/pressureOptionsArray"
-        android:entryValues="@array/pressureOptionsArray"
-        android:negativeButtonText="@null"
-        android:positiveButtonText="@null" />
+    <PreferenceScreen
+        android:key="units_preferencescreen"
+        android:title="@string/pref_header_presentation">
+
+        <ListPreference
+            android:defaultValue="@string/celsius"
+            android:entries="@array/tempOptionsArray"
+            android:entryValues="@array/tempOptionsArray"
+            android:key="units_temp"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"
+            android:title="@string/pref_presentation_temp" />
+        <ListPreference
+            android:defaultValue="@string/psi"
+            android:entries="@array/pressureOptionsArray"
+            android:entryValues="@array/pressureOptionsArray"
+            android:key="units_pressure"
+            android:negativeButtonText="@null"
+            android:positiveButtonText="@null"
+            android:title="@string/pref_presentation_pressure" />
+        <CheckBoxPreference
+            android:key="detailed_messages"
+            android:title="@string/pref_presentation_messages"
+            android:summary="@string/pref_presentation_messages_summary"
+            android:defaultValue="false" />
+
+    </PreferenceScreen>
 </PreferenceScreen>
