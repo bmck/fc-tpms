@@ -407,10 +407,8 @@ void rtlsdr_main(int usbfd, const char * uspfs_path_input, int argc, char **argv
   fclose(file);
   rtlsdr_close(dev);
   free(buffer);
-  LOGI("c\n");
 
   announce_exceptioncode(com_fleetcents_remote_1tpms_fleetcentstpmsremoteclient_RtlSdr_EXIT_OK);
-  LOGI("d\n");
   pthread_mutex_lock(&running_mutex);
   is_running = 0;
   pthread_mutex_unlock(&running_mutex);
