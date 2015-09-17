@@ -17,8 +17,8 @@ public class SettingsFragment extends PreferenceFragment {
             addPreferencesFromResource(R.xml.pref_basestation);
             addPreferencesFromResource(R.xml.pref_units);
             addPreferencesFromResource(R.xml.pref_detailed_msgs);
+            addPreferencesFromResource(R.xml.pref_crash_report);
             addPreferencesFromResource(R.xml.pref_about);
-
         }
 
 }
