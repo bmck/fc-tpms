@@ -19,4 +19,7 @@
     <string name="pref_about_changelog_summary">The current version and recent feature-level changes of this app.</string>
     <string name="pref_about_legal">Legal Notices</string>
     <string name="pref_about_legal_summary">Legal attributes and license information pertinent to this app.</string>
+
+    <string name="pref_header_crash_report">Crash Report Options</string>
+    <string name="pref_header_crash_report_summary">Options related to the automatic generation of crash reports.</string>
 </resources>
