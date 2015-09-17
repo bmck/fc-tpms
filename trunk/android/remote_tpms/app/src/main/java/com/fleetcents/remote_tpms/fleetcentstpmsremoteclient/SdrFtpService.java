@@ -6,6 +6,7 @@ import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.net.Uri;
 import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.util.Log;
 
 import com.android.volley.RequestQueue;
@@ -21,9 +22,11 @@ import java.io.BufferedInputStream;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.lang.reflect.Array;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.Locale;
 import java.util.TimeZone;
@@ -60,7 +63,7 @@ public class SdrFtpService extends IntentService {
 
         String arguments = "-f " + freq + " -s " + sample_rate + " -n " + num_samples +
                 " -t " + (testing ? "1" : "0") + " " + fn + "";
-        activity.log_it("i", LOGTAG, "arguments = >" + arguments + "<");
+        activity.log_it("i", LOGTAG, "SDR data collection arguments: " + arguments);
 
         synchronized (this) {
             Log.i(LOGTAG, "A @ " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()) + "\n");
@@ -128,7 +131,7 @@ public class SdrFtpService extends IntentService {
                 buffIn.close();
                 resp = ftpClient.getReplyString();
                 activity.log_it("i", LOGTAG, "Complete response to upload: " + resp);
-                resp = resp.split(" ")[1];
+                resp = TextUtils.join(",", Arrays.copyOfRange((resp.split(" ")[1]).split(","), 0, 3));
                 activity.log_it("i", LOGTAG, "Relevant response to upload: " + resp);
 //                Log.i(LOGTAG, "resp = " + resp);
 //                Log.i(LOGTAG, "resp[0] = >" + resp.split(",")[0] + "<");
