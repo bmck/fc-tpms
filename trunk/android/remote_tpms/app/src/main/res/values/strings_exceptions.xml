@@ -6,7 +6,7 @@
     <string name="exception_OK">No exception :)</string>
     <string name="exception_WRONG_ARGS">Wrong arguments were supplied! Please, check the rtl_sdr manual!</string>
     <string name="exception_INVALID_FD">Invalid USB file descriptor passed via Java.</string>
-    <string name="exception_NO_DEVICES">No compatible SDR devices found (make sure your USB device is connected, properly powered and your phone/tablet supports USB host mode). </string>
+    <string name="exception_NO_DEVICES">No compatible SDR devices found (make sure your USB device is connected, properly powered and your phone/tablet supports USB host mode) </string>
     <string name="exception_FAILED_TO_OPEN_DEVICE">A compatible device was found, but cannot be opened.</string>
     <string name="exception_CANNOT_RESTART">Internal error: Cannot restart service</string>
     <string name="exception_CANNOT_CLOSE">Internal error: Cannot stop service</string>
