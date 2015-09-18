@@ -26,6 +26,8 @@ import android.view.animation.AnimationUtils;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.acra.ACRA;
+
 import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -133,6 +135,7 @@ public class MainActivity extends Activity {
                     detailed_logging = sharedPrefs.getBoolean("detailed_messages", false);
 
                     running = true;
+                    abort_requested = false;
                     updateActionBarAnimation();
 
                     File file = new File(cacheDir(TMPFCBINFN), TMPFCBINFN);
