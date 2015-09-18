@@ -3,8 +3,8 @@
     <string name="sensor_id">Sensor ID:</string>
     <string name="temp">Temperature:</string>
     <string name="pressure">Pressure:</string>
-    <string name="kpa">(kPa)</string>
-    <string name="psi">(psi)</string>
+    <string name="kpa">kPa</string>
+    <string name="psi">psi</string>
     <string name="celsius">deg C</string>
     <string name="fahrenheit">deg F</string>
 
