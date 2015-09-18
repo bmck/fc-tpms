@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.fleetcents.remote_tpms.fleetcentstpmsremoteclient" >
+    package="com.fleetcents.remote_tpms.fleetcentstpmsremoteclient"  android:versionCode="000201" android:versionName="0.2.1" >
 
     <uses-sdk android:minSdkVersion="18" />
     <uses-permission android:name="android.permission.INTERNET" />
@@ -16,7 +16,7 @@
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
-        android:name="com.fleetcents.remote_tpms.fleetcentstpmsremoteclient.RemoteTpmsApplication"
+        android:name=".RemoteTpmsApplication"
         android:theme="@style/AppTheme" >
 
         <activity
