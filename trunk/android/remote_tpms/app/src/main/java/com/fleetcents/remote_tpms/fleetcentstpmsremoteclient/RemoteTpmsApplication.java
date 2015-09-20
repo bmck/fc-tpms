@@ -11,6 +11,8 @@ import org.acra.*;
 import org.acra.annotation.*;
 import org.acra.sender.HttpSender;
 
+import java.util.HashMap;
+
 @ReportsCrashes(
         socketTimeout = 10000,
         httpMethod = HttpSender.Method.PUT,
@@ -26,6 +28,10 @@ public class RemoteTpmsApplication extends Application {
     public void onCreate() {
         super.onCreate();
         ACRA.init(this);
+
+        HashMap<String,String> ACRAData = new HashMap<String,String>();
+//        ACRAData.put("my_app_info", "custom data");
+        ACRA.getErrorReporter().addReportSender(new ACRAPostSender(ACRAData));
 
 //        Log.i(LOGTAG, "\n\n\ntesting acra");
 //        ACRA.getErrorReporter().handleSilentException(null);
