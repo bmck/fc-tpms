@@ -325,8 +325,9 @@ echo Setup $CUST account
 # Configure the "$CUST" account to run the web application code and configuration files.
 
 mkdir -p /home/$CUST/html && chown $CUST:$CUST /home/$CUST/html && chmod 775 /home/$CUST/html
-su - $CUST -c "cd && svn checkout --username bmck_newco --password e5t5e5t5E --non-interactive https://subversion.assembla.com/svn/bmck-newco/trunk assembla"
-su - $CUST -c "ln -s ~/assembla/website ~/src"
+su - $CUST -c "cd && svn checkout --username bmck --password w4r4w4R --non-interactive svn://svn.bmck.org/fc/trunk bmck"
+su - $CUST -c "ln -s ~/bmck/website ~/src"
+su - $CUST -c "mkdir acra && cd acra && ln -s ~/bmck/other/acra.php ."
 su - $CUST -c "cd ~/src/config && ln -s database-mysql-prod.yml database.yml"
 echo "export PATH=$PATH:/usr/local/lib/ruby/gems/1.9.1/bin" >> /home/$CUST/.bash_profile
 mkdir /home/$CUST/tmp && mkdir /home/$CUST/tmp/cores && chown -R $CUST:$CUST /home/$CUST/tmp && ln -s /home/$CUST/tmp/cores /cores
