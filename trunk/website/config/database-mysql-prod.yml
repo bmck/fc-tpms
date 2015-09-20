@@ -20,9 +20,9 @@ default: &default
   password: w4r4w4Rjp
   socket: /var/lib/mysql/mysql.sock
 
-development:
-  <<: *default
-  database: newco_development
+# development:
+#   <<: *default
+#   database: newco_development
 
 # Warning: The database defined as "test" will be erased and
 # re-generated from your development database when you run "rake".
@@ -50,6 +50,12 @@ test:
 #   production:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
+development:
+  <<: *default
+  database: newco_production
+  username: newco
+  password: <%= ENV['NEWCO_DATABASE_PASSWORD'] %>
+
 production:
   <<: *default
   database: newco_production
