@@ -13,10 +13,10 @@ Rails.application.config.assets.version = '1.00001'
 
 Rails.application.config.assets.precompile << Proc.new do |path|
   if path =~ /\.(css|js|eot|svg|ttf|woff)\z/
-    full_path = Rails.application.assets.resolve(path).to_path
-    app_assets_path = Rails.root.join('app', 'assets').to_path
-    full_path.starts_with? app_assets_path
-    # if full_path.starts_with? app_assets_path
+    full_path = Pathname.new(Rails.application.assets.resolve(path)).to_s
+    app_assets_path = Pathname.new(Rails.root.join('app', 'assets')).to_s
+    full_path.start_with? app_assets_path
+    # if full_path.start_with? app_assets_path
     #   puts "including asset: " + full_path
     #   true
     # else
