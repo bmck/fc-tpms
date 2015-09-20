@@ -15,14 +15,14 @@ Rails.application.config.assets.precompile << Proc.new do |path|
   if (File.extname(path) =~ /\.(css|js|eot|svg|ttf|woff|woff2|otf)$/)
     full_path = Pathname.new(Rails.application.assets.resolve(path)).to_s
     app_assets_path = Pathname.new(Rails.root.join('app', 'assets')).to_s
-    full_path.start_with? app_assets_path
-    # if full_path.start_with? app_assets_path
-    #   puts "including asset: " + full_path
-    #   true
-    # else
-    #   puts "excluding asset: " + full_path
-    #   false
-    # end
+    # full_path.start_with? app_assets_path
+    if full_path.start_with? app_assets_path
+      puts "including asset: " + full_path
+      true
+    else
+      puts "excluding asset: " + full_path
+      false
+    end
   else
     false
   end
