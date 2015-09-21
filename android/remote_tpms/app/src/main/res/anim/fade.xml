@@ -6,6 +6,6 @@
             android:repeatCount="infinite"
             android:repeatMode="reverse"
             android:interpolator="@android:anim/linear_interpolator"
-            android:duration="250" />
+            android:duration="150" />
 
 </set>
