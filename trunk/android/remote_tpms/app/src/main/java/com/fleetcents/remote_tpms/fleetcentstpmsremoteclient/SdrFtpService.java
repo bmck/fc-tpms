@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.hardware.usb.UsbDevice;
 import android.hardware.usb.UsbDeviceConnection;
 import android.net.Uri;
+import android.os.SystemClock;
 import android.support.v4.content.LocalBroadcastManager;
 import android.text.TextUtils;
 import android.util.Log;
@@ -47,6 +48,9 @@ public class SdrFtpService extends IntentService {
 
     @Override
     protected void onHandleIntent(Intent workIntent) {
+        SystemClock.sleep(1500);
+        activity = MainActivity.activity;
+
         // Gets data from the incoming Intent
         String str = workIntent.getDataString();
         Uri u = Uri.parse("rtlsdr://" + str);
@@ -59,14 +63,14 @@ public class SdrFtpService extends IntentService {
         int freq = Integer.parseInt(u.getQueryParameter("f"));
         String base = u.getQueryParameter("base");
 
-        activity = MainActivity.activity;
-
         String arguments = "-f " + freq + " -s " + sample_rate + " -n " + num_samples +
                 " -t " + (testing ? "1" : "0") + " " + fn + "";
+        if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
         activity.log_it("i", LOGTAG, "SDR data collection arguments: " + arguments);
 
         synchronized (this) {
             Log.i(LOGTAG, "A @ " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()) + "\n");
+            if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
             displayMessage(getString(R.string.msg_send_activation) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
 
             try {
@@ -74,8 +78,10 @@ public class SdrFtpService extends IntentService {
                     UsbDevice device = null;
                     UsbDeviceConnection connection = null;
                     try {
+                        if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
                         device = UsbHelper.findDevice(activity);
                         connection = UsbHelper.openDevice(activity, device);
+                        if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
                     } catch (RuntimeException e) {
                         // TODO: Resolve why the error msgs in UsbHelper do not correctly render?
                         errorModalBox(getString(Integer.parseInt(e.getMessage())));
@@ -88,14 +94,18 @@ public class SdrFtpService extends IntentService {
 
                     displayMessage(getString(R.string.msg_wait_for_sensor_data));
 
+                    if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
                     activity.log_it("d", LOGTAG, "Before beginning native code at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
                     RtlSdr.open(arguments, connection.getFileDescriptor(), UsbHelper.properDeviceName(device.getDeviceName()));
+                    if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
                     activity.log_it("d", LOGTAG, "Completed native code " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
                 } else {
                     displayMessage(getString(R.string.msg_wait_for_sensor_data));
 
+                    if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
                     activity.log_it("d", LOGTAG, "Before beginning native code at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
                     RtlSdr.open(arguments, -1, null);
+                    if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
                     activity.log_it("d", LOGTAG, "Completed native code " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
 
                 }
@@ -111,12 +121,14 @@ public class SdrFtpService extends IntentService {
             int found = 0;
             try {
                 String addr = InetAddress.getByName(base).getHostAddress();
+                if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
                 activity.log_it("i", LOGTAG, "connecting to Fleet Cents server at " + addr);
                 ftpClient.connect(addr);
                 displayMessage(getString(R.string.msg_uploading_sensor_data) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
                 // TODO: use password field of login to identify user or hardware being used?
                 ftpClient.enterLocalPassiveMode();
                 ftpClient.login("anonymous", "guest");
+                if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
                 activity.log_it("i", LOGTAG, "Logged into Fleet Cents server");
                 activity.log_it("i", LOGTAG, ftpClient.getReplyString());
 
@@ -125,8 +137,10 @@ public class SdrFtpService extends IntentService {
                 BufferedInputStream buffIn = null;
                 buffIn = new BufferedInputStream(new FileInputStream(fn));
 //                ftpClient.enterLocalPassiveMode();
+                if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
                 activity.log_it("i", LOGTAG, "Before sending file to Fleet Cents server");
                 ftpClient.storeUniqueFile(buffIn);
+                if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
                 activity.log_it("i", LOGTAG, "Completed sending file to Fleet Cents server");
                 buffIn.close();
                 resp = ftpClient.getReplyString();
@@ -138,6 +152,7 @@ public class SdrFtpService extends IntentService {
 //                Log.i(LOGTAG, "resp[1] = >" + resp.split(",")[1] + "<");
 //                Log.i(LOGTAG, "resp[2] = >" + resp.split(",")[2] + "<");
 
+                if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
                 try {
                     displayMessage("\n" +
                             new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()) + "\n" +
@@ -157,6 +172,7 @@ public class SdrFtpService extends IntentService {
                 // resp format is CSV: hex address, tempC, pressure_kpa
                 ftpClient.logout();
                 ftpClient.disconnect();
+                if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
             } catch (UnknownHostException e) {
                 activity.log_it("e", LOGTAG, "Unknown Host Exception: " + e.toString());
                 errorModalBox(getString(R.string.exception_NO_FTP_SERVER));
@@ -177,6 +193,7 @@ public class SdrFtpService extends IntentService {
                 // Instantiate the RequestQueue.
                 RequestQueue queue = Volley.newRequestQueue(activity);
                 String url = getFullUrl();
+                if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
                 activity.log_it("i", LOGTAG, "url is " + url);
                 // Request a string response from the provided URL.
                 StringRequest stringRequest = new StringRequest(StringRequest.Method.GET, url,
@@ -204,14 +221,13 @@ public class SdrFtpService extends IntentService {
             displayMessage("Completed at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()) + "\n\n");
         }
 
-        try {
-            completeOk();
-        } catch (InterruptedException e) {
-        }
+        try { completeOk(); } catch (InterruptedException e) { }
         return;
     }
 
-
+    private boolean abort_requested() {
+        return activity.abort_requested;
+    }
 
     private void completeOk() throws InterruptedException {
         feedback(RtlSdrFeedbackTypes.EXTENDED_DATA_COMPLETEOK, "ok");

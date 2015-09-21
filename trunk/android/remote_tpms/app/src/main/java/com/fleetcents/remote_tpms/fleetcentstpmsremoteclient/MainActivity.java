@@ -1,5 +1,6 @@
 package com.fleetcents.remote_tpms.fleetcentstpmsremoteclient;
 
+import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
@@ -21,8 +22,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -130,6 +133,7 @@ public class MainActivity extends Activity {
 
             case R.id.action_startstop:
                 // TODO: Handle 3 cases -- stopped (show play, press to start), started (show pause or stop, press to request abort), abort requested (show flashing pause or stop, press to ignore)
+                // Stopped, now starting
                 if (running == false) {
                     SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
                     detailed_logging = sharedPrefs.getBoolean("detailed_messages", false);
@@ -159,8 +163,16 @@ public class MainActivity extends Activity {
                     mServiceIntent.setData(Uri.parse("rtlsdr://" + arguments));
                     startService(mServiceIntent);
                 }
+                // Running, requested stop
                 else if (abort_requested == false) {
                   abort_requested = true;
+                    updateActionBarAnimation();
+                }
+                // Stop requested, now stopping
+                else {
+                    running = false;
+                    abort_requested = false;
+                    updateActionBarAnimation();
                 }
                 Log.i(LOGTAG, "Exit onOptionsItemSelected");
                 return true;
@@ -173,18 +185,29 @@ public class MainActivity extends Activity {
     public void updateActionBarAnimation() {
         Log.i(LOGTAG, "Enter updateActionBarAnimation");
         // Set icon of the start/stop button according to the state:
+
         if (mi_startStop != null) {
             if (abort_requested) {
-              // TODO: What goes here?
+                // Running, requested stop
+                mi_startStop.setIcon(R.drawable.ic_pause_filled);
+
+                LayoutInflater inflater = (LayoutInflater) activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+                ImageView iv = (ImageView) inflater.inflate(R.layout.start_stop_layout, null);
+                Animation fader = AnimationUtils.loadAnimation(activity, R.anim.fade);
+                fader.setRepeatCount(Animation.INFINITE);
+                iv.startAnimation(fader);
+                mi_startStop.setActionView(iv);
             }
             else if (running) {
-                LayoutInflater inflater = (LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-                ImageView imageView = (ImageView) inflater.inflate(R.layout.start_stop_layout, null);
-                Animation fade = AnimationUtils.loadAnimation(this, R.anim.fade);
-                imageView.startAnimation(fade);
-                mi_startStop.setActionView(R.layout.start_stop_layout);
-            } else {
+                // Stopped, now starting
+                if (mi_startStop.getActionView() != null)  mi_startStop.getActionView().clearAnimation();
                 mi_startStop.setActionView(null);
+                mi_startStop.setIcon(R.drawable.ic_action_pause);
+            } else {
+                // Stop requested, now stopping
+                if (mi_startStop.getActionView() != null) mi_startStop.getActionView().clearAnimation();
+                mi_startStop.setActionView(null);
+                mi_startStop.setIcon(R.drawable.ic_action_play);
             }
         }
         Log.i(LOGTAG, "Exit updateActionBarAnimation");
@@ -226,6 +249,7 @@ public class MainActivity extends Activity {
                                 dialog.dismiss();
                                 displayMessage("\n\n\n\n------------------\n\n\n\n");
                                 running = false;
+                                abort_requested = false;
                                 updateActionBarAnimation();
                             }
                         });
@@ -250,6 +274,11 @@ public class MainActivity extends Activity {
             setResult(RESULT_CANCELED, data);
         } else {
             getParent().setResult(RESULT_CANCELED, data);
+        }
+
+        if (mi_startStop.getActionView() != null) {
+            mi_startStop.getActionView().clearAnimation();
+            mi_startStop.setActionView(null);
         }
 
         activity.errorModalBox(RtlSdrException.translateToString(second_id));
@@ -298,6 +327,10 @@ public class MainActivity extends Activity {
         } else {
             getParent().setResult(RESULT_OK, data);
         }
+        if (mi_startStop.getActionView() != null) {
+            mi_startStop.getActionView().clearAnimation();
+            mi_startStop.setActionView(null);
+        }
         finish();
     }
 
@@ -315,6 +348,11 @@ public class MainActivity extends Activity {
             if (str != null) {
                 displayMessage(str);
             } else {
+                if (mi_startStop.getActionView() != null) {
+                    mi_startStop.getActionView().clearAnimation();
+                    mi_startStop.setActionView(null);
+                }
+
                 str = intent.getStringExtra(RtlSdrFeedbackTypes.EXTENDED_DATA_COMPLETEOK);
                 if (str != null) {
                     running = false;

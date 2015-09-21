@@ -7,3 +7,4 @@ v.0.2.1, (open)
 * Support for devices w/o external storage
 * Added detailed debugging messages
 * Added automated crash reporting
+* Added interrupt functionality
