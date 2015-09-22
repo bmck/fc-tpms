@@ -117,7 +117,7 @@ public class SdrFtpService extends IntentService {
             }
 
             FTPClient ftpClient = new FTPClient();
-            resp = " ,,,";
+            resp = " , , , ";
             int found = 0;
             try {
                 String addr = InetAddress.getByName(base).getHostAddress();
@@ -128,7 +128,7 @@ public class SdrFtpService extends IntentService {
                 // TODO: use password field of login to identify user or hardware being used?
                 ftpClient.enterLocalPassiveMode();
                 ftpClient.login("anonymous", "guest");
-                if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
+                if (abort_requested())  { try { ftpClient.logout();  ftpClient.disconnect();  completeOk(); } catch (InterruptedException e) { } }
                 activity.log_it("i", LOGTAG, "Logged into Fleet Cents server");
                 activity.log_it("i", LOGTAG, ftpClient.getReplyString());
 
@@ -137,35 +137,40 @@ public class SdrFtpService extends IntentService {
                 BufferedInputStream buffIn = null;
                 buffIn = new BufferedInputStream(new FileInputStream(fn));
 //                ftpClient.enterLocalPassiveMode();
-                if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
+                if (abort_requested())  { try { ftpClient.logout();  ftpClient.disconnect();  completeOk(); } catch (InterruptedException e) { } }
                 activity.log_it("i", LOGTAG, "Before sending file to Fleet Cents server");
                 ftpClient.storeUniqueFile(buffIn);
-                if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
+                if (abort_requested())  { try { ftpClient.logout();  ftpClient.disconnect();  completeOk(); } catch (InterruptedException e) { } }
                 activity.log_it("i", LOGTAG, "Completed sending file to Fleet Cents server");
                 buffIn.close();
                 resp = ftpClient.getReplyString();
-                activity.log_it("i", LOGTAG, "Complete response to upload: " + resp);
-                resp = TextUtils.join(",", Arrays.copyOfRange((resp.split(" ")[1]).split(","), 0, 3));
-                activity.log_it("i", LOGTAG, "Relevant response to upload: " + resp);
+                Integer resp_code = Integer.parseInt(resp.split(" ")[0]);
+                if (resp_code == 226) {
+                    activity.log_it("i", LOGTAG, "Complete response to upload: " + resp);
+                    resp = TextUtils.join(",", Arrays.copyOfRange((resp.split(" ")[1]).split(","), 0, 3));
+                    activity.log_it("i", LOGTAG, "Relevant response to upload: " + resp);
 //                Log.i(LOGTAG, "resp = " + resp);
 //                Log.i(LOGTAG, "resp[0] = >" + resp.split(",")[0] + "<");
 //                Log.i(LOGTAG, "resp[1] = >" + resp.split(",")[1] + "<");
 //                Log.i(LOGTAG, "resp[2] = >" + resp.split(",")[2] + "<");
 
-                if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
-                try {
-                    displayMessage("\n" +
-                            new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()) + "\n" +
-                            getString(R.string.sensor_id) + " " + getHexAddr() + "\n" +
-                            getString(R.string.temp) + " " +
-                            (cDisplay ? (getTempC() + " " + getString(R.string.celsius)) : (getTempF() + " " + getString(R.string.fahrenheit))) +
-                            "\n" +
-                            getString(R.string.pressure) + " " +
-                            (psiDisplay ? (getPsi() + " " + getString(R.string.psi)) : (getKpa() + " " + getString(R.string.kpa))) +
-                            "\n");
-                    found = 1;
-                } catch (NumberFormatException e) {
-                    found = 0;
+                    if (abort_requested())  { try { ftpClient.logout();  ftpClient.disconnect();  completeOk(); } catch (InterruptedException e) { } }
+                    try {
+                        displayMessage("\n" +
+                                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()) + "\n" +
+                                getString(R.string.sensor_id) + " " + getHexAddr() + "\n" +
+                                getString(R.string.temp) + " " +
+                                (cDisplay ? (getTempC() + " " + getString(R.string.celsius)) : (getTempF() + " " + getString(R.string.fahrenheit))) +
+                                "\n" +
+                                getString(R.string.pressure) + " " +
+                                (psiDisplay ? (getPsi() + " " + getString(R.string.psi)) : (getKpa() + " " + getString(R.string.kpa))) +
+                                "\n");
+                        found = 1;
+                    } catch (NumberFormatException e) {
+                        found = 0;
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        found = 0;
+                    }
                 }
 
                 // resp code is standard FTP (unchanged) indicating success/failure
@@ -271,7 +276,10 @@ public class SdrFtpService extends IntentService {
     }
 
     public String getHexAddr() {
-        return resp.split(",")[0].trim();
+        String addr = resp.split(",")[0].trim();
+        if (addr.length() <= 6)
+            throw new ArrayIndexOutOfBoundsException();
+        return addr;
     }
 
     public String getFullUrl() {
