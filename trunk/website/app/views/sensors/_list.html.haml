@@ -1,0 +1,26 @@
+- # $Id$
+- # $(c)$
+
+- unless smart_listing.empty?
+  %table.table.table-striped
+    %thead
+      %tr
+        %th= smart_listing.sortable "Serial Number", :serial
+        %th= smart_listing.sortable "Sensor Type", :sensor_type
+        %th
+    %tbody
+      - smart_listing.collection.each do |sensor|
+        %tr.editable{data: {id: sensor.id}}
+          = smart_listing.render object: sensor, partial: 'sensors/item', locals: {object: sensor}
+    %tfoot
+      = smart_listing.item_new colspan: 3, link: new_sensor_path
+
+  -# Render nice pagination links fitted for Bootstrap 3 by default
+  .text-center
+    = smart_listing.paginate
+    = smart_listing.pagination_per_page_links
+
+- else
+  %p
+  %table.table
+    = smart_listing.item_new colspan: 1, link: new_sensor_path
