@@ -1,0 +1,19 @@
+- # $Id$
+- # $(c)$
+
+%h2 Resend confirmation instructions
+%p
+  Enter your email address below to have your account confirmation instructions
+  resent to you.  Also, please check your "Spam" and other applicable folders in
+  case our email is being automatically filtered.
+= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f|
+  = devise_error_messages!
+  .field
+    = f.label :email
+    %br/
+    = f.email_field :email, autofocus: true
+  %br/
+  .actions
+    = f.submit "Resend confirmation instructions"
+%br/
+= render "user/shared/links"

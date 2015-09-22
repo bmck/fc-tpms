@@ -1,0 +1,3 @@
+center_frequency: 0
+modulation: {deviation: 38400, type: fsk}
+symbol_rate: 19200

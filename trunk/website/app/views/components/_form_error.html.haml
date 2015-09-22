@@ -1,0 +1,9 @@
+- # $Id$
+- # $(c)$
+
+- unless object.try(:errors).try(:empty?) != false
+  .alert.alert-danger{role: "alert"}
+    - object.errors.full_messages.each do |msg|
+      %span.glyphicon.glyphicon-exclamation-sign{:'aria-hidden' => 'true'}
+      %span.sr-only Error:
+      = "#{msg}"
