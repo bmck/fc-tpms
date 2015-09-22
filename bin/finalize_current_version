@@ -6,7 +6,7 @@ THIS_FILE=`which $0`
 THIS_DIR=`dirname "$THIS_FILE"`
 
 # update android/remote_tpms_app/src/main/res/raw/changelog.txt
-CHGLOG_FN="$THIS_DIR/../android/remote_tpms/app/src/main/res/raw/raw_changelog.txt"
+CHGLOG_FN="$THIS_DIR/../android/remote_tpms/app/src/main/res/raw/changelog_raw.txt"
 CURR_VER=`$THIS_DIR/./current_version`
 DATE_STR=`date +"%Y-%m-%d"`
 
