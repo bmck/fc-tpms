@@ -1,6 +1,9 @@
 Current $Revision$
 
-v.0.3.1, (open) 
+v.0.3.2, (open)
+
+v.0.3.1, 2015-09-22
+* Bug fix in app version
 
 v.0.3.0, 2015-09-22
 * Added ChangeLog
