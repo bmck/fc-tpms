@@ -1,6 +1,6 @@
 Current $Revision$
 
-v.0.3.1, (open)
+v.0.3.1, (open) 
 
 v.0.3.0, 2015-09-22
 * Added ChangeLog
