@@ -241,8 +241,7 @@ int analyze_file(char *src_filename) {
 #define SAVE_BIT        SAVE_BIT_ONLY; CONTINUE
 
 #define HIGHFREQ(x) (fabs((x / high_freq) - 1.0) <= 0.1)
-// TODO: Check that curr freq is close to low_freq, not far fr high_freq?
-#define LOWFREQ(x)  (fabs((x / high_freq) - 1.0) >  0.1)
+#define LOWFREQ(x)  (fabs((x / low_freq) - 1.0) >  0.1)
 #define HIGHBIT 1
 #define LOWBIT 0
 
@@ -357,7 +356,7 @@ unsigned int update_state(complex float x, complex float prev_x, unsigned int sa
 			LOGI("%s: (%s:%d) Low frequency period found at sample %u\n", src_name, __FILE__, __LINE__, sample_num);
 		}
 
-		if ((high_freq_set == true) && (low_freq_set == true)) {
+		if ((b != -1) && (high_freq_set == true) && (low_freq_set == true)) {
 			// LOGI("%s: (%s:%d) high_freq_set and low_freq_set are true.\n", src_name, __FILE__, __LINE__);
 			curr_state = bit_in_process;
 			// LOGI("%s: (%s:%d) n = curr_state = bit_in_process = %d.\n", src_name, __FILE__, __LINE__, bit_in_process);
