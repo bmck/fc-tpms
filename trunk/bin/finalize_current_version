@@ -1,0 +1,18 @@
+#!/bin/bash
+# $Id$
+# $(c)$
+
+THIS_FILE=`which $0`
+THIS_DIR=`dirname "$THIS_FILE"`
+
+# update android/remote_tpms_app/src/main/res/raw/changelog.txt
+CHGLOG_FN="$THIS_DIR/../android/remote_tpms/app/src/main/res/raw/changelog.txt"
+CURR_VER=`$THIS_DIR/./current_version`
+DATE_STR=`date +"%Y-%m-%d"`
+
+cat $CHGLOG_FN | sed -e "/$CURR_VER/s/open/$DATE_STR/g" >$CHGLOG_FN.tmp
+mv $CHGLOG_FN.tmp $CHGLOG_FN
+svn commit $CHGLOG_FN -m "updated changelog to close version $CURR_VER"
+
+# add subversion tag
+svn copy svn://svn.bmck.org/fc/trunk svn://svn.bmck.org/fc/tags/$CURR_VER -m "Added $CURR_VER tag."

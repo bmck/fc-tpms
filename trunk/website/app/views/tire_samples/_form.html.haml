@@ -1,0 +1,42 @@
+- # $Id$
+- # $(c)$
+
+%td{colspan: 6}
+  = render partial: 'components/form_error', formats: [:html], layout: false, locals: { object: object }
+  = form_for object, url: object.new_record? ? tire_samples_path : tire_sample_path(object), remote: true, html: {class: "form-horizontal"} do |f|
+    %table.table
+      %tr
+        %td
+          .field
+            = f.label :tire
+            \&nbsp;
+            = f.collection_select :sensor_id, Sensor.all, :id, :tire_name, autofocus: true
+        %td
+          .field
+            = f.label :receiver
+            \&nbsp;
+            = f.collection_select :receiver_id, Receiver.all, :id, :name, autofocus: true
+        %td
+
+      %tr{colspan: 3}
+        %td
+
+      %tr
+        %td
+          .field
+            = f.label :pressure_psi
+            \&nbsp;
+            = f.number_field :psi, :size => 12, :autofocus => true, step: 0.0001
+        %td
+          .field
+            = f.label :temperature_C
+            \&nbsp;
+            = f.number_field :tempc, :size => 12, :autofocus => true, step: 0.1
+        %td
+          .field
+            = f.label :sample_time
+            \&nbsp;
+            = f.datetime_field :sample_time, :size => 12, :autofocus => true
+
+    = f.submit "Save", class: "btn btn-primary", id: :submit_tire_sample
+    %button.btn.btn-link.cancel Cancel
