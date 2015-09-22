@@ -1,0 +1,5 @@
+- # $Id$
+- # $(c)$
+
+- Rails.logger.verbose { "@user = #{@user.inspect}" }
+= smart_listing_item :users, :update, @user, (@user.valid? ? "users/item" : "users/form")

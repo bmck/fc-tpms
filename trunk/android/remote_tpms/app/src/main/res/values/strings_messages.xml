@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="sensor_id">Sensor ID:</string>
+    <string name="temp">Temperature:</string>
+    <string name="pressure">Pressure:</string>
+    <string name="kpa">kPa</string>
+    <string name="psi">psi</string>
+    <string name="celsius">deg C</string>
+    <string name="fahrenheit">deg F</string>
+
+    <string name="msg_send_activation">Sending Activation Signal</string>
+    <string name="msg_wait_for_sensor_data">Receiving Sensor Data</string>
+    <string name="msg_rcving_sensor_data">Finished Receiving Sensor Data</string>
+    <string name="msg_uploading_sensor_data">Uploading Sensor Data for Processing</string>
+    <string name="msg_sdr_not_found">No compatible SDR device found</string>
+    <string name="msg_valid_pkt_not_found">Valid Binary String Not Received from TPMS; please try again</string>
+    <string name="msg_sending_data">Sending Sensor Data to Fleet Cents</string>
+    <string name="msg_data_rcvd_ok">Sensor Data Received OK</string>
+    <string name="msg_data_not_rcvd_ok">Sensor Data Not Stored OK</string>
+    <string name="msg_unknown_error">An Unknown Error Has Occurred</string>
+</resources>
