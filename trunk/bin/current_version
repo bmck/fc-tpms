@@ -2,4 +2,4 @@
 # $Id$
 # $(c)$
 
-cat ../fc_version.h | sed '/^#define FC_VERSION/!d' | sed -e 's/"\s*$//g' -e 's/^#define FC_VERSION \"//g'
+cat ../fc_version.h | sed '/^#define FC_VERSION/!d' | sed -e 's/^#define FC_VERSION//g' -e 's/[ "]//g'
