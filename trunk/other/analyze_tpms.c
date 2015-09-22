@@ -113,8 +113,6 @@ char *fleet_analysis(char *fn) {
 		strcpy(returned_string, ",,,");
 	}
 
-	// LOGI((const char *)returned_string);
-
 	keep = 1 - analyzed_ok;
 	if (keep == 0)
 		unlink(fn);
@@ -161,13 +159,13 @@ void reset_vars() {
 }
 
 int analyze_file(char *src_filename) {
-    float fsk_freq_offset = -102.40e3 / SAMPLE_RATE;
+	float fsk_freq_offset = -102.40e3 / SAMPLE_RATE;
 	INIT_LOGGING
 
 	LOGI("entered analyze_file\n");
 	filter  = iirfilt_crcf_create_lowpass(7, 0.05);
-    nco_crcf      nco     = nco_crcf_create(LIQUID_VCO);
-    nco_crcf_set_frequency(nco, fsk_freq_offset);
+	nco_crcf      nco     = nco_crcf_create(LIQUID_VCO);
+	nco_crcf_set_frequency(nco, fsk_freq_offset);
 	total_samples_in = 0;
 
 	strcpy(src_name, src_filename);
@@ -214,9 +212,9 @@ int analyze_file(char *src_filename) {
 		// apply pre-processing
 		iirfilt_crcf_execute(filter, x, &x);
 
-        // remove carrier offset
-        nco_crcf_mix_down(nco, x, &x);
-        nco_crcf_step(nco);
+		// remove carrier offset
+		nco_crcf_mix_down(nco, x, &x);
+		nco_crcf_step(nco);
 
 		ret_val = update_state(x, prev_x, total_samples_in);
 		if (ret_val == 1) {
@@ -243,7 +241,7 @@ int analyze_file(char *src_filename) {
 #define SAVE_BIT        SAVE_BIT_ONLY; CONTINUE
 
 #define HIGHFREQ(x) (fabs((x / high_freq) - 1.0) <= 0.1)
-// TODO: Check that curr freq is close to low_freq, not far fr high_freq
+// TODO: Check that curr freq is close to low_freq, not far fr high_freq?
 #define LOWFREQ(x)  (fabs((x / high_freq) - 1.0) >  0.1)
 #define HIGHBIT 1
 #define LOWBIT 0
@@ -251,7 +249,6 @@ int analyze_file(char *src_filename) {
 #define CURRENT_BIT(n) (strlen(basebit_vals) == n)
 #define BIT_SLOT(n) ((sample_num > first_bit_start + n * samples_per_bit) && (sample_num < first_bit_start + (n+1) * samples_per_bit))
 
-// TODO: Reduce logging.
 unsigned int update_state(complex float x, complex float prev_x, unsigned int sample_num) { //, struct vsf_session* p_sess) {
 	INIT_LOGGING
 
@@ -293,9 +290,9 @@ unsigned int update_state(complex float x, complex float prev_x, unsigned int sa
 		}
 
 		high_freq = cum_phi / (double) count;
-		LOGI("%s: (%s:%d) cum_phi = %lf, count = %d, high_freq = %lf,   ", src_name, __FILE__, __LINE__, cum_phi, count, high_freq);
-		LOGI("(sample_num - prelude_hf_start) / SAMPLE_RATE = %lf,   ", (sample_num - prelude_hf_start) / SAMPLE_RATE);
-		LOGI("delta_phi / high_freq = %lf\n", delta_phi / high_freq);
+		// LOGI("%s: (%s:%d) cum_phi = %lf, count = %d, high_freq = %lf,   ", src_name, __FILE__, __LINE__, cum_phi, count, high_freq);
+		// LOGI("(sample_num - prelude_hf_start) / SAMPLE_RATE = %lf,   ", (sample_num - prelude_hf_start) / SAMPLE_RATE);
+		// LOGI("delta_phi / high_freq = %lf\n", delta_phi / high_freq);
 		if ((sample_num >= prelude_hf_start + 0.0006 * SAMPLE_RATE) &&
 		        (LOWFREQ(delta_phi))) {
 			high_freq_set = true;
@@ -323,16 +320,16 @@ unsigned int update_state(complex float x, complex float prev_x, unsigned int sa
 		}
 
 		low_freq = cum_phi / (double) count;
-		LOGI("%s: (%s:%d) cum_phi = %lf, count = %d, low_freq = %lf,   ", src_name, __FILE__, __LINE__, cum_phi, count, low_freq);
-		LOGI("sample_num - prelude_lf_start / SAMPLE_RATE = %lf,   ", (sample_num - prelude_lf_start) / SAMPLE_RATE);
-		LOGI("delta_phi / low_freq = %lf\n", delta_phi / low_freq);
+		// LOGI("%s: (%s:%d) cum_phi = %lf, count = %d, low_freq = %lf,   ", src_name, __FILE__, __LINE__, cum_phi, count, low_freq);
+		// LOGI("sample_num - prelude_lf_start / SAMPLE_RATE = %lf,   ", (sample_num - prelude_lf_start) / SAMPLE_RATE);
+		// LOGI("delta_phi / low_freq = %lf\n", delta_phi / low_freq);
 		if ((sample_num >= prelude_lf_start + 0.0006 * SAMPLE_RATE) &&
 		        (HIGHFREQ(delta_phi))) {
 			low_freq_set = true;
 			bit_boundary[0] = sample_num;
-			LOGI("%s: (%s:%d) Low frequency = %lf radians per sample = %f kHz,   ", src_name, __FILE__, __LINE__, low_freq, low_freq / (2000.0f * M_PI) * SAMPLE_RATE);
+			// LOGI("%s: (%s:%d) Low frequency = %lf radians per sample = %f kHz,   ", src_name, __FILE__, __LINE__, low_freq, low_freq / (2000.0f * M_PI) * SAMPLE_RATE);
 			curr_state = -3;
-			LOGI("%s: (%s:%d) Entering state -3 at sample %u\n", src_name, __FILE__, __LINE__, sample_num);
+			// LOGI("%s: (%s:%d) Entering state -3 at sample %u\n", src_name, __FILE__, __LINE__, sample_num);
 		}
 
 		CONTINUE;
@@ -345,9 +342,9 @@ unsigned int update_state(complex float x, complex float prev_x, unsigned int sa
 			bit_boundary[1] = sample_num;
 			samples_per_bit = (bit_boundary[1] - bit_boundary[0]) * 0.5 - 1;
 			first_bit_start = bit_boundary[0] - samples_per_bit;
-			LOGI("%s: (%s:%d) first_bit_start = %u,   ", src_name, __FILE__, __LINE__, first_bit_start);
-			LOGI("samples_per_bit = %u,   ", samples_per_bit);
-			LOGI("basebit_vals = %s\n", basebit_vals);
+			// LOGI("%s: (%s:%d) first_bit_start = %u,   ", src_name, __FILE__, __LINE__, first_bit_start);
+			// LOGI("samples_per_bit = %u,   ", samples_per_bit);
+			// LOGI("basebit_vals = %s\n", basebit_vals);
 		}
 	}
 	else {
@@ -361,26 +358,26 @@ unsigned int update_state(complex float x, complex float prev_x, unsigned int sa
 		}
 
 		if ((high_freq_set == true) && (low_freq_set == true)) {
-			LOGI("%s: (%s:%d) high_freq_set and low_freq_set are true.\n", src_name, __FILE__, __LINE__);
+			// LOGI("%s: (%s:%d) high_freq_set and low_freq_set are true.\n", src_name, __FILE__, __LINE__);
 			curr_state = bit_in_process;
-			LOGI("%s: (%s:%d) n = curr_state = bit_in_process = %d.\n", src_name, __FILE__, __LINE__, bit_in_process);
-			LOGI("%s: (%s:%d) sample_num = %u, first_bit_start + n * samples_per_bit = %u, first_bit_start + n * samples_per_bit = %u\n",
-			     src_name, __FILE__, __LINE__, sample_num, first_bit_start + (curr_state) * samples_per_bit, first_bit_start + (curr_state + 1) * samples_per_bit);
-			LOGI("%s: (%s:%d) sample_num = %u, first_bit_start + n * (samples_per_bit+1) = %u, first_bit_start + (n+1) * (samples_per_bit-1) = %u\n",
-			     src_name, __FILE__, __LINE__, sample_num, first_bit_start + curr_state * (samples_per_bit + 1), first_bit_start + (curr_state + 1) * (samples_per_bit - 1));
+			// LOGI("%s: (%s:%d) n = curr_state = bit_in_process = %d.\n", src_name, __FILE__, __LINE__, bit_in_process);
+			// LOGI("%s: (%s:%d) sample_num = %u, first_bit_start + n * samples_per_bit = %u, first_bit_start + n * samples_per_bit = %u\n",
+			     // src_name, __FILE__, __LINE__, sample_num, first_bit_start + (curr_state) * samples_per_bit, first_bit_start + (curr_state + 1) * samples_per_bit);
+			// LOGI("%s: (%s:%d) sample_num = %u, first_bit_start + n * (samples_per_bit+1) = %u, first_bit_start + (n+1) * (samples_per_bit-1) = %u\n",
+			     // src_name, __FILE__, __LINE__, sample_num, first_bit_start + curr_state * (samples_per_bit + 1), first_bit_start + (curr_state + 1) * (samples_per_bit - 1));
 
 			if (CURRENT_BIT(3)) {
 				LOGI("%s: (%s:%d) Bit in process = %u, b = %d\n", src_name, __FILE__, __LINE__, bit_in_process, b);
 				if (b == LOWBIT) {
-					LOGI("%s: (%s:%d) About to save bit\n", src_name, __FILE__, __LINE__);
+					// LOGI("%s: (%s:%d) About to save bit\n", src_name, __FILE__, __LINE__);
 					SAVE_BIT
 				}
 				else {
-					LOGI("%s: (%s:%d) About to start over\n", src_name, __FILE__, __LINE__);
+					// LOGI("%s: (%s:%d) About to start over\n", src_name, __FILE__, __LINE__);
 					START_OVER
 				}
 			}
-      // TODO: Check more than a single sample per bit
+			// TODO: Check more than a single sample per bit
 			else if (!((b == prev_b) && (sample_num < prev_bit_sample + samples_per_bit + 5))) {
 				if (bit_in_process % 2 == 1) {
 					LOGI("%s: (%s:%d) Bit in process = %u\n", src_name, __FILE__, __LINE__, bit_in_process);
@@ -393,17 +390,30 @@ unsigned int update_state(complex float x, complex float prev_x, unsigned int sa
 							for (k = 1; k < SYMBOLS_PER_MSG - 1; k++)
 								symbols[k] = ((basebit_vals[2 * k] == basebit_vals[2 * k - 1]) ? '1' : '0');
 							symbols[SYMBOLS_PER_MSG - 1] = '1';
-              // TODO: Check both pressure readings in a packet
-							if ((symbols[0] == '1') && (symbols[1] == '1') && (symbols[68] == '1')) {
-								valid_pkt = true;
-								iirfilt_crcf_destroy(filter);
-                // TODO: Are there any cases in which we want to look for a second copy of data,
-                // but report what we have if not? (e.g., tempC < 0)
-								return 1;
-							}
-							else {
+
+							if (!((symbols[0] == '1') && (symbols[1] == '1') && (symbols[68] == '1'))) {
 								START_OVER
 							}
+
+
+							double press = 0.0;
+							for (k = 0; k <= 7; k++) {
+								press = press * 2.0 + (symbols[k + 36] == '1' ? 1.0 : 0.0);
+								if (symbols[36 + k] == symbols[44 + k]) {
+									START_OVER
+								}
+							}
+							press = (press * 2.5 - 100.0);
+							if (press < 0.0) {
+								START_OVER
+							}
+
+							valid_pkt = true;
+							iirfilt_crcf_destroy(filter);
+							// TODO: Are there any cases in which we want to look for a second copy of data,
+							// but report what we have if not? (e.g., tempC < 0)
+							return 1;
+
 						}
 					}
 					else { // invalid symbol
@@ -432,6 +442,45 @@ unsigned int update_state(complex float x, complex float prev_x, unsigned int sa
 
 
 
+/*
+int get_packet(unsigned int pkt_start) {
+
+	return 0;
+}
+
+int get_symbol(unsigned int sym_start) {
+
+	return 0;
+}
+
+int get_bit(unsigned int bit_start) {
+
+	return 0;
+}
+
+int get_sample(unsigned int sample_num) {
+
+	complex float x;
+	int b = -1;
+	double phi = cargf(x);
+	static double prev_phi = 0.0;
+	double delta_phi = fmod(phi + M_PI * 0.5 - prev_phi, M_PI * 0.5);
+	//static double prev_delta_phi;
+
+		if (HIGHFREQ(delta_phi)) {
+			b = HIGHBIT;
+			LOGI("%s: (%s:%d) High frequency period found at sample %u\n", src_name, __FILE__, __LINE__, sample_num);
+		}
+		else if (LOWFREQ(delta_phi)) {
+			b = LOWBIT;
+			LOGI("%s: (%s:%d) Low frequency period found at sample %u\n", src_name, __FILE__, __LINE__, sample_num);
+		}
+
+	prev_phi = phi;
+	return b;
+}
+
+*/
 
 
 
