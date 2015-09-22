@@ -1,0 +1,32 @@
+#!/bin/bash
+# $Id$
+# $(c)$
+
+THIS_FILE=`which $0`
+THIS_DIR=`dirname "$THIS_FILE"`
+
+CURR_VERSION=`./current_version`
+# get new version from argument list
+NEW_VERSION=$1
+
+# update fc_version.h
+VERSION_FN1="$THIS_DIR/../fc_version.h"
+cat $VERSION_FN1 | sed -e "s/^\(#define FC_VERSION \).*$/\1 \"$NEW_VERSION\"/g" >$VERSION_FN1.tmp
+mv $VERSION_FN1.tmp $VERSION_FN1
+
+# update android/remote_tpms/app/src/main/res/values/strings_version.xml
+VERSION_FN2="$THIS_DIR/../android/remote_tpms/app/src/main/res/values/strings_version.xml"
+cat $VERSION_FN2 | sed -e "s|\"version\">[0-9.]*</string|\"version\">$NEW_VERSION</string|" >$VERSION_FN2.tmp
+mv $VERSION_FN2.tmp $VERSION_FN2
+
+# update android/remote_tpms_app/src/main/res/raw/changelog.txt
+VERSION_FN3="$THIS_DIR/../android/remote_tpms/app/src/main/res/raw/changelog_raw.txt"
+echo "v.$NEW_VERSION, (open)" > $VERSION_FN3.tmp
+echo "" >> $VERSION_FN3.tmp
+cat $VERSION_FN3 >> $VERSION_FN3.tmp
+
+echo "Current \$Revision\$" > $VERSION_FN3
+echo "" >> $VERSION_FN3
+cat $VERSION_FN3.tmp | sed -e "s/^Current.*$//g" | sed '$!N; /^\(.*\)\n\1$/!P; D' >> $VERSION_FN3
+
+svn commit $VERSION_FN1 $VERSION_FN2 $VERSION_FN3 -m "tagged for version $NEW_VERSION"

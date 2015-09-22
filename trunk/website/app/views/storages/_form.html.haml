@@ -1,0 +1,40 @@
+- # $Id: _form.html.haml 56 2015-04-24 19:38:00Z bmck_newco $
+- # $(c): Copyright 2015 by Newco $
+
+%td{colspan: 6}
+  = render partial: 'components/form_error', formats: [:html], layout: false, locals: { object: object }
+  = form_for object, url: object.new_record? ? storages_path : storage_path(object), remote: true, html: {class: "form-horizontal"} do |f|
+    %table.table
+      - if current_user.global_admin?
+        %tr
+          %td{colspan:2}
+            .field
+              = f.label :company_name
+              \&nbsp;
+              = f.collection_select :company_id, Company.all.to_a, :id, :name, autofocus: true
+      - else
+        = hidden_field_tag :company_id, current_user.company_id
+      %tr
+        %td{colspan:2}
+          .field
+            = f.label :storage_facility_name
+            \&nbsp;
+            = f.text_field :storage_name, :size => 25, :autofocus => true
+      %tr
+        %td{colspan:2}
+          .field
+            = f.label :street_address
+            \&nbsp;
+            = f.text_field :storage_address, :size => 40, :autofocus => true
+      %tr
+        %td{colspan: 2}
+          .field
+            = f.label 'City and State'
+            \&nbsp;
+            = f.text_field :storage_city, :size => 40, :autofocus => true
+            , &nbsp;
+            = f.text_field :storage_state, :size => 4, :autofocus => true
+      %tr
+        %td{colspan: 2}
+          = f.submit "Save", class: "btn btn-primary"
+          %button.btn.btn-link.cancel Cancel

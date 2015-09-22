@@ -1,0 +1,14 @@
+- # $Id: index.html.haml 56 2015-04-24 19:38:00Z bmck_newco $
+- # $(c): Copyright 2015 by Newco $
+
+%h2 Trucks
+
+= smart_listing_controls_for(:trucks, {class: "form-inline text-right"}) do
+  .form-group.filter.input-append
+    = text_field_tag :filter, '', class: "search form-control", placeholder: "Search...", autocomplete: :off
+
+  %button.btn.btn-primary.disabled{type: :submit}
+    %span.glyphicon.glyphicon-search
+
+= smart_listing_render :trucks
+

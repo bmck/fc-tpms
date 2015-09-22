@@ -1,0 +1,28 @@
+- # $Id$
+- # $(c)$
+
+- unless smart_listing.empty?
+  %table.table.table-striped
+    %thead
+      %tr
+        %th= smart_listing.sortable "Tire", :tire_name
+        %th= smart_listing.sortable "Receiver", :receiver_name
+        %th= smart_listing.sortable "Pressure (psi)", :psi
+        %th= smart_listing.sortable "Temperature (C)", :tc
+        %th= smart_listing.sortable "Sample Time", :samptime
+        %th
+    %tbody
+      - smart_listing.collection.each do |tire_sample|
+        %tr.editable{data: {id: tire_sample.id}}
+          = smart_listing.render object: tire_sample, partial: 'tire_samples/item', locals: {object: tire_sample}
+    %tfoot
+      = smart_listing.item_new colspan: 6, link: new_tire_sample_path
+
+  -# Render nice pagination links fitted for Bootstrap 3 by default
+  .text-center
+    = smart_listing.paginate
+    = smart_listing.pagination_per_page_links
+
+- else
+  %p
+    = smart_listing.item_new link: new_tire_sample_path
