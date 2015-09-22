@@ -1,0 +1,28 @@
+- # $Id$
+- # $(c)$
+
+- unless smart_listing.empty?
+  %table.table.table-striped
+    %thead
+      %tr
+        %th= smart_listing.sortable "User Name", 'last_name, first_name'
+        %th= smart_listing.sortable "Email", :email
+        %th= smart_listing.sortable "Company", :company
+        %th= smart_listing.sortable "Role", :role
+        %th
+    %tbody
+      - smart_listing.collection.each do |user|
+        %tr.editable{data: {id: user.id}}
+          = smart_listing.render object: user, partial: 'users/item', locals: {object: user}
+    %tfoot
+      = smart_listing.item_new colspan: 5, link: new_user_path
+
+  -# Render nice pagination links fitted for Bootstrap 3 by default
+  .text-center
+    = smart_listing.paginate
+    = smart_listing.pagination_per_page_links
+
+- else
+  %p
+  %table.table.table-striped
+    = smart_listing.item_new colspan: 1, link: new_user_path

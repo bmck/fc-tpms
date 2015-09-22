@@ -1,0 +1,8 @@
+#!/bin/bash
+# $Id$
+# $(c)$
+
+./finalize_current_version
+
+NEW_VERSION=$1
+./add_new_version $NEW_VERSION

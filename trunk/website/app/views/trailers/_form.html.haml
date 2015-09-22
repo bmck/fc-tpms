@@ -1,0 +1,19 @@
+- # $Id: _form.html.haml 56 2015-04-24 19:38:00Z bmck_newco $
+- # $(c): Copyright 2015 by Newco $
+
+%td{colspan: 3}
+  = render partial: 'components/form_error', formats: [:html], layout: false, locals: { object: object }
+  = form_for object, url: object.new_record? ? trailers_path : trailer_path(object), remote: true, html: {class: "form-horizontal"} do |f|
+    - if current_user.global_admin?
+      .field
+        = f.label :company_name
+        \&nbsp;
+        = f.collection_select :company_id, Company.all.to_a, :id, :name, autofocus: true
+    - else
+      = hidden_field_tag :company_id, current_user.company_id
+    .field
+      = f.label :trailer_serial
+      \&nbsp;
+      = f.text_field :trailer_serial, :size => 15, :autofocus => true
+    = f.submit "Save", class: "btn btn-primary"
+    %button.btn.btn-link.cancel Cancel
