@@ -1,0 +1,19 @@
+# default: on
+# description:
+#   The fleet_server is a modified version of the vsftpd (very secure FTP daemon) server. Using the FTP protocol, it 
+#   provides proprietary processing services. It uses
+#   normal, unencrypted usernames and passwords for authentication.
+#   vsftpd is designed to be secure.
+service ftp
+{
+        socket_type             = stream
+        wait                    = no
+        user                    = root
+        server                  = /usr/local/sbin/fleet_server
+#       server_args             =
+#       log_on_success          += DURATION USERID
+#       log_on_failure          += USERID
+        nice                    = 10
+        disable                 = no
+}
+

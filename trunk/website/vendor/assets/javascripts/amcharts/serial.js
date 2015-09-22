@@ -1,0 +1,1 @@
+../../../3rdparty/amcharts/amcharts/amcharts/serial.js

@@ -1,0 +1,9 @@
+-# $Id$
+-# $(c)$
+%div
+  - @title = "404 File Not Found"
+  %h1 "I do not think this URL goes where you think it goes!"
+  %p
+    The page you were looking for does not exist. You may have mistyped the address or the page may have moved.
+
+= render partial: "errors/development_trace", formats: [:html], layout: false

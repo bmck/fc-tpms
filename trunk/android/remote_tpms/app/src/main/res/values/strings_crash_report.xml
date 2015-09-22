@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="pref_enable_acra">Generate crash reports</string>
+    <string name="pref_acra_enabled">Automatically generate crash reports</string>
+    <string name="pref_acra_disabled">Do not automatically generate crash reports</string>
+
+    <string name="pref_acra_alwaysaccept">Always send crash reports</string>
+    <string name="pref_acra_alwaysaccept_enabled">Crash reports are always automatically forwarded to developer</string>
+    <string name="pref_acra_alwaysaccept_disabled">Crash reports are not automatically forwarded to developer</string>
+
+    <string name="pref_acra_syslog">Include system log extracts in crash reports</string>
+    <string name="pref_acra_syslog_enabled">System log extracts included in crash reports</string>
+    <string name="pref_acra_syslog_disabled">System log extracts not included in crash reports</string>
+
+    <string name="pref_acra_deviceid">Include Device ID in crash reports</string>
+    <string name="pref_acra_deviceid_enabled">Device ID included in crash reports</string>
+    <string name="pref_acra_deviceid_disabled">Device ID excluded from crash reports</string>
+
+    <string name="pref_acra_user_email">Email address to include in crash reports</string>
+    <string name="pref_acra_user_email_summary">Optional email address to be included in all crash reports</string>
+</resources>

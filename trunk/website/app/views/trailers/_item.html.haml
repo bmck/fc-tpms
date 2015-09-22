@@ -1,0 +1,14 @@
+- # $Id: _item.html.haml 56 2015-04-24 19:38:00Z bmck_newco $
+- # $(c): Copyright 2015 by Newco $
+
+- actions = []
+- if can? :view_audit, object
+  - actions << {name: :custom,  icon: "glyphicon glyphicon-book", title: 'View Trailer History', url: view_audit_trailer_path(object)}
+- if can? :edit, object
+  - actions << {name: :edit,    url: edit_trailer_path(object)}
+- if can? :destroy, object
+  - actions << {name: :destroy, url: trailer_path(object), confirmation: "Are you sure you want to delete this trailer?"}
+
+%td= object.company_name
+%td= object.name
+%td.actions= smart_listing_item_actions [ *actions ]
