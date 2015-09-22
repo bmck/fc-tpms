@@ -4,6 +4,6 @@
 #ifndef __FC_VERSION_H
 #define __FC_VERSION_H
 
-#define FC_VERSION  "0.3.13"
+#define FC_VERSION  "0.3.14"
 
 #endif
