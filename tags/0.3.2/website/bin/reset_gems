@@ -1,0 +1,60 @@
+#!/bin/bash --login
+# $Id$
+# $(c)$
+
+SYSTYPE=`uname`
+if ! test "$SYSTYPE" = "Linux"; then
+    echo "error: You can run this script only on Linux systems."
+    echo "On Mac OS X, use the gemsetup, gemwipe, and gemreset aliases to manage your gems."
+    exit 1
+fi
+if ! test -e /etc/redhat-release; then
+    echo "error: unknown flavor of Linux"
+    exit 1
+fi
+WHOAMI=`whoami`
+if ! test "$WHOAMI" = "root"; then
+    echo "error: you must be root to run this script"
+    exit 1
+fi
+su - newco -c "cd ~/src && rake delayed_jobs:force_stop --trace"
+service httpd stop
+
+rvm=`type rvm | head -1`
+if [ "x$rvm"="xrvm is a function" ]; then
+  rvm use 2.1.4@global --create
+  gem install --no-rdoc --no-ri bundler
+  gem install --no-rdoc --no-ri rake -v 10.3.2
+  gem install --no-rdoc --no-ri rack -v 1.5.2
+  rvm gemset delete newco --force
+  su - newco -c "rvm use 2.1.4@newco --create && cd src && bundle install --without development"
+  rvm use 2.1.4@newco
+  # In order to complete the asset:precompile, I had to do the following
+  # cd /usr/local/rvm/gems/ruby-2.1.4@caplyt/gems/mysql2-0.3.13/ext/mysql2
+  # ln -s /usr/local/lib/ruby/gems/2.0.0/gems/mysql2-0.3.13/ext/mysql2/mysql2.so .
+  # ???
+  /usr/local/rvm/gems/ruby-2.1.4@newco/gems/passenger-*/bin/passenger-install-apache2-module  --auto
+else
+  gem list --no-versions | grep -v "LOCAL GEMS" | xargs gem uninstall --all --ignore-dependencies
+  gem install --no-rdoc --no-ri bundler
+  gem install --no-rdoc --no-ri rake -v 10.3.2
+  cd /home/newco/src
+  bundle install
+  # In order to complete the asset:precompile, I had to do the following
+  cd /usr/local/lib/ruby/gems/2.0.0/gems/mysql2-0.3.13/lib/mysql2
+  ln -s /usr/local/lib/ruby/gems/2.0.0/gems/mysql2-0.3.13/ext/mysql2/mysql2.so .
+  # ???
+  /usr/local/bin/passenger-install-apache2-module
+fi
+
+cd ~newco/src
+for FILE in `ls vendor/gems/*.gem`; do
+  echo "postinstalling gem $FILE"
+  gem install --no-ri --no-rdoc $FILE
+done
+cd -
+
+su - newco -c "cd ~/src && rake assets:precompile --trace"
+
+service httpd start
+# /home/newco/src/bin/renice_processes_for_root

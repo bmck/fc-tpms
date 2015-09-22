@@ -1,0 +1,11 @@
+- # $Id$
+- # $(c)$
+
+%table.table.table-striped
+  %thead
+    %tr
+      %th Serial Number
+      %th Receiver Type
+      %th Operations
+  %tbody
+    = render partial: 'receivers/item', formats: [:html], layout: false, locals: { object: @receiver }
