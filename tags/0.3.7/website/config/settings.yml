@@ -1,0 +1,4 @@
+# $Id$
+# $(c)$
+
+bad_samples_filename: 'bad_samples.csv'
