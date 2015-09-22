@@ -1,0 +1,23 @@
+- # $Id$
+- # $(c)$
+
+- actions = []
+- if can? :view_audit, object
+  - actions << {name: :custom,  icon: "glyphicon glyphicon-book", title: 'View Company History', url: view_audit_company_path(object)}
+- if can? :edit, object
+  - actions << {name: :edit,    url: edit_company_path(object)}
+- if can? :destroy, object
+  - actions << {name: :destroy, url: company_path(object), confirmation: "Are you sure you want to delete this company?"}
+
+%td= object.name
+%td= object.start_service
+%td= object.end_service
+%td= object.contact_name
+%td= object.contact_address
+%td= object.contact_city
+%td= object.contact_state
+%td= object.contact_zip
+%td= object.contact_phone
+%td= object.contact_email
+%td= object.domain_name
+%td.actions= smart_listing_item_actions [ *actions ]
