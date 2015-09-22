@@ -1,0 +1,16 @@
+- # $Id$
+- # $(c)$
+
+%table.table.table-striped
+  %thead
+    %tr
+      %th Tire Serial
+      %th Sensor Serial
+      %th Tire Type
+      %th Owning Company
+      %th Using Company
+      %th Tire Location
+      %th Location Notation
+      %th Operations
+  %tbody
+    = render partial: 'tires/item', formats: [:html], layout: false, locals: { object: @tire }
