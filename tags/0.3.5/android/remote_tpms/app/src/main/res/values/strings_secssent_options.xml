@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="quarter">0.25</string>
+    <string name="half">0.5</string>
+    <string name="three_quarter">0.75</string>
+    <string name="one">1.0</string>
+    <string name="one_and_quarter">1.25</string>
+    <string name="one_and_half">1.5</string>
+    <string name="one_and_three_quarter">1.75</string>
+    <string name="two">2.0</string>
+    <string name="two_and_half">2.5</string>
+    <string name="three">3.0</string>
+    <string name="three_and_half">3.5</string>
+    <string name="four">4.0</string>
+    <string name="four_and_half">4.5</string>
+    <string name="five">5.0</string>
+</resources>
