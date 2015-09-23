@@ -17,4 +17,9 @@
     <string name="exception_NO_NETWORK_ACCESS">No network access found.  Enable internet access and please try again.</string>
     <string name="exception_NO_FTP_SERVER">Processing server not found; check the Base Station in the Preferences, and your internet access, and please try again.</string>
     <string name="exception_UNKNOWN">An unexpected error has occurred.  If this error continues, please contact the application developer.</string>
+    <string name="exception_CTRL_CHANNEL">Control channel unexpected closed</string>
+    <string name="exception_COPY_STREAM">Failure to copy file</string>
+    <string name="exception_IO">Unknown I/O error</string>
+    <string name="exception_UNKNOWN_HOST">Unknown Host error</string>
+    <string name="exception_FILE_NOT_FOUND">File not found error</string>
 </resources>
