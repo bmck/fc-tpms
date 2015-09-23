@@ -13,6 +13,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
 
 #include "universal_defines.h"
 #include "analyze_tpms.h"
@@ -22,6 +23,24 @@
 #define MAXIMAL_BUF_LENGTH    (256 * 16384)
 
 // static volatile int do_exit = 0;
+
+char *get_url( /*long addr, long press, long temp,*/ char *returned_url) {
+ // INIT_LOGGING
+ char *url = malloc(sizeof(char) * 2048);
+ returned_url = url;
+
+ time_t rawtime; time ( &rawtime );
+ struct tm * ptm; ptm = gmtime ( &rawtime );
+
+ unsigned long addr = get_dec_address_val();
+ long press = get_pressure_psi();
+ long tempc = get_temp_c();
+
+ sprintf(url, "http://198.36.127.105/tire_samples/create?tire_sample[sensor_id]=%ld&tire_sample[receiver_id]=%d&tire_sample[psi]=%ld&tire_sample[tempc]=%ld&tire_sample[sample_time]=%d-%02d-%02d%%20%02d:%02d:%02d",
+         addr, 8, press, tempc, ptm->tm_year + 1900, ptm->tm_mon + 1, ptm->tm_mday, ptm->tm_hour, ptm->tm_min, ptm->tm_sec);
+ // LOGI("%s: (%s:%d) url = %s\n", src_name, __FILE__, __LINE__,  url);
+ return returned_url;
+}
 
 int main(int argc, char **argv) {
 

@@ -22,6 +22,7 @@
 #define BITS_PER_FREESCALE_MSG 69
 #define SAMPLE_RATE 1.024e6
 
+#include <complex.h>
 #include <math.h>
 #define PI M_PI
 
