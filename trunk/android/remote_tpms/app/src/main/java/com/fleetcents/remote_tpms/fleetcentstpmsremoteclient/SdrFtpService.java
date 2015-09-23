@@ -16,8 +16,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 
+import org.acra.ACRA;
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPConnectionClosedException;
+import org.apache.commons.net.io.CopyStreamException;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -83,6 +86,7 @@ public class SdrFtpService extends IntentService {
                         connection = UsbHelper.openDevice(activity, device);
                         if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
                     } catch (RuntimeException e) {
+                        ACRA.getErrorReporter().handleSilentException(e);
                         // TODO: Resolve why the error msgs in UsbHelper do not correctly render?
                         errorModalBox(getString(Integer.parseInt(e.getMessage())));
                         return;
@@ -112,6 +116,7 @@ public class SdrFtpService extends IntentService {
                 displayMessage(getString(R.string.msg_rcving_sensor_data) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
                 Log.i(LOGTAG, "onActivityResult: RTL-SDR Data Capture Completed.");
             } catch (Exception e) {
+                ACRA.getErrorReporter().handleSilentException(e);
                 activity.finishWithError(e);
                 return;
             }
@@ -134,12 +139,47 @@ public class SdrFtpService extends IntentService {
 
                 ftpClient.changeWorkingDirectory("fleet_server");
                 ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+                ftpClient.setControlKeepAliveTimeout(30);
                 BufferedInputStream buffIn = null;
                 buffIn = new BufferedInputStream(new FileInputStream(fn));
 //                ftpClient.enterLocalPassiveMode();
                 if (abort_requested())  { try { ftpClient.logout();  ftpClient.disconnect();  completeOk(); } catch (InterruptedException e) { } }
                 activity.log_it("i", LOGTAG, "Before sending file to Fleet Cents server");
-                ftpClient.storeUniqueFile(buffIn);
+
+                boolean uploaded = false;
+                int count = 0;
+                int maxTries = 3;
+                while(uploaded == false) {
+                    try {
+                        ftpClient.storeUniqueFile(buffIn);
+                        uploaded = true;
+                    }
+                    catch (FTPConnectionClosedException e) {
+                        displayMessage(getString(R.string.exception_CTRL_CHANNEL) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
+                        ACRA.getErrorReporter().handleSilentException(e);
+                        if (++count == maxTries) throw e;
+
+                        displayMessage(getString(R.string.retrying));
+                    }
+                    catch (CopyStreamException e) {
+                        String msg = e.getMessage();
+                        if (msg.length() == 0) msg = getString(R.string.exception_COPY_STREAM);
+                        displayMessage(msg + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
+                        displayMessage("  " + e.getTotalBytesTransferred() + " bytes transferred out of " + (2*num_samples) + " bytes");
+                        ACRA.getErrorReporter().handleSilentException(e);
+                        if (++count == maxTries) throw e;
+
+                        displayMessage(getString(R.string.retrying));
+                    }
+                    catch (IOException e) {
+                        displayMessage(getString(R.string.exception_IO) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
+                        ACRA.getErrorReporter().handleSilentException(e);
+                        if (++count == maxTries) throw e;
+
+                        displayMessage(getString(R.string.retrying));
+                    }
+                }
+
                 if (abort_requested())  { try { ftpClient.logout();  ftpClient.disconnect();  completeOk(); } catch (InterruptedException e) { } }
                 activity.log_it("i", LOGTAG, "Completed sending file to Fleet Cents server");
                 buffIn.close();
@@ -179,15 +219,18 @@ public class SdrFtpService extends IntentService {
                 ftpClient.disconnect();
                 if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
             } catch (UnknownHostException e) {
-                activity.log_it("e", LOGTAG, "Unknown Host Exception: " + e.toString());
+                activity.log_it("e", LOGTAG, getString(R.string.exception_UNKNOWN_HOST) + ": " + e.toString());
+                ACRA.getErrorReporter().handleSilentException(e);
                 errorModalBox(getString(R.string.exception_NO_FTP_SERVER));
                 return;
             } catch (FileNotFoundException e) {
-                activity.log_it("e", LOGTAG, "File Not Found Exception: " + e.toString());
+                activity.log_it("e", LOGTAG, getString(R.string.exception_FILE_NOT_FOUND) + "File Not Found Exception: " + e.toString());
+                ACRA.getErrorReporter().handleSilentException(e);
                 errorModalBox(getString(R.string.exception_RTLSDR_FILE_NOT_SAVED));
                 return;
             } catch (IOException e) {
-                activity.log_it("e", LOGTAG, "IO Exception: " + e.toString());
+                activity.log_it("e", LOGTAG, getString(R.string.exception_IO) + ": " + e.toString());
+                ACRA.getErrorReporter().handleSilentException(e);
                 errorModalBox(getString(R.string.exception_NO_NETWORK_ACCESS));
                 return;
             }
@@ -210,6 +253,7 @@ public class SdrFtpService extends IntentService {
                         }, new Response.ErrorListener() {
                     @Override
                     public void onErrorResponse(VolleyError error) {
+                        ACRA.getErrorReporter().handleSilentException(null);
                         displayMessage(getString(R.string.msg_data_not_rcvd_ok) + "\n\n-----------\n\n");
                     }
                 });
