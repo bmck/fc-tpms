@@ -32,18 +32,8 @@ rm $VERSION_FN3.tmp
 
 # update android/remote_tpms/app/src/main/AndroidManifest.xml
 VERSION_FN4="$THIS_DIR/../android/remote_tpms/app/src/main/AndroidManifest.xml"
-VERCODE=`echo $CURR_VERSION | awk -F \. '{ printf("%02d%02d%02d\n",$1,$2,$3) }'`
-cat $VERSION_FN4 | sed -e "s/versionCode=\"[0-9.]*\"/versionCode=\"$VERCODE\"/" -e "s/versionName=\"[0-9.]*\"/versionName=\"$CURR_VERSION\"/" > $VERSION_FN4.tmp
-mv $VERSION_FN4.tmp $VERSION_FN4
-
-svn commit $VERSION_FN1 $VERSION_FN2 $VERSION_FN3 $VERSION_FN4 -m "tagged for version $NEW_VERSION"
-svn cp svn://svn.bmck.org/fc/trunk svn://svn.bmck.org/fc/tags/$CURR_VERSION -m "tagged for version $NEW_VERSION"
-
-cd ../android/remote_tpms && gradlew clean assembleArmDebug && cd -
-cd ../server && make clean && make && cd -
-
 VERCODE=`echo $NEW_VERSION | awk -F \. '{ printf("%02d%02d%02d\n",$1,$2,$3) }'`
 cat $VERSION_FN4 | sed -e "s/versionCode=\"[0-9.]*\"/versionCode=\"$VERCODE\"/" -e "s/versionName=\"[0-9.]*\"/versionName=\"$NEW_VERSION\"/" > $VERSION_FN4.tmp
 mv $VERSION_FN4.tmp $VERSION_FN4
 
-svn commit $VERSION_FN4 -m "tagged for version $NEW_VERSION"
+svn commit $VERSION_FN1 $VERSION_FN2 $VERSION_FN3 $VERSION_FN4 -m "tagged for version $NEW_VERSION"
