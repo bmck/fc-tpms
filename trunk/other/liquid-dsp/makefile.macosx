@@ -54,8 +54,8 @@ include_dirs	:= . include
 CC		:= gcc
 MV		:= mv -f
 RM		:= rm -f
-SED		:= /opt/local/bin/gsed
-GREP		:= /opt/local/bin/grep
+SED		:= /usr/bin/sed
+GREP		:= /usr/bin/grep
 AR		:= ar
 RANLIB		:= ranlib
 
