@@ -1,0 +1,25 @@
+- # $Id$
+- # $(c)$
+
+!!!
+%html
+  %head
+    %meta{:content => "text/html; charset=UTF-8", "http-equiv" => "Content-Type"}/
+    %meta{:content => "width=device-width, initial-scale=1.0", :name => "viewport"}/
+    %title= content_for?(:title) ? yield(:title) : "Newco"
+    %meta{:content => "#{content_for?(:description) ? yield(:description) : "Newco"}", :name => "description"}/
+    = stylesheet_link_tag 'application', media: 'all', 'data-turbolinks-track' => true
+    = javascript_include_tag 'application', 'data-turbolinks-track' => true
+    = csrf_meta_tags
+  %body
+    .navbar-static-top.navbar-brand.col-xs-12
+      %a{ href: root_path }
+        %b [[ NEWC0 ]] (Put branding & logo here.)
+    .row
+      .col-xs-1
+      .col-xs-3
+        = render 'layouts/navigation'
+      .col-xs-7{:role => "main"}
+        = render 'layouts/messages'
+        = yield
+      .col-xs-1
