@@ -4,15 +4,54 @@
 
 THIS_FILE=`which $0`
 THIS_DIR=`dirname "$THIS_FILE"`
+EDITOR=vi
 
-# update android/remote_tpms_app/src/main/res/raw/changelog.txt
-CHGLOG_FN="$THIS_DIR/../android/remote_tpms/app/src/main/res/raw/changelog_raw.txt"
+echo ""
+echo ""
+echo "You will now be given a chance to commit any uncommitted changes in the code tree.  "
+echo "Without affecting the finalization of this version of code, this may be aborted in vi by pressing <ESC>:quit<ENTER>."
+echo "Press CTRL-C to abort now, or any other key to continue."
+read C
+
+svn commit $THIS_DIR/..
+
 CURR_VER=`$THIS_DIR/./current_version`
 DATE_STR=`date +"%Y-%m-%d"`
 
-cat $CHGLOG_FN | sed -e "/$CURR_VER/s/open/$DATE_STR/g" >$CHGLOG_FN.tmp
-mv $CHGLOG_FN.tmp $CHGLOG_FN
-svn commit $CHGLOG_FN -m "updated changelog to close version $CURR_VER"
+echo ""
+echo ""
+echo "You will now rewrite consistent current version information across all relevant files"
+echo "based the current version being $CURR_VER .  The applications will then be rebuilt."
+echo "You will have one more chance before these changes and tagging are committed to subversion."
+echo "Press CTRL-C to abort, or any other key to continue."
+read C
+
+# update android/remote_tpms/app/src/main/res/values/strings_version.xml
+VERSION_FN2="$THIS_DIR/../android/remote_tpms/app/src/main/res/values/strings_version.xml"
+cat $VERSION_FN2 | sed -e "s|\"version\">[0-9.]*</string|\"version\">$NEW_VERSION</string|" >$VERSION_FN2.tmp
+mv $VERSION_FN2.tmp $VERSION_FN2
+
+# update android/remote_tpms_app/src/main/res/raw/changelog.txt
+VERSION_FN3="$THIS_DIR/../android/remote_tpms/app/src/main/res/raw/changelog_raw.txt"
+cat $VERSION_FN3 | sed -e "/$CURR_VER/s/open/$DATE_STR/g" >$VERSION_FN3.tmp
+mv $VERSION_FN3.tmp $VERSION_FN3
+
+# update android/remote_tpms/app/src/main/AndroidManifest.xml
+VERSION_FN4="$THIS_DIR/../android/remote_tpms/app/src/main/AndroidManifest.xml"
+VERCODE=`echo $CURR_VERSION | awk -F \. '{ printf("%02d%02d%02d\n",$1,$2,$3) }'`
+cat $VERSION_FN4 | sed -e "s/versionCode=\"[0-9.]*\"/versionCode=\"$VERCODE\"/" -e "s/versionName=\"[0-9.]*\"/versionName=\"$CURR_VERSION\"/" > $VERSION_FN4.tmp
+mv $VERSION_FN4.tmp $VERSION_FN4
+
+cd $THIS_DIR/../android/remote_tpms && gradlew clean assembleArmDebug && cd -
+cd $THIS_DIR/../server && make clean && make && cd -
+
+echo ""
+echo ""
+echo "You will now commit to subversion any changes that may have occurred in writing consistent version information"
+echo "into the codebase, and tag the subversion repository."
+echo "Press CTRL-C to abort, or any other key to continue."
+read C
 
 # add subversion tag
+svn commit $VERSION_FN2 $VERSION_FN3 $VERSION_FN4 -m "updated to close version $CURR_VER"
 svn copy svn://svn.bmck.org/fc/trunk svn://svn.bmck.org/fc/tags/$CURR_VER -m "Added $CURR_VER tag."
