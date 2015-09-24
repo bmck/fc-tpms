@@ -156,27 +156,34 @@ public class SdrFtpService extends IntentService {
                     }
                     catch (FTPConnectionClosedException e) {
                         displayMessage(getString(R.string.exception_CTRL_CHANNEL) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
+                        displayMessage("--> Error type: " + e.getClass().getName());
+                        if (e.getMessage().length() > 0)
+                            displayMessage("--> " + e.getMessage());
                         ACRA.getErrorReporter().handleSilentException(e);
                         if (++count == maxTries) throw e;
 
-                        displayMessage(getString(R.string.retrying));
+                        displayMessage("--> " + getString(R.string.retrying));
                     }
                     catch (CopyStreamException e) {
-                        String msg = e.getMessage();
-                        if (msg.length() == 0) msg = getString(R.string.exception_COPY_STREAM);
-                        displayMessage(msg + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
+                        displayMessage(getString(R.string.exception_COPY_STREAM) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
+                        displayMessage("--> Error type: " + e.getClass().getName());
+                        if (e.getMessage().length() > 0)
+                            displayMessage("--> " + e.getMessage());
                         displayMessage("  " + e.getTotalBytesTransferred() + " bytes transferred out of " + (2*num_samples) + " bytes");
                         ACRA.getErrorReporter().handleSilentException(e);
                         if (++count == maxTries) throw e;
 
-                        displayMessage(getString(R.string.retrying));
+                        displayMessage("--> " + getString(R.string.retrying));
                     }
                     catch (IOException e) {
                         displayMessage(getString(R.string.exception_IO) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
+                        displayMessage("--> Error type: " + e.getClass().getName());
+                        if (e.getMessage().length() > 0)
+                            displayMessage("--> " + e.getMessage());
                         ACRA.getErrorReporter().handleSilentException(e);
                         if (++count == maxTries) throw e;
 
-                        displayMessage(getString(R.string.retrying));
+                        displayMessage("--> " + getString(R.string.retrying));
                     }
                 }
 
@@ -207,8 +214,12 @@ public class SdrFtpService extends IntentService {
                                 "\n");
                         found = 1;
                     } catch (NumberFormatException e) {
+                        activity.log_it("e", LOGTAG, getString(R.string.exception_NUMBER_FORMAT) + ": " + e.toString());
+                        ACRA.getErrorReporter().handleSilentException(e);
                         found = 0;
                     } catch (ArrayIndexOutOfBoundsException e) {
+                        activity.log_it("e", LOGTAG, getString(R.string.exception_INVALID_ARRAY_INDEX) + ": " + e.toString());
+                        ACRA.getErrorReporter().handleSilentException(e);
                         found = 0;
                     }
                 }
@@ -219,17 +230,17 @@ public class SdrFtpService extends IntentService {
                 ftpClient.disconnect();
                 if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
             } catch (UnknownHostException e) {
-                activity.log_it("e", LOGTAG, getString(R.string.exception_UNKNOWN_HOST) + ": " + e.toString());
+                activity.log_it("e", LOGTAG, getString(R.string.exception_UNKNOWN_HOST) + " (" + e.getClass().getName() + "): " + e.toString());
                 ACRA.getErrorReporter().handleSilentException(e);
                 errorModalBox(getString(R.string.exception_NO_FTP_SERVER));
                 return;
             } catch (FileNotFoundException e) {
-                activity.log_it("e", LOGTAG, getString(R.string.exception_FILE_NOT_FOUND) + "File Not Found Exception: " + e.toString());
+                activity.log_it("e", LOGTAG, getString(R.string.exception_FILE_NOT_FOUND) + "File Not Found Exception (" + e.getClass().getName() + "): " + e.toString());
                 ACRA.getErrorReporter().handleSilentException(e);
                 errorModalBox(getString(R.string.exception_RTLSDR_FILE_NOT_SAVED));
                 return;
             } catch (IOException e) {
-                activity.log_it("e", LOGTAG, getString(R.string.exception_IO) + ": " + e.toString());
+                activity.log_it("e", LOGTAG, getString(R.string.exception_IO) + " (" + e.getClass().getName() + "): " + e.toString());
                 ACRA.getErrorReporter().handleSilentException(e);
                 errorModalBox(getString(R.string.exception_NO_NETWORK_ACCESS));
                 return;
