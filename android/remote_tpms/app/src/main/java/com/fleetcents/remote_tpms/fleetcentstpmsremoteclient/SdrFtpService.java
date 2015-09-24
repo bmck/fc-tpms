@@ -69,7 +69,7 @@ public class SdrFtpService extends IntentService {
         String arguments = "-f " + freq + " -s " + sample_rate + " -n " + num_samples +
                 " -t " + (testing ? "1" : "0") + " " + fn + "";
         if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
-        activity.log_it("i", LOGTAG, "SDR data collection arguments: " + arguments);
+        log_it("i", LOGTAG, "SDR data collection arguments: " + arguments);
 
         synchronized (this) {
             Log.i(LOGTAG, "A @ " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()) + "\n");
@@ -99,18 +99,18 @@ public class SdrFtpService extends IntentService {
                     displayMessage(getString(R.string.msg_wait_for_sensor_data));
 
                     if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
-                    activity.log_it("d", LOGTAG, "Before beginning native code at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
+                    log_it("d", LOGTAG, "Before beginning native code at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
                     RtlSdr.open(arguments, connection.getFileDescriptor(), UsbHelper.properDeviceName(device.getDeviceName()));
                     if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
-                    activity.log_it("d", LOGTAG, "Completed native code " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
+                    log_it("d", LOGTAG, "Completed native code " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
                 } else {
                     displayMessage(getString(R.string.msg_wait_for_sensor_data));
 
                     if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
-                    activity.log_it("d", LOGTAG, "Before beginning native code at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
+                    log_it("d", LOGTAG, "Before beginning native code at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
                     RtlSdr.open(arguments, -1, null);
                     if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
-                    activity.log_it("d", LOGTAG, "Completed native code " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
+                    log_it("d", LOGTAG, "Completed native code " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
 
                 }
                 displayMessage(getString(R.string.msg_rcving_sensor_data) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
@@ -127,15 +127,15 @@ public class SdrFtpService extends IntentService {
             try {
                 String addr = InetAddress.getByName(base).getHostAddress();
                 if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
-                activity.log_it("i", LOGTAG, "connecting to Fleet Cents server at " + addr);
+                log_it("i", LOGTAG, "connecting to Fleet Cents server at " + addr);
                 ftpClient.connect(addr);
                 displayMessage(getString(R.string.msg_uploading_sensor_data) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
                 // TODO: use password field of login to identify user or hardware being used?
                 ftpClient.enterLocalPassiveMode();
                 ftpClient.login("anonymous", "guest");
                 if (abort_requested())  { try { ftpClient.logout();  ftpClient.disconnect();  completeOk(); } catch (InterruptedException e) { } }
-                activity.log_it("i", LOGTAG, "Logged into Fleet Cents server");
-                activity.log_it("i", LOGTAG, ftpClient.getReplyString());
+                log_it("i", LOGTAG, "Logged into Fleet Cents server");
+                log_it("i", LOGTAG, ftpClient.getReplyString());
 
                 ftpClient.changeWorkingDirectory("fleet_server");
                 ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
@@ -144,7 +144,7 @@ public class SdrFtpService extends IntentService {
                 buffIn = new BufferedInputStream(new FileInputStream(fn));
 //                ftpClient.enterLocalPassiveMode();
                 if (abort_requested())  { try { ftpClient.logout();  ftpClient.disconnect();  completeOk(); } catch (InterruptedException e) { } }
-                activity.log_it("i", LOGTAG, "Before sending file to Fleet Cents server");
+                log_it("i", LOGTAG, "Before sending file to Fleet Cents server");
 
                 boolean uploaded = false;
                 int count = 0;
@@ -188,14 +188,14 @@ public class SdrFtpService extends IntentService {
                 }
 
                 if (abort_requested())  { try { ftpClient.logout();  ftpClient.disconnect();  completeOk(); } catch (InterruptedException e) { } }
-                activity.log_it("i", LOGTAG, "Completed sending file to Fleet Cents server");
+                log_it("i", LOGTAG, "Completed sending file to Fleet Cents server");
                 buffIn.close();
                 resp = ftpClient.getReplyString();
                 Integer resp_code = Integer.parseInt(resp.split(" ")[0]);
                 if (resp_code == 226) {
-                    activity.log_it("i", LOGTAG, "Complete response to upload: " + resp);
+                    log_it("i", LOGTAG, "Complete response to upload: " + resp);
                     resp = TextUtils.join(",", Arrays.copyOfRange((resp.split(" ")[1]).split(","), 0, 3));
-                    activity.log_it("i", LOGTAG, "Relevant response to upload: " + resp);
+                    log_it("i", LOGTAG, "Relevant response to upload: " + resp);
 //                Log.i(LOGTAG, "resp = " + resp);
 //                Log.i(LOGTAG, "resp[0] = >" + resp.split(",")[0] + "<");
 //                Log.i(LOGTAG, "resp[1] = >" + resp.split(",")[1] + "<");
@@ -214,11 +214,11 @@ public class SdrFtpService extends IntentService {
                                 "\n");
                         found = 1;
                     } catch (NumberFormatException e) {
-                        activity.log_it("e", LOGTAG, getString(R.string.exception_NUMBER_FORMAT) + ": " + e.toString());
+                        log_it("e", LOGTAG, getString(R.string.exception_NUMBER_FORMAT) + ": " + e.toString());
                         ACRA.getErrorReporter().handleSilentException(e);
                         found = 0;
                     } catch (ArrayIndexOutOfBoundsException e) {
-                        activity.log_it("e", LOGTAG, getString(R.string.exception_INVALID_ARRAY_INDEX) + ": " + e.toString());
+                        log_it("e", LOGTAG, getString(R.string.exception_INVALID_ARRAY_INDEX) + ": " + e.toString());
                         ACRA.getErrorReporter().handleSilentException(e);
                         found = 0;
                     }
@@ -230,17 +230,17 @@ public class SdrFtpService extends IntentService {
                 ftpClient.disconnect();
                 if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
             } catch (UnknownHostException e) {
-                activity.log_it("e", LOGTAG, getString(R.string.exception_UNKNOWN_HOST) + " (" + e.getClass().getName() + "): " + e.toString());
+                log_it("e", LOGTAG, getString(R.string.exception_UNKNOWN_HOST) + " (" + e.getClass().getName() + "): " + e.toString());
                 ACRA.getErrorReporter().handleSilentException(e);
                 errorModalBox(getString(R.string.exception_NO_FTP_SERVER));
                 return;
             } catch (FileNotFoundException e) {
-                activity.log_it("e", LOGTAG, getString(R.string.exception_FILE_NOT_FOUND) + "File Not Found Exception (" + e.getClass().getName() + "): " + e.toString());
+                log_it("e", LOGTAG, getString(R.string.exception_FILE_NOT_FOUND) + "File Not Found Exception (" + e.getClass().getName() + "): " + e.toString());
                 ACRA.getErrorReporter().handleSilentException(e);
                 errorModalBox(getString(R.string.exception_RTLSDR_FILE_NOT_SAVED));
                 return;
             } catch (IOException e) {
-                activity.log_it("e", LOGTAG, getString(R.string.exception_IO) + " (" + e.getClass().getName() + "): " + e.toString());
+                log_it("e", LOGTAG, getString(R.string.exception_IO) + " (" + e.getClass().getName() + "): " + e.toString());
                 ACRA.getErrorReporter().handleSilentException(e);
                 errorModalBox(getString(R.string.exception_NO_NETWORK_ACCESS));
                 return;
@@ -253,7 +253,7 @@ public class SdrFtpService extends IntentService {
                 RequestQueue queue = Volley.newRequestQueue(activity);
                 String url = getFullUrl();
                 if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
-                activity.log_it("i", LOGTAG, "url is " + url);
+                log_it("i", LOGTAG, "url is " + url);
                 // Request a string response from the provided URL.
                 StringRequest stringRequest = new StringRequest(StringRequest.Method.GET, url,
                         new Response.Listener<String>() {
@@ -284,6 +284,8 @@ public class SdrFtpService extends IntentService {
         try { completeOk(); } catch (InterruptedException e) { }
         return;
     }
+
+    public void log_it(String log_lvl, String tag, String str) { activity.log_it(log_lvl, tag, str); }
 
     private boolean abort_requested() {
         return activity.abort_requested;
