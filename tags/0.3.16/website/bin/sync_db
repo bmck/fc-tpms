@@ -1,0 +1,38 @@
+#!/bin/bash
+# $Id: sync_db 5180 2015-01-03 22:03:32Z bmck $
+# $(c): Copyright 2008-2015 by Capitalytics $
+
+SYSTYPE=`uname`
+if test "$SYSTYPE" = "Darwin"; then
+  if test `whoami` != "root"; then
+      echo "this script must be run as root via 'sudo'"
+      exit 1
+  fi
+
+  PROD_DBDIR="newco_production"
+  LOCAL_DBDIR="newco_development"
+
+  killall mysqld # using 'killall mysqld' because '/Library/StartupItems/MySQLCOM/MySQLCOM stop' does not seem to work as advertised
+
+  echo
+  echo "### synchronizing $PROD_DBDIR --> $LOCAL_DBDIR ###"
+  mkdir -p /usr/local/mysql/data/$LOCAL_DBDIR
+  chmod 777 /usr/local/mysql/data/$LOCAL_DBDIR
+  chown $SUDO_USER:staff /usr/local/mysql/data/$LOCAL_DBDIR /usr/local/mysql/data/$LOCAL_DBDIR/*
+  su $SUDO_USER -c "rsync -z -v -r -t --delete -e ssh server11288.baremetalcloud.com:/var/lib/mysql/$PROD_DBDIR/* /usr/local/mysql/data/$LOCAL_DBDIR"
+  chown _mysql:wheel /usr/local/mysql/data/$LOCAL_DBDIR /usr/local/mysql/data/$LOCAL_DBDIR/*
+  chmod 700 /usr/local/mysql/data/$LOCAL_DBDIR
+  chmod 755 /usr/local/mysql/data
+
+  /Library/StartupItems/MySQLCOM/MySQLCOM start
+fi
+if test "$SYSTYPE" = "Linux"; then
+
+  echo
+  echo "### synchronizing $PROD_DBDIR --> $PROD_DBDIR ###"
+  mkdir -p /var/lib/mysql/$PROD_DBDIR
+  rsync -z -v -P -r -t -e 'ssh' www.capitalytics.com:/var/lib/mysql/$PROD_DBDIR /var/lib/mysql
+  chmod 777 /var/lib/mysql/$PROD_DBDIR
+  chmod 666 /var/lib/mysql/$PROD_DBDIR/*
+
+fi
