@@ -22,4 +22,6 @@
     <string name="exception_IO">Unknown I/O error</string>
     <string name="exception_UNKNOWN_HOST">Unknown Host error</string>
     <string name="exception_FILE_NOT_FOUND">File not found error</string>
+    <string name="exception_NUMBER_FORMAT">Number formatting error</string>
+    <string name="exception_INVALID_ARRAY_INDEX">Array index out of bounds error</string>
 </resources>
