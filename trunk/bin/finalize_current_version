@@ -42,7 +42,7 @@ VERCODE=`echo $CURR_VERSION | awk -F \. '{ printf("%02d%02d%02d\n",$1,$2,$3) }'`
 cat $VERSION_FN4 | sed -e "s/versionCode=\"[0-9.]*\"/versionCode=\"$VERCODE\"/" -e "s/versionName=\"[0-9.]*\"/versionName=\"$CURR_VERSION\"/" > $VERSION_FN4.tmp
 mv $VERSION_FN4.tmp $VERSION_FN4
 
-cd $THIS_DIR/../android/remote_tpms/app && ../gradlew clean assembleArmDebug && cd -
+cd $THIS_DIR/../android/remote_tpms/app && ../gradlew clean && ../gradlew assembleArmDebug && cd -
 cd $THIS_DIR/../server && make clean && make && cd -
 
 echo ""
