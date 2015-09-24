@@ -4,7 +4,7 @@
 
 THIS_FILE=`which $0`
 THIS_DIR=`dirname "$THIS_FILE"`
-CURR_VER=`$THIS_DIR/./current_version`
+CURR_VER=`./$THIS_DIR/current_version`
 NEW_VERSION=$1
 
 echo ""
