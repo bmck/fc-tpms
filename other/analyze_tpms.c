@@ -56,7 +56,7 @@ char *fleet_analysis(char *fn) {
 
 	LOGI("Just after file analyzed");
 
-	char* returned_string = malloc(25 * sizeof(char));
+	char* returned_string = malloc(250 * sizeof(char));
 	if (analyzed_ok == 1) {
 
 		LOGI("File analyzed ok");
@@ -113,10 +113,11 @@ char *fleet_analysis(char *fn) {
 		strcpy(returned_string, ",,,");
 	}
 
-	keep = 1 - analyzed_ok;
+	keep = 1; //1 - analyzed_ok;
 	if (keep == 0)
 		unlink(fn);
 
+    strncat(returned_string, fn, 249-strlen(returned_string));
 	return returned_string;
 
 }
