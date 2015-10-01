@@ -434,9 +434,9 @@ void rtlsdr_main(int usbfd, const char * uspfs_path_input, int argc, char **argv
 			}
 
 			if (consec_peg_values > CONSEC_PEG_VALUES_ALLOWED) {
-				float old_gain = rtlsdr_get_tuner_gain(dev);
+				float old_gain = rtlsdr_get_tuner_gain(dev)/10.0;
 				if (old_gain != rtlsdr_decrease_gain(dev)) {
-					LOGW("WARNING: Reducing gain from %f to %f and restarting.\n", old_gain, rtlsdr_get_tuner_gain(dev));
+					LOGW("WARNING: Reducing gain from %f to %f and restarting.\n", old_gain, rtlsdr_get_tuner_gain(dev)/10.0);
 					bytes_to_read = orig_bytes_to_read;
 					rewind(file);
 					consec_peg_values = 0;

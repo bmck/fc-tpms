@@ -356,8 +356,7 @@ unsigned int update_state(complex float x, complex float prev_x, unsigned int sa
 			bit_boundary[1] = sample_num;
 			samples_per_bit = (bit_boundary[1] - bit_boundary[0]) * 0.5;
 			LOGI("%s: (%s:%d) (curr_state == -3) sample_num = %u, bit_boundary[0] = %u, bit_boundary[1] = %u", src_name, __FILE__, __LINE__, sample_num, bit_boundary[0], bit_boundary[1]);
-			prev_ref_boundary = first_bit_start = bit_boundary[1] - 3 * samples_per_bit;
-			bits_since_ref = 0;
+			first_bit_start = bit_boundary[1] - 3 * samples_per_bit;
 			if (DETAIL >= 3) {
 				LOGI("%s: (%s:%d) first_bit_start = %u,   ", src_name, __FILE__, __LINE__, first_bit_start);
 				LOGI("samples_per_bit = %u,   ", samples_per_bit);
