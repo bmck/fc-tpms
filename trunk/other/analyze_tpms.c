@@ -18,6 +18,11 @@
 #define SYMBOLS_PER_MSG BITS_PER_FREESCALE_MSG
 #define CHUNK_SIZE 256
 
+#define DETAIL 3
+#if !defined(DETAIL)
+#define DETAIL 0
+#endif
+
 static char app_dir[200];
 static uint32_t sample_rate = 1;
 static char src_name[200];
@@ -117,7 +122,7 @@ char *fleet_analysis(char *fn) {
 	if (keep == 0)
 		unlink(fn);
 
-    strncat(returned_string, fn, 249-strlen(returned_string));
+	strncat(returned_string, fn, 249 - strlen(returned_string));
 	return returned_string;
 
 }
@@ -173,16 +178,26 @@ int analyze_file(char *src_filename) {
 
 	FILE *file;
 	if ((file = fopen(src_filename, "rb")) == NULL) {
-		LOGE("%s: source file could not be opened for reading.\n", src_name);
+		LOGE("%s: source file could not be opened for reading.\n", src_filename);
+		return (0);
+	}
+	char fn2[300];
+	FILE *file2;
+	strcpy(fn2, src_filename);
+	strcat(fn2, "2");
+	if ((file2 = fopen(fn2, "wb")) == NULL) {
+		LOGE("%s: file could not be opened for writing.\n", fn2);
 		return (0);
 	}
 
+
 	// uint32_t          b;
 	uint8_t           xi, xq;
-
 	uint8_t           buf2[2];
+
+	float             buff[2];
 	float complex     x, prev_x = 0.0;
-	float complex     bias =  0.0011370 + 0.0043801 * _Complex_I;
+	// float complex     bias =  0.0011370 + 0.0043801 * _Complex_I;
 
 	// float complex buf_resamp[16];
 	// float         buf_demod[16];
@@ -208,10 +223,13 @@ int analyze_file(char *src_filename) {
 		x = ((float)(xi) - 127.0f) + ((float)(xq) - 127.0f) * _Complex_I;
 
 		// scale and remove bias
-		x = x / 128.0f - bias;
+		x = x / 128.0f; // - bias;
 
 		// apply pre-processing
 		iirfilt_crcf_execute(filter, x, &x);
+
+		buff[0] = crealf(x); buff[1] = cimagf(x);
+		fwrite(buff, sizeof(float), 2, file2);
 
 		// remove carrier offset
 		nco_crcf_mix_down(nco, x, &x);
@@ -236,13 +254,13 @@ int analyze_file(char *src_filename) {
 
 
 
-#define CONTINUE        prev_b = b; /*prev_delta_phi = delta_phi;*/ return 0;
-#define START_OVER      reset_vars(); CONTINUE
-#define SAVE_BIT_ONLY   LOGI("%s: (%s:%d) basebit_vals = >%s< (%d)\n", src_name, __FILE__, __LINE__, basebit_vals, (int)strlen(basebit_vals)); { char tmpbase[SYMBOLS_PER_MSG * 2 + 2]; sprintf(tmpbase, "%s%d", basebit_vals, b); strcpy(basebit_vals, tmpbase); } curr_state = strlen(basebit_vals); LOGI("%s: (%s:%d) basebit_vals = >%s< (%d)\n", src_name, __FILE__, __LINE__, basebit_vals, (int)strlen(basebit_vals)); LOGI("%s: (%s:%d) Entered state %d at sample %u\n", src_name, __FILE__, __LINE__, curr_state, sample_num); prev_bit_sample = sample_num; prev_b = b;
-#define SAVE_BIT        SAVE_BIT_ONLY; CONTINUE
+#define KEEP_GOING        prev_b = b; /*prev_delta_phi = delta_phi;*/ return 0;
+#define START_OVER      reset_vars(); KEEP_GOING
+#define SAVE_BIT_ONLY   LOGI("%s: (%s:%d) basebit_vals = >%s< (%d)\n", src_name, __FILE__, __LINE__, basebit_vals, (int)strlen(basebit_vals)); if (b != (basebit_vals[strlen(basebit_vals)-1]-(int)('0'))) {prev_ref_boundary = sample_num; bits_since_ref = 0;} else { bits_since_ref++; }  { char tmpbase[SYMBOLS_PER_MSG * 2 + 2]; sprintf(tmpbase, "%s%d", basebit_vals, b); strcpy(basebit_vals, tmpbase); } curr_state = strlen(basebit_vals); LOGI("%s: (%s:%d) basebit_vals = >%s< (%d)\n", src_name, __FILE__, __LINE__, basebit_vals, (int)strlen(basebit_vals)); LOGI("%s: (%s:%d) Entered state %d at sample %u\n", src_name, __FILE__, __LINE__, curr_state, sample_num); prev_bit_sample = sample_num; prev_b = b; good_window_start = first_bit_start + (curr_state) * (samples_per_bit-0.2) + 30; good_window_end = first_bit_start + (curr_state+1) * (samples_per_bit-0.2) - 30;
+#define SAVE_BIT        SAVE_BIT_ONLY; KEEP_GOING
 
-#define HIGHFREQ(x) (fabs((x / high_freq) - 1.0) <= 0.1)
-#define LOWFREQ(x)  (fabs((x / low_freq) - 1.0) >  0.1)
+#define HIGHFREQ(x) (fabs((x / high_freq) - 1.0) <= 0.05)
+#define LOWFREQ(x)  (fabs((x / low_freq) - 1.0) <= 0.05)
 #define HIGHBIT 1
 #define LOWBIT 0
 
@@ -262,7 +280,6 @@ unsigned int update_state(complex float x, complex float prev_x, unsigned int sa
 		LOGI("\n");
 	}
 
-	int b = -1;
 	float i = crealf(x);
 	// float q = cimagf(x);
 	double phi = cargf(x), prev_phi = cargf(prev_x);
@@ -270,13 +287,18 @@ unsigned int update_state(complex float x, complex float prev_x, unsigned int sa
 	//static double prev_delta_phi;
 	static double cum_phi;
 	static int count;
-	static int prev_b;
+	static int b = -1, prev_b;
 	static unsigned int prev_bit_sample;
+	static unsigned int prev_ref_boundary = 0;
+	static unsigned int bits_since_ref = 0;
+	static unsigned int good_window_start, good_window_end;
+
 
 	if ((high_freq_set == false) && (low_freq_set == false)) {
 		if ((i < 0.9) && (curr_state != -1)) {
-			CONTINUE;
+			KEEP_GOING;
 		}
+
 		curr_state = -1;
 
 		if (prelude_hf_start == UNK) {
@@ -290,23 +312,22 @@ unsigned int update_state(complex float x, complex float prev_x, unsigned int sa
 		}
 
 		high_freq = cum_phi / (double) count;
-		// LOGI("%s: (%s:%d) cum_phi = %lf, count = %d, high_freq = %lf,   ", src_name, __FILE__, __LINE__, cum_phi, count, high_freq);
-		// LOGI("(sample_num - prelude_hf_start) / SAMPLE_RATE = %lf,   ", (sample_num - prelude_hf_start) / SAMPLE_RATE);
-		// LOGI("delta_phi / high_freq = %lf\n", delta_phi / high_freq);
+
 		if ((sample_num >= prelude_hf_start + 0.0006 * SAMPLE_RATE) &&
-		        (LOWFREQ(delta_phi))) {
+		        (!HIGHFREQ(delta_phi))) {
 			high_freq_set = true;
-			bit_boundary[0] = sample_num;
-			LOGI("%s: (%s:%d) High frequency = %lf radians per sample = %f kHz\n", src_name, __FILE__, __LINE__, high_freq, high_freq / (2000.0f * M_PI) * SAMPLE_RATE);
+			if (DETAIL >= 3)
+				LOGI("%s: (%s:%d) High frequency = %lf radians per sample = %f kHz\n", src_name, __FILE__, __LINE__, high_freq, high_freq / (2000.0f * M_PI) * SAMPLE_RATE);
 		}
 
-		CONTINUE;
+		KEEP_GOING;
 	}
 
 	if ((high_freq_set == true) && (low_freq_set == false)) {
 		if ((i < 0.9) && (curr_state != -2)) {
-			CONTINUE;
+			KEEP_GOING;
 		}
+
 		curr_state = -2;
 
 		if (prelude_lf_start == UNK) {
@@ -320,19 +341,14 @@ unsigned int update_state(complex float x, complex float prev_x, unsigned int sa
 		}
 
 		low_freq = cum_phi / (double) count;
-		// LOGI("%s: (%s:%d) cum_phi = %lf, count = %d, low_freq = %lf,   ", src_name, __FILE__, __LINE__, cum_phi, count, low_freq);
-		// LOGI("sample_num - prelude_lf_start / SAMPLE_RATE = %lf,   ", (sample_num - prelude_lf_start) / SAMPLE_RATE);
-		// LOGI("delta_phi / low_freq = %lf\n", delta_phi / low_freq);
-		if ((sample_num >= prelude_lf_start + 0.0006 * SAMPLE_RATE) &&
+		if ((sample_num >= prelude_lf_start + 0.0005 * SAMPLE_RATE) &&
 		        (HIGHFREQ(delta_phi))) {
 			low_freq_set = true;
 			bit_boundary[0] = sample_num;
-			// LOGI("%s: (%s:%d) Low frequency = %lf radians per sample = %f kHz,   ", src_name, __FILE__, __LINE__, low_freq, low_freq / (2000.0f * M_PI) * SAMPLE_RATE);
 			curr_state = -3;
-			// LOGI("%s: (%s:%d) Entering state -3 at sample %u\n", src_name, __FILE__, __LINE__, sample_num);
 		}
 
-		CONTINUE;
+		KEEP_GOING;
 	}
 
 	if (curr_state == -3) {
@@ -340,47 +356,69 @@ unsigned int update_state(complex float x, complex float prev_x, unsigned int sa
 			strcpy(basebit_vals, "011");
 			bit_in_process += 3;
 			bit_boundary[1] = sample_num;
-			samples_per_bit = (bit_boundary[1] - bit_boundary[0]) * 0.5 - 1;
-			first_bit_start = bit_boundary[0] - samples_per_bit;
-			// LOGI("%s: (%s:%d) first_bit_start = %u,   ", src_name, __FILE__, __LINE__, first_bit_start);
-			// LOGI("samples_per_bit = %u,   ", samples_per_bit);
-			// LOGI("basebit_vals = %s\n", basebit_vals);
+			samples_per_bit = (bit_boundary[1] - bit_boundary[0]) * 0.5;
+			LOGI("%s: (%s:%d) (curr_state == -3) sample_num = %u, bit_boundary[0] = %u, bit_boundary[1] = %u", src_name, __FILE__, __LINE__, sample_num, bit_boundary[0], bit_boundary[1]);
+			prev_ref_boundary = first_bit_start = bit_boundary[1] - 3 * samples_per_bit;
+			bits_since_ref = 0;
+			if (DETAIL >= 3) {
+				LOGI("%s: (%s:%d) first_bit_start = %u,   ", src_name, __FILE__, __LINE__, first_bit_start);
+				LOGI("samples_per_bit = %u,   ", samples_per_bit);
+				LOGI("basebit_vals = %s\n", basebit_vals);
+			}
 		}
 	}
+
 	else {
 		if (HIGHFREQ(delta_phi)) {
 			b = HIGHBIT;
-			LOGI("%s: (%s:%d) High frequency period found at sample %u\n", src_name, __FILE__, __LINE__, sample_num);
 		}
 		else if (LOWFREQ(delta_phi)) {
 			b = LOWBIT;
-			LOGI("%s: (%s:%d) Low frequency period found at sample %u\n", src_name, __FILE__, __LINE__, sample_num);
 		}
 
+		// if delta_phi is indeterminate, b will carry from previous iteration
+		if (DETAIL >= 3) {
+			if (b == HIGHBIT) {
+				LOGI("%s: (%s:%d) High frequency sample %u\n", src_name, __FILE__, __LINE__, sample_num);
+			}
+			else if (b == LOWBIT) {
+				LOGI("%s: (%s:%d) Low frequency sample %u\n", src_name, __FILE__, __LINE__, sample_num);
+			}
+		}
+
+
 		if ((b != -1) && (high_freq_set == true) && (low_freq_set == true)) {
-			// LOGI("%s: (%s:%d) high_freq_set and low_freq_set are true.\n", src_name, __FILE__, __LINE__);
 			curr_state = bit_in_process;
-			// LOGI("%s: (%s:%d) n = curr_state = bit_in_process = %d.\n", src_name, __FILE__, __LINE__, bit_in_process);
-			// LOGI("%s: (%s:%d) sample_num = %u, first_bit_start + n * samples_per_bit = %u, first_bit_start + n * samples_per_bit = %u\n",
-			     // src_name, __FILE__, __LINE__, sample_num, first_bit_start + (curr_state) * samples_per_bit, first_bit_start + (curr_state + 1) * samples_per_bit);
-			// LOGI("%s: (%s:%d) sample_num = %u, first_bit_start + n * (samples_per_bit+1) = %u, first_bit_start + (n+1) * (samples_per_bit-1) = %u\n",
-			     // src_name, __FILE__, __LINE__, sample_num, first_bit_start + curr_state * (samples_per_bit + 1), first_bit_start + (curr_state + 1) * (samples_per_bit - 1));
+
+			// if (DETAIL >= 3) {
+			// 	LOGI("%s: (%s:%d) n = curr_state = bit_in_process = %d.\n", src_name, __FILE__, __LINE__, bit_in_process);
+			// 	LOGI("%s: (%s:%d) sample_num = %u, first_bit_start + n * samples_per_bit = %u, first_bit_start + n * samples_per_bit = %u\n",
+			// 	     src_name, __FILE__, __LINE__, sample_num, first_bit_start + (curr_state) * samples_per_bit, first_bit_start + (curr_state + 1) * samples_per_bit);
+			// 	LOGI("%s: (%s:%d) sample_num = %u, first_bit_start + n * (samples_per_bit+1) = %u, first_bit_start + (n+1) * (samples_per_bit-1) = %u\n",
+			// 	     src_name, __FILE__, __LINE__, sample_num, first_bit_start + curr_state * (samples_per_bit + 1), first_bit_start + (curr_state + 1) * (samples_per_bit - 1));
+			// }
+			LOGI("%s: (%s:%d) good window for bit %d: %u ... %u \n", src_name, __FILE__, __LINE__, curr_state, good_window_start, good_window_end);
 
 			if (CURRENT_BIT(3)) {
-				LOGI("%s: (%s:%d) Bit in process = %u, b = %d\n", src_name, __FILE__, __LINE__, bit_in_process, b);
 				if (b == LOWBIT) {
-					// LOGI("%s: (%s:%d) About to save bit\n", src_name, __FILE__, __LINE__);
 					SAVE_BIT
 				}
-				else {
-					// LOGI("%s: (%s:%d) About to start over\n", src_name, __FILE__, __LINE__);
-					START_OVER
-				}
 			}
-			// TODO: Check more than a single sample per bit
-			else if (!((b == prev_b) && (sample_num < prev_bit_sample + samples_per_bit + 5))) {
-				if (bit_in_process % 2 == 1) {
-					LOGI("%s: (%s:%d) Bit in process = %u\n", src_name, __FILE__, __LINE__, bit_in_process);
+
+			// if the current value is not the same as the previous sample OR
+			// the sample number is apx a bits worth of samples after
+			// the previous sample location ...
+
+			// else if ((b != prev_b) || (sample_num >= prev_bit_sample + samples_per_bit + 5)) {
+			else if ((sample_num < good_window_end) && (sample_num > good_window_start)) {
+				if (DETAIL >= 3) {
+					LOGI("%s: (%s:%d) b = %d, prev_b = %d, Bit in process = %u, sample_num = %u, prev_bit_sample = %u, samples_per_bit = %u\n", src_name, __FILE__, __LINE__, b, prev_b, bit_in_process, sample_num, prev_bit_sample, samples_per_bit);
+				}
+
+				if (bit_in_process % 2 == 0) {
+					SAVE_BIT;
+				}
+				else {
 					if ((bit_in_process > 136) ||
 					        (b != ((int)(basebit_vals[bit_in_process - 1]) - (int)('0')))) {
 						SAVE_BIT_ONLY
@@ -420,21 +458,19 @@ unsigned int update_state(complex float x, complex float prev_x, unsigned int sa
 						START_OVER
 					}
 				}
-				else {
-					SAVE_BIT
-				}
 			}
 		}
 	}
 
+
 	if (strlen(basebit_vals) > 0)
 		curr_state = strlen(basebit_vals);
 
-	CONTINUE;
+	KEEP_GOING;
 
 }
 
-#undef CONTINUE
+#undef KEEP_GOING
 #undef START_OVER
 #undef SAVE_BIT_ONLY
 #undef SAVE_BIT
