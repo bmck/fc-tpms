@@ -153,10 +153,11 @@ public class MainActivity extends Activity {
                     String base = sharedPrefs.getString("basestation_hostname", "127.0.0.1");
                     String tempDisplay = sharedPrefs.getString("units_temp", getString(R.string.celsius));
                     String pressDisplay = sharedPrefs.getString("units_pressure", getString(R.string.psi));
+                    boolean gain_adjust = sharedPrefs.getBoolean("gain_adjust", true);
 
                     String arguments = "?f=314980000&s=" + sample_rate + "&n=" + Math.round(secs * sample_rate) +
-                            "&base=" + base + "&c=" + (tempDisplay == getString(R.string.celsius) ? 1 : 0) +
-                            "&p=" + (pressDisplay == getString(R.string.psi) ? 1 : 0) +
+                            "&base=" + base + "&c=" + (tempDisplay == getString(R.string.celsius) ? "1" : "0") +
+                            "&p=" + (pressDisplay == getString(R.string.psi) ? "1" : "0") + "&q=" + (gain_adjust == true ? "1" : "0") +
                             "&t=" + (testing ? "1" : "0") + "&fn=" + file;
 
                     Intent mServiceIntent = new Intent(this, SdrFtpService.class);

@@ -32,9 +32,5 @@ public class RemoteTpmsApplication extends Application {
         HashMap<String,String> ACRAData = new HashMap<String,String>();
 //        ACRAData.put("my_app_info", "custom data");
         ACRA.getErrorReporter().addReportSender(new ACRAPostSender(ACRAData));
-
-//        Log.i(LOGTAG, "\n\n\ntesting acra");
-//        ACRA.getErrorReporter().handleSilentException(null);
-//        Log.i(LOGTAG, "end test\n\n\n");
     }
 }
