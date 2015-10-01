@@ -1,0 +1,23 @@
+- # $Id$
+- # $(c)$
+
+%div#month_samples_chart{style:"width:850px;height:300px;background-color:#FFFFFF;"}
+%div#month_pertire_chart{style:"width:850px;height:300px;background-color:#FFFFFF;"}
+%div#pertiretype_pie{style:"width:850px;height:300px;background-color:#FFFFFF;"}
+%div#perstorage_pie{style:"width:850px;height:300px;background-color:#FFFFFF;"}
+
+- params = { company_id: current_user.company_id }
+- tire_sample_count_report = Report::TireSampleCountReport.new(params)
+= render partial: 'amcharts/column_chart', formats: [:js], layout: false, locals: { div_name: 'month_samples_chart', report: tire_sample_count_report }
+
+- # params = { company_id: current_user.company_id }
+- per_tire_sample_count_report = Report::PerTireSampleCountReport.new(params)
+= render partial: 'amcharts/day_line_chart', formats: [:js], layout: false, locals: { div_name: 'month_pertire_chart', report: per_tire_sample_count_report }
+
+- # params = { company_id: current_user.company_id }
+- per_tiretype_pie_report = Report::PerTiretypePieReport.new(params)
+= render partial: 'amcharts/pie_chart', formats: [:js], layout: false, locals: { div_name: 'pertiretype_pie', report: per_tiretype_pie_report }
+
+- # params = { company_id: current_user.company_id }
+- per_storage_pie_report = Report::PerStoragePieReport.new(params)
+= render partial: 'amcharts/pie_chart', formats: [:js], layout: false, locals: { div_name: 'perstorage_pie', report: per_storage_pie_report }
