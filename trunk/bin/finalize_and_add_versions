@@ -13,6 +13,6 @@ echo "You are about to try to finalize the current version, $CURR_VER, and open 
 echo "Are you sure? Press CTRL-C to stop, or any other key to continue."
 read C
 
-./finalize_current_version
+./$THIS_DIR/finalize_current_version
 
-./add_new_version $NEW_VERSION
+./$THIS_DIR/add_new_version $NEW_VERSION
