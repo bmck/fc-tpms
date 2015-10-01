@@ -256,7 +256,7 @@ int analyze_file(char *src_filename) {
 
 #define KEEP_GOING        prev_b = b; /*prev_delta_phi = delta_phi;*/ return 0;
 #define START_OVER      reset_vars(); KEEP_GOING
-#define SAVE_BIT_ONLY   LOGI("%s: (%s:%d) basebit_vals = >%s< (%d)\n", src_name, __FILE__, __LINE__, basebit_vals, (int)strlen(basebit_vals)); if (b != (basebit_vals[strlen(basebit_vals)-1]-(int)('0'))) {prev_ref_boundary = sample_num; bits_since_ref = 0;} else { bits_since_ref++; }  { char tmpbase[SYMBOLS_PER_MSG * 2 + 2]; sprintf(tmpbase, "%s%d", basebit_vals, b); strcpy(basebit_vals, tmpbase); } curr_state = strlen(basebit_vals); LOGI("%s: (%s:%d) basebit_vals = >%s< (%d)\n", src_name, __FILE__, __LINE__, basebit_vals, (int)strlen(basebit_vals)); LOGI("%s: (%s:%d) Entered state %d at sample %u\n", src_name, __FILE__, __LINE__, curr_state, sample_num); prev_bit_sample = sample_num; prev_b = b; good_window_start = first_bit_start + (curr_state) * (samples_per_bit-0.2) + 30; good_window_end = first_bit_start + (curr_state+1) * (samples_per_bit-0.2) - 30;
+#define SAVE_BIT_ONLY   LOGI("%s: (%s:%d) basebit_vals = >%s< (%d)\n", src_name, __FILE__, __LINE__, basebit_vals, (int)strlen(basebit_vals)); { char tmpbase[SYMBOLS_PER_MSG * 2 + 2]; sprintf(tmpbase, "%s%d", basebit_vals, b); strcpy(basebit_vals, tmpbase); } curr_state = strlen(basebit_vals); LOGI("%s: (%s:%d) basebit_vals = >%s< (%d)\n", src_name, __FILE__, __LINE__, basebit_vals, (int)strlen(basebit_vals)); LOGI("%s: (%s:%d) Entered state %d at sample %u\n", src_name, __FILE__, __LINE__, curr_state, sample_num); prev_bit_sample = sample_num; prev_b = b; good_window_start = first_bit_start + (curr_state) * (samples_per_bit-0.2) + 30; good_window_end = first_bit_start + (curr_state+1) * (samples_per_bit-0.2) - 30;
 #define SAVE_BIT        SAVE_BIT_ONLY; KEEP_GOING
 
 #define HIGHFREQ(x) (fabs((x / high_freq) - 1.0) <= 0.05)
@@ -289,8 +289,6 @@ unsigned int update_state(complex float x, complex float prev_x, unsigned int sa
 	static int count;
 	static int b = -1, prev_b;
 	static unsigned int prev_bit_sample;
-	static unsigned int prev_ref_boundary = 0;
-	static unsigned int bits_since_ref = 0;
 	static unsigned int good_window_start, good_window_end;
 
 
