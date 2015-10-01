@@ -82,6 +82,8 @@ static void sighandler(int signum)
 
 static void rtlsdr_callback(unsigned char *buf, uint32_t len, void *ctx)
 {
+  static unsigned int consec_peg_values = 0;
+
 	if (ctx) {
 		if (do_exit)
 			return;

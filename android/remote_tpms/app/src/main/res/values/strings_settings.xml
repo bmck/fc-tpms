@@ -22,4 +22,7 @@
 
     <string name="pref_header_crash_report">Crash Report Settings</string>
     <string name="pref_header_crash_report_summary">Options related to the automatic generation of crash reports.</string>
+
+    <string name="pref_gain_adjust">Automatically Reduce Gain</string>
+    <string name="pref_gain_adjust_summary">Reduce SDR gain and restart signal collection if signal appears to be exceeding measurable dynamic range.</string>
 </resources>

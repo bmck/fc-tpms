@@ -16,6 +16,7 @@ public class SettingsFragment extends PreferenceFragment {
             // Load the preferences from an XML resource
             addPreferencesFromResource(R.xml.pref_basestation);
             addPreferencesFromResource(R.xml.pref_units);
+            addPreferencesFromResource(R.xml.pref_gain);
             addPreferencesFromResource(R.xml.pref_crash_report);
             addPreferencesFromResource(R.xml.pref_about);
         }

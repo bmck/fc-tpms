@@ -60,13 +60,14 @@ public class SdrFtpService extends IntentService {
         boolean testing = u.getBooleanQueryParameter("t", true);
         boolean cDisplay = u.getBooleanQueryParameter("c", true);
         boolean psiDisplay = u.getBooleanQueryParameter("p", true);
+        boolean gainAdjust = u.getBooleanQueryParameter("q", true);
         String fn = u.getQueryParameter("fn");
         int sample_rate = Integer.parseInt(u.getQueryParameter("s"));
         int num_samples = Integer.parseInt(u.getQueryParameter("n"));
         int freq = Integer.parseInt(u.getQueryParameter("f"));
         String base = u.getQueryParameter("base");
 
-        String arguments = "-f " + freq + " -s " + sample_rate + " -n " + num_samples +
+        String arguments = "-f " + freq + " -s " + sample_rate + " -n " + num_samples + " -q " + gainAdjust +
                 " -t " + (testing ? "1" : "0") + " " + fn + "";
         if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
         log_it("i", LOGTAG, "SDR data collection arguments: " + arguments);
@@ -77,20 +78,25 @@ public class SdrFtpService extends IntentService {
             displayMessage(getString(R.string.msg_send_activation) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
 
             try {
+
                 if (!testing) {
                     UsbDevice device = null;
                     UsbDeviceConnection connection = null;
+
                     try {
+
                         if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
                         device = UsbHelper.findDevice(activity);
                         connection = UsbHelper.openDevice(activity, device);
                         if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
+
                     } catch (RuntimeException e) {
                         ACRA.getErrorReporter().handleSilentException(e);
                         // TODO: Resolve why the error msgs in UsbHelper do not correctly render?
                         errorModalBox(getString(Integer.parseInt(e.getMessage())));
                         return;
                     }
+
                     if (connection == null) {
                         errorModalBox(getString(R.string.exception_FAILED_TO_OPEN_DEVICE));
                         return;
@@ -99,22 +105,32 @@ public class SdrFtpService extends IntentService {
                     displayMessage(getString(R.string.msg_wait_for_sensor_data));
 
                     if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
+
                     log_it("d", LOGTAG, "Before beginning native code at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
+
                     RtlSdr.open(arguments, connection.getFileDescriptor(), UsbHelper.properDeviceName(device.getDeviceName()));
+
                     if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
+
                     log_it("d", LOGTAG, "Completed native code " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
+
                 } else {
                     displayMessage(getString(R.string.msg_wait_for_sensor_data));
 
                     if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
+
                     log_it("d", LOGTAG, "Before beginning native code at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
+
                     RtlSdr.open(arguments, -1, null);
+
                     if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
+
                     log_it("d", LOGTAG, "Completed native code " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
 
                 }
                 displayMessage(getString(R.string.msg_rcving_sensor_data) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
                 Log.i(LOGTAG, "onActivityResult: RTL-SDR Data Capture Completed.");
+
             } catch (Exception e) {
                 ACRA.getErrorReporter().handleSilentException(e);
                 activity.finishWithError(e);
@@ -126,24 +142,34 @@ public class SdrFtpService extends IntentService {
             int found = 0;
             try {
                 String addr = InetAddress.getByName(base).getHostAddress();
+
                 if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
+
                 log_it("i", LOGTAG, "connecting to Fleet Cents server at " + addr);
+
+                ftpClient.setControlKeepAliveTimeout(10);
+                ftpClient.setConnectTimeout(50000);
                 ftpClient.connect(addr);
+                ftpClient.setSoTimeout(50000);
+
                 displayMessage(getString(R.string.msg_uploading_sensor_data) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
                 // TODO: use password field of login to identify user or hardware being used?
                 ftpClient.enterLocalPassiveMode();
                 ftpClient.login("anonymous", "guest");
+
                 if (abort_requested())  { try { ftpClient.logout();  ftpClient.disconnect();  completeOk(); } catch (InterruptedException e) { } }
+
                 log_it("i", LOGTAG, "Logged into Fleet Cents server");
                 log_it("i", LOGTAG, ftpClient.getReplyString());
 
                 ftpClient.changeWorkingDirectory("fleet_server");
                 ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-                ftpClient.setControlKeepAliveTimeout(30);
                 BufferedInputStream buffIn = null;
                 buffIn = new BufferedInputStream(new FileInputStream(fn));
 //                ftpClient.enterLocalPassiveMode();
+
                 if (abort_requested())  { try { ftpClient.logout();  ftpClient.disconnect();  completeOk(); } catch (InterruptedException e) { } }
+
                 log_it("i", LOGTAG, "Before sending file to Fleet Cents server");
 
                 boolean uploaded = false;
@@ -157,7 +183,7 @@ public class SdrFtpService extends IntentService {
                     catch (FTPConnectionClosedException e) {
                         displayMessage(getString(R.string.exception_CTRL_CHANNEL) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
                         displayMessage("--> Error type: " + e.getClass().getName());
-                        if (e.getMessage().length() > 0)
+                        if ((e.getMessage() != null) && (e.getMessage().length() > 0))
                             displayMessage("--> " + e.getMessage());
                         ACRA.getErrorReporter().handleSilentException(e);
                         if (++count == maxTries) throw e;
@@ -167,7 +193,7 @@ public class SdrFtpService extends IntentService {
                     catch (CopyStreamException e) {
                         displayMessage(getString(R.string.exception_COPY_STREAM) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
                         displayMessage("--> Error type: " + e.getClass().getName());
-                        if (e.getMessage().length() > 0)
+                        if ((e.getMessage() != null) && (e.getMessage().length() > 0))
                             displayMessage("--> " + e.getMessage());
                         displayMessage("  " + e.getTotalBytesTransferred() + " bytes transferred out of " + (2*num_samples) + " bytes");
                         ACRA.getErrorReporter().handleSilentException(e);
@@ -178,7 +204,7 @@ public class SdrFtpService extends IntentService {
                     catch (IOException e) {
                         displayMessage(getString(R.string.exception_IO) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
                         displayMessage("--> Error type: " + e.getClass().getName());
-                        if (e.getMessage().length() > 0)
+                        if ((e.getMessage() != null) && (e.getMessage().length() > 0))
                             displayMessage("--> " + e.getMessage());
                         ACRA.getErrorReporter().handleSilentException(e);
                         if (++count == maxTries) throw e;
@@ -194,7 +220,8 @@ public class SdrFtpService extends IntentService {
                 Integer resp_code = Integer.parseInt(resp.split(" ")[0]);
                 if (resp_code == 226) {
                     log_it("i", LOGTAG, "Complete response to upload: " + resp);
-                    resp = TextUtils.join(",", Arrays.copyOfRange((resp.split(" ")[1]).split(","), 0, 3));
+                    resp = resp.split(" ")[1];
+                    resp = TextUtils.join(",", Arrays.copyOfRange(resp.split(","), 0, 3));
                     log_it("i", LOGTAG, "Relevant response to upload: " + resp);
 //                Log.i(LOGTAG, "resp = " + resp);
 //                Log.i(LOGTAG, "resp[0] = >" + resp.split(",")[0] + "<");
@@ -202,25 +229,28 @@ public class SdrFtpService extends IntentService {
 //                Log.i(LOGTAG, "resp[2] = >" + resp.split(",")[2] + "<");
 
                     if (abort_requested())  { try { ftpClient.logout();  ftpClient.disconnect();  completeOk(); } catch (InterruptedException e) { } }
-                    try {
-                        displayMessage("\n" +
-                                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()) + "\n" +
-                                getString(R.string.sensor_id) + " " + getHexAddr() + "\n" +
-                                getString(R.string.temp) + " " +
-                                (cDisplay ? (getTempC() + " " + getString(R.string.celsius)) : (getTempF() + " " + getString(R.string.fahrenheit))) +
-                                "\n" +
-                                getString(R.string.pressure) + " " +
-                                (psiDisplay ? (getPsi() + " " + getString(R.string.psi)) : (getKpa() + " " + getString(R.string.kpa))) +
-                                "\n");
-                        found = 1;
-                    } catch (NumberFormatException e) {
-                        log_it("e", LOGTAG, getString(R.string.exception_NUMBER_FORMAT) + ": " + e.toString());
-                        ACRA.getErrorReporter().handleSilentException(e);
-                        found = 0;
-                    } catch (ArrayIndexOutOfBoundsException e) {
-                        log_it("e", LOGTAG, getString(R.string.exception_INVALID_ARRAY_INDEX) + ": " + e.toString());
-                        ACRA.getErrorReporter().handleSilentException(e);
-                        found = 0;
+
+                    if (resp.length() > 3) {
+                        try {
+                            displayMessage("\n" +
+                                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()) + "\n" +
+                                    getString(R.string.sensor_id) + " " + getHexAddr() + "\n" +
+                                    getString(R.string.temp) + " " +
+                                    (cDisplay ? (getTempC() + " " + getString(R.string.celsius)) : (getTempF() + " " + getString(R.string.fahrenheit))) +
+                                    "\n" +
+                                    getString(R.string.pressure) + " " +
+                                    (psiDisplay ? (getPsi() + " " + getString(R.string.psi)) : (getKpa() + " " + getString(R.string.kpa))) +
+                                    "\n");
+                            found = 1;
+                        } catch (NumberFormatException e) {
+                            log_it("e", LOGTAG, getString(R.string.exception_NUMBER_FORMAT) + ": " + e.toString());
+                            ACRA.getErrorReporter().handleSilentException(e);
+                            found = 0;
+                        } catch (ArrayIndexOutOfBoundsException e) {
+                            log_it("e", LOGTAG, getString(R.string.exception_INVALID_ARRAY_INDEX) + ": " + e.toString());
+                            ACRA.getErrorReporter().handleSilentException(e);
+                            found = 0;
+                        }
                     }
                 }
 

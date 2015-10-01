@@ -28,7 +28,7 @@ import android.util.Log;
 
 public class ACRAPostSender implements ReportSender {
     private final static String BASE_URL = "http://server11288.baremetalcloud.com/acra/acra.php";
-    private final static String SHARED_SECRET = "fc_w4r4w4R";
+    private final static String SHARED_SECRET = "fc_w4r4w4Rq";
     private Map<String, String> custom_data = null;
 
     ACRAPostSender() {
@@ -42,7 +42,7 @@ public class ACRAPostSender implements ReportSender {
     public void send(Context ctxt, CrashReportData report) throws ReportSenderException {
 
         String url = getUrl();
-        Log.e("xenim", url);
+//        Log.e("xenim", url);
 
         try {
             DefaultHttpClient httpClient = new DefaultHttpClient();
