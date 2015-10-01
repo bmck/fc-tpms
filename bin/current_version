@@ -2,4 +2,7 @@
 # $Id$
 # $(c)$
 
-cat ../fc_version.h | sed '/^#define FC_VERSION/!d' | sed -e 's/^#define FC_VERSION//g' -e 's/[ "]//g'
+THIS_FILE=`which $0`
+THIS_DIR=`dirname "$THIS_FILE"`
+
+cat ./$THIS_DIR/../fc_version.h | sed '/^#define FC_VERSION/!d' | sed -e 's/^#define FC_VERSION//g' -e 's/[ "]//g'
