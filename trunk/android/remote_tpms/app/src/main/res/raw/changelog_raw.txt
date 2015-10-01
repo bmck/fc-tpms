@@ -1,5 +1,7 @@
 Current $Revision$
 
+v.0.3.19, (open)
+
 v.0.3.18, (2015-10-01)
 * Unlock portrait mode
 * Add automatic gain reduction
