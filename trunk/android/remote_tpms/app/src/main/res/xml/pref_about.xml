@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceScreen
+        android:key="about_changelog"
+        android:title="@string/pref_about_changelog">
+
+        <intent android:action="android.intent.changelog.VIEW" />
+
+    </PreferenceScreen>
+
+    <PreferenceScreen
+        android:key="about_legal"
+        android:title="@string/pref_about_legal">
+
+        <intent android:action="android.intent.legal.VIEW" />
+
+    </PreferenceScreen>
+</PreferenceScreen>

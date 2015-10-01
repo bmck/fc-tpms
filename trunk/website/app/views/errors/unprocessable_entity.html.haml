@@ -1,0 +1,8 @@
+-# $Id$
+-# $(c)$
+%div
+  - @title = "422 Unprocessable Entity"
+  %h1 "Something is amiss ..."
+  %p The change you wanted was rejected. Maybe you tried to change something you did not have permission to change.
+
+= render partial: "errors/development_trace", formats: [:html], layout: false
