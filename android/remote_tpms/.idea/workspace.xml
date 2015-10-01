@@ -10,19 +10,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="f3792064-ffbb-4bfb-ae01-40292129a4fb" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/xml/pref_gain.xml" />
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/ACRAPostSender.java" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/ACRAPostSender.java" />
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/AndroidManifest.xml" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/AndroidManifest.xml" />
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/MainActivity.java" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/MainActivity.java" />
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/RemoteTpmsApplication.java" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/RemoteTpmsApplication.java" />
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/SdrFtpService.java" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/SdrFtpService.java" />
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/SettingsFragment.java" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/SettingsFragment.java" />
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/raw/changelog_raw.txt" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/raw/changelog_raw.txt" />
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/jni/rtl_tcp_android/rtl-sdr/src/rtl_sdr.c" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/jni/rtl_tcp_android/rtl-sdr/src/rtl_sdr.c" />
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/jni/rtl_tcp_android/rtl_sdr_andro.c" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/jni/rtl_tcp_android/rtl_sdr_andro.c" />
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/values/strings_settings.xml" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/values/strings_settings.xml" />
       <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/.idea/workspace.xml" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="remote_tpms.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -130,10 +118,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="SdrFtpService.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="SdrFtpService.java" pinned="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/SdrFtpService.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.45882353">
+            <state vertical-scroll-proportion="0.0">
               <caret line="108" column="103" selection-start-line="108" selection-start-column="103" selection-end-line="108" selection-end-column="103" />
               <folding>
                 <element signature="imports" expanded="true" />
@@ -142,11 +130,11 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="rtl_sdr_andro.c" pinned="false" current-in-tab="false">
+      <file leaf-file-name="rtl_sdr_andro.c" pinned="false" current-in-tab="true">
         <entry file="file://$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/jni/rtl_tcp_android/rtl_sdr_andro.c">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="-4.4444447">
-              <caret line="401" column="35" selection-start-line="401" selection-start-column="35" selection-end-line="401" selection-end-column="35" />
+            <state vertical-scroll-proportion="0.7914573">
+              <caret line="348" column="35" selection-start-line="348" selection-start-column="35" selection-end-line="348" selection-end-column="35" />
               <folding>
                 <element signature="e#357#376#0" expanded="true" />
               </folding>
@@ -2438,22 +2426,22 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/jni/rtl_tcp_android/rtl_sdr_andro.c">
+    <entry file="file://$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/SdrFtpService.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="-4.4444447">
-          <caret line="401" column="35" selection-start-line="401" selection-start-column="35" selection-end-line="401" selection-end-column="35" />
+        <state vertical-scroll-proportion="0.0">
+          <caret line="108" column="103" selection-start-line="108" selection-start-column="103" selection-end-line="108" selection-end-column="103" />
           <folding>
-            <element signature="e#357#376#0" expanded="true" />
+            <element signature="imports" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/SdrFtpService.java">
+    <entry file="file://$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/jni/rtl_tcp_android/rtl_sdr_andro.c">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.45882353">
-          <caret line="108" column="103" selection-start-line="108" selection-start-column="103" selection-end-line="108" selection-end-column="103" />
+        <state vertical-scroll-proportion="0.7914573">
+          <caret line="348" column="35" selection-start-line="348" selection-start-column="35" selection-end-line="348" selection-end-column="35" />
           <folding>
-            <element signature="imports" expanded="true" />
+            <element signature="e#357#376#0" expanded="true" />
           </folding>
         </state>
       </provider>
