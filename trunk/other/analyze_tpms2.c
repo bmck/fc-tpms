@@ -171,10 +171,10 @@ int get_success() {
 	return (valid_pkt ? 1 : 0);
 }
 
-int *get_packet(char *src_filename) {
+int *get_packet() { //char *src_filename) {
 
 	int pkt_size = SYMBOLS_PER_MSG;
-	int *pkt = malloc(sizeof(int) * pkt_size);
+	// int *pkt = malloc(sizeof(int) * pkt_size);
 	float tolerance = 0.05;
 
 	while (1) {
@@ -333,7 +333,7 @@ bool is_valid_prelude(unsigned long file_loc) {
 	return true;
 }
 
-int *get_packet_symbols(unsigned int pkt_start, int num_syms, unsigned int samples_per_sym) {
+int *get_packet_symbols(unsigned int pkt_start, int num_syms, unsigned int est_samples_per_sym) {
 
 	strcpy(bits, "011");
 	strcpy(symbols, "1");
@@ -342,12 +342,12 @@ int *get_packet_symbols(unsigned int pkt_start, int num_syms, unsigned int sampl
 	packet_syms[0] = 1; // Hardcoded bits 0 and 1
 	LOGI("%s: (%s:%d) ------> Acquired symbol %d = %d, packet still valid", src_name, __FILE__, __LINE__, 0, packet_syms[0]);
 
-	packet_syms[1] = get_second_symbol(pkt_start, samples_per_sym);
+	packet_syms[1] = get_second_symbol(pkt_start, est_samples_per_sym);
 
 	int i;
 	for (i = 2; i < num_syms; i++) {
 		LOGI("%s: (%s:%d) ------> Starting to acquire symbol %d at sample %u", src_name, __FILE__, __LINE__, i, pkt_start + i * samples_per_sym);
-		packet_syms[i] = get_symbol(pkt_start + (i-1.5) * samples_per_sym, samples_per_sym);
+		packet_syms[i] = get_symbol(pkt_start + (i-1.5) * samples_per_sym, est_samples_per_sym);
 		if (!valid_pkt) {
 			LOGI("%s: (%s:%d) ------> Acquired symbol %d = %d, packet invalid", src_name, __FILE__, __LINE__, i, packet_syms[i]);
 			free(packet_syms);
@@ -393,11 +393,11 @@ int *get_packet_symbols(unsigned int pkt_start, int num_syms, unsigned int sampl
 
 static int preceding_bit = -1;
 
-int get_second_symbol(unsigned int sym_start, unsigned int samples_per_sym) {
+int get_second_symbol(unsigned int sym_start, unsigned int est_samples_per_sym) {
 
     preceding_bit = 1;
-	unsigned int samples_per_bit = samples_per_sym * 0.5;
-	LOGI("%s: (%s:%d) --------> Starting to acquire symbol at sample %u assuming %u samples/sym", src_name, __FILE__, __LINE__, sym_start, samples_per_sym);
+	unsigned int samples_per_bit = est_samples_per_sym * 0.5;
+	LOGI("%s: (%s:%d) --------> Starting to acquire symbol at sample %u assuming %u samples/sym", src_name, __FILE__, __LINE__, sym_start, est_samples_per_sym);
 	int first_bit = 1;
 	LOGI("%s: (%s:%d) --------> Starting to acquire first bit between samples %u and %u", src_name, __FILE__, __LINE__, sym_start, sym_start + samples_per_bit - 1);
 	int second_bit = get_bit(sym_start, sym_start + samples_per_bit - 1);
@@ -417,10 +417,10 @@ int get_second_symbol(unsigned int sym_start, unsigned int samples_per_sym) {
 	return symbol;
 }
 
-int get_symbol(unsigned int sym_start, unsigned int samples_per_sym) {
+int get_symbol(unsigned int sym_start, unsigned int est_samples_per_sym) {
 
-	unsigned int samples_per_bit = samples_per_sym / 2.0;
-	LOGI("%s: (%s:%d) --------> Starting to acquire symbol at sample %u assuming %u samples/sym", src_name, __FILE__, __LINE__, sym_start, samples_per_sym);
+	unsigned int samples_per_bit = est_samples_per_sym / 2.0;
+	LOGI("%s: (%s:%d) --------> Starting to acquire symbol at sample %u assuming %u samples/sym", src_name, __FILE__, __LINE__, sym_start, est_samples_per_sym);
 	LOGI("%s: (%s:%d) --------> Starting to acquire first bit between samples %u and %u", src_name, __FILE__, __LINE__, sym_start, sym_start + samples_per_bit - 1);
 	int first_bit = get_bit(sym_start, sym_start + samples_per_bit - 1);
 	LOGI("%s: (%s:%d) --------> Starting to acquire first bit between samples %u and %u", src_name, __FILE__, __LINE__, sym_start + samples_per_bit, sym_start + samples_per_bit * 2 - 1);
@@ -452,7 +452,7 @@ int get_symbol(unsigned int sym_start, unsigned int samples_per_sym) {
 int get_bit(unsigned long bit_start, unsigned long bit_end) {
 
 	int num_samples = bit_end - bit_start + 1;
-	float file_samples_buffer[num_samples * 2];
+	// float file_samples_buffer[num_samples * 2];
 
 	LOGI("%s: (%s:%d) ----------> Starting to acquire bit between samples %lu and %lu", src_name, __FILE__, __LINE__, bit_start, bit_end);
 	LOGI("%s: (%s:%d) ----------> Starting to get some samples and convert them to binary", src_name, __FILE__, __LINE__);
@@ -525,7 +525,7 @@ unsigned long get_dec_address_val( /*char *symbols, long num_bits*/ ) {
 	INIT_LOGGING
 	unsigned long addr; addr = 0;
 	int j; for (j = 2; j <= 29; j++) { addr = addr * 2 + ((symbols[j] == '1') ? 1 : 0); }
-	LOGI("%s: (%s:%d) addr = %ld", src_name, __FILE__, __LINE__, addr);
+	LOGI("%s: (%s:%d) dec_addr = %ld", src_name, __FILE__, __LINE__, addr);
 	return addr;
 }
 
@@ -533,7 +533,7 @@ char *get_hex_address_str( /*char *symbols, long num_bits,*/ char *returned_url)
 	INIT_LOGGING
 	char *addr_str = malloc(sizeof(char) * 10);
 	sprintf(addr_str, "%lX", get_dec_address_val( /*symbols, num_bits */));
-	LOGI("%s: (%s:%d) addr_str = %s", src_name, __FILE__, __LINE__, addr_str);
+	LOGI("%s: (%s:%d) hex_addr = %s", src_name, __FILE__, __LINE__, addr_str);
 	return (returned_url = addr_str);
 }
 
@@ -558,7 +558,7 @@ double get_pressure_kpa( /*char *symbols, long num_bits*/ ) {
 	double press; press = 0.0;
 	int j; for (j = 36; j <= 43; j++) { press = press * 2.0 + (symbols[j] == '1' ? 1.0 : 0.0); };
 	press = (press * 2.5 - 100.0);
-	LOGI("%s: (%s:%d) press = %lf", src_name, __FILE__, __LINE__,  press);
+	LOGI("%s: (%s:%d) kpa = %lf", src_name, __FILE__, __LINE__,  press);
 	return press;
 }
 

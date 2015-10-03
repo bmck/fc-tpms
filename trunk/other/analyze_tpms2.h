@@ -24,7 +24,7 @@ int get_success();
 char *fleet_analysis(char *fn);
 
 int analyze_file(char *src_filename);
-int *get_packet(char *src_filename);
+int *get_packet(); //char *src_filename);
 bool is_valid_prelude(unsigned long file_loc);
 unsigned long find_prelude_start();
 int *get_packet_symbols(unsigned int pkt_start, int num_bits, unsigned int samples_per_sym);
