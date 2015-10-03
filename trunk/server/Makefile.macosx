@@ -53,7 +53,7 @@ OBJS	=	\
 	vsftpd/sysutil.o \
 	vsftpd/sysdeputil.o \
 	vsftpd/seccompsandbox.o \
-	./analyze_tpms.o \
+	./analyze_tpms2.o \
     ./vsf_log.o
 
 .c.o:
