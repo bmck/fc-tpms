@@ -475,52 +475,6 @@ unsigned int update_state(complex float x, complex float prev_x, unsigned int sa
 
 
 
-/*
-int get_packet(unsigned int pkt_start) {
-
-	return 0;
-}
-
-int get_symbol(unsigned int sym_start) {
-
-	return 0;
-}
-
-int get_bit(unsigned int bit_start) {
-
-	return 0;
-}
-
-int get_sample(unsigned int sample_num) {
-
-	complex float x;
-	int b = -1;
-	double phi = cargf(x);
-	static double prev_phi = 0.0;
-	double delta_phi = fmod(phi + M_PI * 0.5 - prev_phi, M_PI * 0.5);
-	//static double prev_delta_phi;
-
-		if (HIGHFREQ(delta_phi)) {
-			b = HIGHBIT;
-			LOGI("%s: (%s:%d) High frequency period found at sample %u\n", src_name, __FILE__, __LINE__, sample_num);
-		}
-		else if (LOWFREQ(delta_phi)) {
-			b = LOWBIT;
-			LOGI("%s: (%s:%d) Low frequency period found at sample %u\n", src_name, __FILE__, __LINE__, sample_num);
-		}
-
-	prev_phi = phi;
-	return b;
-}
-
-*/
-
-
-
-
-
-
-
 
 // The following several functions are for collecting and returning specific
 // pieces of collected information from a packet, and are generally called from
