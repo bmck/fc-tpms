@@ -16,7 +16,9 @@
 #include <time.h>
 
 #include "universal_defines.h"
-#include "analyze_tpms.h"
+#include "analyze_tpms2.h"
+
+#include "analyze_tpms_log.h"
 
 #define DEFAULT_BUF_LENGTH    (16 * 16384)
 #define MINIMAL_BUF_LENGTH    512
@@ -38,7 +40,7 @@ char *get_url( /*long addr, long press, long temp,*/ char *returned_url) {
 
  sprintf(url, "http://198.36.127.105/tire_samples/create?tire_sample[sensor_id]=%ld&tire_sample[receiver_id]=%d&tire_sample[psi]=%ld&tire_sample[tempc]=%ld&tire_sample[sample_time]=%d-%02d-%02d%%20%02d:%02d:%02d",
          addr, 8, press, tempc, ptm->tm_year + 1900, ptm->tm_mon + 1, ptm->tm_mday, ptm->tm_hour, ptm->tm_min, ptm->tm_sec);
- // LOGI("%s: (%s:%d) url = %s\n", src_name, __FILE__, __LINE__,  url);
+ LOGI("(%s:%d) url = %s\n", __FILE__, __LINE__,  url);
  return returned_url;
 }
 
@@ -76,15 +78,17 @@ int main(int argc, char **argv) {
   analyze_file(sourcefile);
 
   if (get_success()) {
-    char addr[10]; strcpy(addr, "");
-    printf("address: %s \n", get_hex_address_str(addr));
+    char addr[10]; strcpy(addr, ""); get_hex_address_str(addr);
+    // printf("address: %s \n", get_hex_address_str(addr));
 
-    printf("tempC: %ld \n", get_temp_c());
+    get_temp_c();
+    // printf("tempC: %ld \n", get_temp_c());
 
-    printf("pressure (kPa): %lf \n", get_pressure_kpa());
+    get_pressure_kpa();
+    // printf("pressure (kPa): %lf \n", get_pressure_kpa());
 
-    char url[300]; strcpy(url, "");
-    printf("url: >%s< \n", get_url(url));
+    char url[300]; strcpy(url, ""); get_url(url);
+    // printf("url: >%s< \n", get_url(url));
   }
   else {
     printf("packet extraction unsuccessful\n");
