@@ -15,9 +15,41 @@
 #include "analyze_tpms_log.h"
 
 #define SYMBOLS_PER_MSG BITS_PER_FREESCALE_MSG
-#define CHUNK_SIZE 32768
+#define CACHE_SIZE 65535
+
+#define HIGHBIT 1
+#define LOWBIT 0
 
 #define MARK_HERE LOGI("%s: (%s:%d) --> here", src_name, __FILE__, __LINE__);
+
+static FILE *file;
+static char src_name[200];
+static char symbols[SYMBOLS_PER_MSG + 1];
+static char bits[2 * SYMBOLS_PER_MSG + 3];
+
+unsigned long total_samples_in = 0L;
+static unsigned int samples_per_sym;
+static unsigned int sync_bits_start, sync_bits_end;
+
+static bool valid_pkt;
+
+static bool high_freq_known, low_freq_known;
+static double high_freq, low_freq;
+static unsigned int prelude_hf_start, prelude_lf_start;
+
+static int preceding_bit = -1;
+
+static iirfilt_crcf  filter;
+static nco_crcf      nco;
+static bool initialized = false;
+
+static bool read_from_cache = false;
+static bool write_to_cache = true;
+static int cache_loc = 0;
+static int cache_fill = 0;
+static float complex symbol_cache[CACHE_SIZE];
+static unsigned long cache_loc_in_file = 0;
+
 
 
 char *fleet_analysis(char *fn) {
@@ -74,11 +106,6 @@ char *fleet_analysis(char *fn) {
 
 
 
-static FILE *file;
-static char src_name[200];
-static char symbols[SYMBOLS_PER_MSG + 1];
-static char bits[2*SYMBOLS_PER_MSG + 3];
-
 int analyze_file(char *src_filename) {
 	INIT_LOGGING
 
@@ -100,108 +127,45 @@ int analyze_file(char *src_filename) {
 	return 0;
 }
 
-
-unsigned long total_samples_in = 0L;
-
-float complex *get_some_samples(int num_samples, unsigned long start_sample_location) {
-	float complex *returned_samples = malloc(sizeof(float complex) * num_samples);
-	float complex *x;
-
-	while (start_sample_location < total_samples_in) {
-		x = get_next_sample();
-		if (!x) {
-			free(returned_samples);
-			return NULL;
-		}
-		free(x);
-	}
-
-	int i;
-	for (i = 0; i < num_samples; i++) {
-		x = get_next_sample();
-		if (!x) {
-			break;
-		}
-		memcpy(&(returned_samples[i]), x, sizeof(float complex));
-		free(x);
-	}
-
-	return returned_samples;
-}
-
-static iirfilt_crcf  filter;
-static nco_crcf      nco;
-static bool initialized = false;
-
-float complex *get_next_sample() {
-	if (!initialized) {
-		filter  = iirfilt_crcf_create_lowpass(7, 0.05);
-		nco     = nco_crcf_create(LIQUID_VCO);
-		float fsk_freq_offset = -102.40e3 / SAMPLE_RATE;
-		nco_crcf_set_frequency(nco, fsk_freq_offset);
-		initialized = true;
-	}
-
-	unsigned char buf[2];
-	if (fread(buf, sizeof(unsigned char), 2, file) != 2) {
-		return NULL;
-	}
-
-	float complex *x = malloc(sizeof(float complex));
-	(*x) = (((float)(buf[0]) - 127.0) + ((float)(buf[1]) - 127.0) * _Complex_I) / 128.0; // - bias;
-	total_samples_in++;
-
-	// apply pre-processing
-	iirfilt_crcf_execute(filter, (*x), x);
-
-	// remove carrier offset
-	nco_crcf_mix_down(nco, (*x), x);
-	nco_crcf_step(nco);
-
-	return x;
-}
-
-
-
-static unsigned int samples_per_sym;
-static unsigned int sync_bits_start, sync_bits_end;
-static bool valid_pkt;
-
-int get_success() {
-	return (valid_pkt ? 1 : 0);
-}
-
 int *get_packet() { //char *src_filename) {
 
 	int pkt_size = SYMBOLS_PER_MSG;
-	// int *pkt = malloc(sizeof(int) * pkt_size);
 	float tolerance = 0.05;
 
 	while (1) {
+		write_to_cache = read_from_cache = false;
 		unsigned long possible_prelude_loc = find_prelude_start();
 		if (feof(file)) {
 			break;
 		}
 		if (is_valid_prelude(possible_prelude_loc)) {
 			unsigned int orig_samples_per_sym = samples_per_sym;
-			unsigned int samples_per_sym_est;
+			unsigned int samples_per_sym_est = orig_samples_per_sym;
+			int *pkt_symbols;
+			// note that read_from_cache is false here, and
+			// write_to_cache will be set to !read_from_cache
+			// inside of try_to_get_packet_symbols
 
-			for (samples_per_sym_est = samples_per_sym;
+			pkt_symbols = try_to_get_packet_symbols(sync_bits_end, pkt_size, samples_per_sym_est);
+			if (pkt_symbols && valid_pkt) {
+				return pkt_symbols;
+			}
+
+			read_from_cache = true;
+			// note that write_to_cache will be set to !read_from_cache
+			// inside of try_to_get_packet_symbols
+			for (samples_per_sym_est = orig_samples_per_sym - 1;
 			        samples_per_sym_est > (1.0 - tolerance) * orig_samples_per_sym;
 			        samples_per_sym_est--) {
-				valid_pkt = true;
-				LOGI("%s: (%s:%d) --> Starting to try to get packet with samples/symbol = %d", src_name, __FILE__, __LINE__, samples_per_sym_est);
-				int *pkt_symbols = get_packet_symbols(sync_bits_end, pkt_size, samples_per_sym_est);
+				pkt_symbols = try_to_get_packet_symbols(sync_bits_end, pkt_size, samples_per_sym_est);
 				if (pkt_symbols && valid_pkt) {
 					return pkt_symbols;
 				}
 			}
-			for (samples_per_sym_est = samples_per_sym + 1;
+			for (samples_per_sym_est = orig_samples_per_sym + 1;
 			        samples_per_sym_est < (1.0 + tolerance) * orig_samples_per_sym;
 			        samples_per_sym_est++) {
-				valid_pkt = true;
-				LOGI("%s: (%s:%d) --> Starting to try to get packet with samples/symbol = %d", src_name, __FILE__, __LINE__, samples_per_sym_est);
-				int *pkt_symbols = get_packet_symbols(sync_bits_end, pkt_size, samples_per_sym_est);
+				pkt_symbols = try_to_get_packet_symbols(sync_bits_end, pkt_size, samples_per_sym_est);
 				if (pkt_symbols && valid_pkt) {
 					return pkt_symbols;
 				}
@@ -212,6 +176,21 @@ int *get_packet() { //char *src_filename) {
 	LOGI("%s: (%s:%d) --> Failed to find packet", src_name, __FILE__, __LINE__);
 	return NULL;
 
+}
+
+int *try_to_get_packet_symbols(unsigned int pkt_start, int num_syms, unsigned int est_samples_per_sym) {
+	write_to_cache = !read_from_cache;
+	cache_loc = 0;
+	if (write_to_cache) {
+		cache_loc_in_file = total_samples_in;
+	}
+	valid_pkt = true;
+	LOGI("%s: (%s:%d) --> Starting to try to get packet with samples/symbol = %d", src_name, __FILE__, __LINE__, est_samples_per_sym);
+	int *pkt_symbols = get_packet_symbols(pkt_start, num_syms, est_samples_per_sym);
+	if (pkt_symbols && valid_pkt) {
+		return pkt_symbols;
+	}
+	return NULL;
 }
 
 unsigned long find_prelude_start() {
@@ -233,15 +212,10 @@ unsigned long find_prelude_start() {
 	return 0;
 }
 
-static bool high_freq_known, low_freq_known;
-static double high_freq, low_freq;
-static unsigned int prelude_hf_start, prelude_lf_start;
-
 bool is_valid_prelude(unsigned long file_loc) {
 	double cum_phi = 0.0;
 	int count = 0;
 	double phi, prev_phi, delta_phi;
-	// float y;
 
 	LOGI("%s: (%s:%d) ----> Starting to look for prelude at sample %lu", src_name, __FILE__, __LINE__, file_loc);
 
@@ -256,12 +230,8 @@ bool is_valid_prelude(unsigned long file_loc) {
 		if ((!x) || (feof(file))) {
 			return false;
 		}
-		// y = cabsf(*x);
 		phi = cargf(*x);
 		free(x);
-		// if (y < 0.9) {
-		// 	return false;
-		// }
 		delta_phi = fmod(phi + M_PI * 0.5 - prev_phi, M_PI * 0.5);
 
 		cum_phi += delta_phi;
@@ -285,12 +255,8 @@ bool is_valid_prelude(unsigned long file_loc) {
 		if ((!x) || (feof(file))) {
 			return false;
 		}
-		// y = cabsf(*x);
 		phi = cargf(*x);
 		free(x);
-		// if (y < 0.9) {
-		// 	return false;
-		// }
 		delta_phi = fmod(phi + M_PI * 0.5 - prev_phi, M_PI * 0.5);
 
 		cum_phi += delta_phi;
@@ -313,12 +279,8 @@ bool is_valid_prelude(unsigned long file_loc) {
 		if ((!x) || (feof(file))) {
 			return false;
 		}
-		// y = cabsf(*x);
 		phi = cargf(*x);
 		free(x);
-		// if (y < 0.9) {
-		// 	return false;
-		// }
 		delta_phi = fmod(phi + M_PI * 0.5 - prev_phi, M_PI * 0.5);
 
 		prev_phi = phi;
@@ -335,11 +297,11 @@ bool is_valid_prelude(unsigned long file_loc) {
 
 int *get_packet_symbols(unsigned int pkt_start, int num_syms, unsigned int est_samples_per_sym) {
 
+	int *packet_syms = malloc(sizeof(int) * num_syms);
+	packet_syms[0] = 1;
 	strcpy(bits, "011");
 	strcpy(symbols, "1");
 
-	int *packet_syms = malloc(sizeof(int) * num_syms);
-	packet_syms[0] = 1; // Hardcoded bits 0 and 1
 	LOGI("%s: (%s:%d) ------> Acquired symbol %d = %d, packet still valid", src_name, __FILE__, __LINE__, 0, packet_syms[0]);
 
 	packet_syms[1] = get_second_symbol(pkt_start, est_samples_per_sym);
@@ -347,7 +309,7 @@ int *get_packet_symbols(unsigned int pkt_start, int num_syms, unsigned int est_s
 	int i;
 	for (i = 2; i < num_syms; i++) {
 		LOGI("%s: (%s:%d) ------> Starting to acquire symbol %d at sample %u", src_name, __FILE__, __LINE__, i, pkt_start + i * samples_per_sym);
-		packet_syms[i] = get_symbol(pkt_start + (i-1.5) * samples_per_sym, est_samples_per_sym);
+		packet_syms[i] = get_symbol(pkt_start + (i - 1.5) * samples_per_sym, est_samples_per_sym);
 		if (!valid_pkt) {
 			LOGI("%s: (%s:%d) ------> Acquired symbol %d = %d, packet invalid", src_name, __FILE__, __LINE__, i, packet_syms[i]);
 			free(packet_syms);
@@ -391,11 +353,8 @@ int *get_packet_symbols(unsigned int pkt_start, int num_syms, unsigned int est_s
 	return packet_syms;
 }
 
-static int preceding_bit = -1;
-
 int get_second_symbol(unsigned int sym_start, unsigned int est_samples_per_sym) {
-
-    preceding_bit = 1;
+	preceding_bit = 1;
 	unsigned int samples_per_bit = est_samples_per_sym * 0.5;
 	LOGI("%s: (%s:%d) --------> Starting to acquire symbol at sample %u assuming %u samples/sym", src_name, __FILE__, __LINE__, sym_start, est_samples_per_sym);
 	int first_bit = 1;
@@ -418,7 +377,6 @@ int get_second_symbol(unsigned int sym_start, unsigned int est_samples_per_sym) 
 }
 
 int get_symbol(unsigned int sym_start, unsigned int est_samples_per_sym) {
-
 	unsigned int samples_per_bit = est_samples_per_sym / 2.0;
 	LOGI("%s: (%s:%d) --------> Starting to acquire symbol at sample %u assuming %u samples/sym", src_name, __FILE__, __LINE__, sym_start, est_samples_per_sym);
 	LOGI("%s: (%s:%d) --------> Starting to acquire first bit between samples %u and %u", src_name, __FILE__, __LINE__, sym_start, sym_start + samples_per_bit - 1);
@@ -428,8 +386,8 @@ int get_symbol(unsigned int sym_start, unsigned int est_samples_per_sym) {
 
 	int bits_collected = strlen(bits);
 	bits[bits_collected] = (first_bit == 0) ? '0' : '1';
-	bits[bits_collected+1] = (second_bit == 0) ? '0' : '1';
-	bits[bits_collected+2] = 0x0;
+	bits[bits_collected + 1] = (second_bit == 0) ? '0' : '1';
+	bits[bits_collected + 2] = 0x0;
 
 	if (first_bit == second_bit) {
 		LOGI("%s: (%s:%d) --------> (First Bit) %d = (Second Bit) %d, packet invalid", src_name, __FILE__, __LINE__, first_bit, second_bit);
@@ -440,14 +398,11 @@ int get_symbol(unsigned int sym_start, unsigned int est_samples_per_sym) {
 	LOGI("%s: (%s:%d) --------> Preceding Bit = %d, First Bit %d, Second Bit = %d ==>> Symbol = %d ", src_name, __FILE__, __LINE__, preceding_bit, first_bit, second_bit, symbol);
 	int symbols_collected = strlen(symbols);
 	symbols[symbols_collected] = (symbol == 0) ? '0' : '1';
-	symbols[symbols_collected+1] = 0x0;
+	symbols[symbols_collected + 1] = 0x0;
 
 	preceding_bit = second_bit;
 	return symbol;
 }
-
-#define HIGHBIT 1
-#define LOWBIT 0
 
 int get_bit(unsigned long bit_start, unsigned long bit_end) {
 
@@ -473,7 +428,6 @@ int get_bit(unsigned long bit_start, unsigned long bit_end) {
 }
 
 int *convert_samples_to_binary(complex float *samples, int num_samples) {
-
 	int i;
 	complex float x;
 	int b = 0;
@@ -502,15 +456,93 @@ int *convert_samples_to_binary(complex float *samples, int num_samples) {
 		}
 		prev_phi = phi;
 	}
-	char tmp_samples[num_samples+3];
-	for (i = 0; i < num_samples; i++) {
-		tmp_samples[i] = (b == 1) ? '+' : (b == 0) ? '0' : '-';
-	}
-	tmp_samples[num_samples] = 0x0;
+	// char tmp_samples[num_samples + 3];
+	// for (i = 0; i < num_samples; i++) {
+	// 	tmp_samples[i] = (b == 1) ? '+' : (b == 0) ? '0' : '-';
+	// }
+	// tmp_samples[num_samples] = 0x0;
 	// LOGI("%s: (%s:%d) ------------> Resulting samples are %s", src_name, __FILE__, __LINE__, tmp_samples);
 	return bit_samples;
 
 }
+
+float complex *get_some_samples(int num_samples, unsigned long start_sample_location) {
+	float complex *x;
+
+	while (start_sample_location < get_current_read_loc()) {
+		x = get_next_sample();
+		if (!x) {
+			return NULL;
+		}
+		free(x);
+	}
+
+	float complex *returned_samples = malloc(sizeof(float complex) * num_samples);
+
+	int i;
+	for (i = 0; i < num_samples; i++) {
+		x = get_next_sample();
+		if (!x) {
+			break;
+		}
+		memcpy(&(returned_samples[i]), x, sizeof(float complex));
+		free(x);
+	}
+
+	return returned_samples;
+}
+
+unsigned long get_current_read_loc() {
+	unsigned long x = (read_from_cache ? (cache_loc_in_file + cache_loc) : total_samples_in);
+	return x;
+}
+
+float complex *get_next_sample() {
+	if (!initialized) {
+		filter  = iirfilt_crcf_create_lowpass(7, 0.05);
+		nco     = nco_crcf_create(LIQUID_VCO);
+		float fsk_freq_offset = -102.40e3 / SAMPLE_RATE;
+		nco_crcf_set_frequency(nco, fsk_freq_offset);
+		initialized = true;
+	}
+
+	float complex *x = malloc(sizeof(float complex));
+
+	if (!read_from_cache) {
+		unsigned char buf[2];
+		if (fread(buf, sizeof(unsigned char), 2, file) != 2) {
+			return NULL;
+		}
+
+		(*x) = (((float)(buf[0]) - 127.0) + ((float)(buf[1]) - 127.0) * _Complex_I) / 128.0; // - bias;
+		total_samples_in++;
+
+		// apply pre-processing
+		iirfilt_crcf_execute(filter, (*x), x);
+
+		// remove carrier offset
+		nco_crcf_mix_down(nco, (*x), x);
+		nco_crcf_step(nco);
+		if (write_to_cache) {
+			symbol_cache[cache_fill = cache_loc] = crealf(*x) + cimagf(*x) * _Complex_I;
+			cache_loc++;
+			if (cache_loc > CACHE_SIZE) {
+				valid_pkt = false;
+			}
+		}
+	}
+	else {
+		if (cache_loc > cache_fill) {
+			valid_pkt = false;
+		}
+		(*x) = symbol_cache[cache_loc];
+		cache_loc++;
+	}
+
+	return x;
+}
+
+
 
 
 
@@ -521,6 +553,10 @@ int *convert_samples_to_binary(complex float *samples, int num_samples) {
 // The following several functions are for collecting and returning specific
 // pieces of collected information from a packet, and are generally called from
 // code in a harness.
+int get_success() {
+	return (valid_pkt ? 1 : 0);
+}
+
 unsigned long get_dec_address_val( /*char *symbols, long num_bits*/ ) {
 	INIT_LOGGING
 	unsigned long addr; addr = 0;
