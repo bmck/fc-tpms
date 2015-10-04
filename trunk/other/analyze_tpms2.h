@@ -27,12 +27,14 @@ int analyze_file(char *src_filename);
 int *get_packet(); //char *src_filename);
 bool is_valid_prelude(unsigned long file_loc);
 unsigned long find_prelude_start();
+int *try_to_get_packet_symbols(unsigned int pkt_start, int num_syms, unsigned int est_samples_per_sym);
 int *get_packet_symbols(unsigned int pkt_start, int num_bits, unsigned int samples_per_sym);
 int get_second_symbol(unsigned int sym_start, unsigned int samples_per_sym);
 int get_symbol(unsigned int sym_start, unsigned int samples_per_sym);
 int get_bit(unsigned long bit_start, unsigned long bit_end);
 int *convert_samples_to_binary(complex float *samples, int num_samples);
 
+unsigned long get_current_read_loc();
 float complex *get_some_samples(int num_samples, unsigned long start_sample_location);
 float complex *get_next_sample();
 
