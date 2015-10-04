@@ -358,7 +358,7 @@ int get_second_symbol(unsigned int sym_start, unsigned int est_samples_per_sym) 
 	unsigned int samples_per_bit = est_samples_per_sym * 0.5;
 	LOGI("%s: (%s:%d) --------> Starting to acquire symbol at sample %u assuming %u samples/sym", src_name, __FILE__, __LINE__, sym_start, est_samples_per_sym);
 	int first_bit = 1;
-	LOGI("%s: (%s:%d) --------> Starting to acquire first bit between samples %u and %u", src_name, __FILE__, __LINE__, sym_start, sym_start + samples_per_bit - 1);
+	LOGI("%s: (%s:%d) --------> Starting to acquire a bit between samples %u and %u", src_name, __FILE__, __LINE__, sym_start, sym_start + samples_per_bit - 1);
 	int second_bit = get_bit(sym_start, sym_start + samples_per_bit - 1);
 	bits[3] = (second_bit == 0) ? '0' : '1';
 	bits[4] = 0x0;
@@ -381,7 +381,7 @@ int get_symbol(unsigned int sym_start, unsigned int est_samples_per_sym) {
 	LOGI("%s: (%s:%d) --------> Starting to acquire symbol at sample %u assuming %u samples/sym", src_name, __FILE__, __LINE__, sym_start, est_samples_per_sym);
 	LOGI("%s: (%s:%d) --------> Starting to acquire first bit between samples %u and %u", src_name, __FILE__, __LINE__, sym_start, sym_start + samples_per_bit - 1);
 	int first_bit = get_bit(sym_start, sym_start + samples_per_bit - 1);
-	LOGI("%s: (%s:%d) --------> Starting to acquire first bit between samples %u and %u", src_name, __FILE__, __LINE__, sym_start + samples_per_bit, sym_start + samples_per_bit * 2 - 1);
+	LOGI("%s: (%s:%d) --------> Starting to acquire second bit between samples %u and %u", src_name, __FILE__, __LINE__, sym_start + samples_per_bit, sym_start + samples_per_bit * 2 - 1);
 	int second_bit = get_bit(sym_start + samples_per_bit, sym_start + 2 * samples_per_bit - 1);
 
 	int bits_collected = strlen(bits);
