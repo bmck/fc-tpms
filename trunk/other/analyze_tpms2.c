@@ -376,15 +376,15 @@ int *get_packet_symbols(unsigned int pkt_start, int num_syms, unsigned int est_s
 }
 
 bool validate_packet(int *packet_syms, int num_syms) {
-	LOGI("%s: (%s:%d) --------> Validating packet", src_name, __FILE__, __LINE__);
-	// validate packet symbols
-	if (packet_syms[68] != 1) {
-		LOGI("%s: (%s:%d) --------> Symbol %d = %d, packet invalid", src_name, __FILE__, __LINE__, 69, packet_syms[68]);
+	LOGI("%s: (%s:%d) --------> Validating packet containing %d symbols", src_name, __FILE__, __LINE__, num_syms);
+
+	int i = 68;
+	if (packet_syms[i] != 1) {
+		LOGI("%s: (%s:%d) --------> Symbol %d = %d, packet invalid", src_name, __FILE__, __LINE__, i, packet_syms[i]);
 		return false;
 	}
 
 	double press = 0.0;
-	int i;
 	for (i = 0; i <= 7; i++) {
 		press = press * 2.0 + packet_syms[i + 36];
 		if (packet_syms[36 + i] == packet_syms[44 + i]) {
