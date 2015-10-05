@@ -1,29 +1,29 @@
 Current $Revision$
 
-v.0.4.4, (open)
+v.0.4.4, (2015-10-05)
 
 v.0.4.3, (2015-10-05)
-* Added "smart" end-of-packet locating algorithm
+* (server) Added "smart" end-of-bit locating algorithm
 
 v.0.4.1, (2015-10-04)
-* Added caching of samples while processing
+* (server) Added caching of samples while processing
 
 v.0.4.0, (2015-10-02)
-* New server processing algorithm to iteratively check slightly different samples/symbol values
+* (server) New server processing algorithm to iteratively check slightly different samples/symbol values
 
 v.0.3.18, (2015-10-01)
-* Unlock portrait mode
-* Add automatic gain reduction
-* Bug fixes in release process
+* (app) Unlock portrait mode
+* (app) Add automatic gain reduction
+* (app) Bug fixes in release process
 
 v.0.3.1, (2015-09-22)
-* Bug fix in app version
+* (app) Bug fix in app version
 
 v.0.3.0, (2015-09-22)
-* Added ChangeLog
-* Added Legal and ChangeLog dialogs
-* Added internal versioning
-* Support for devices w/o external storage
-* Added detailed debugging messages
-* Added automated crash reporting
-* Added interrupt functionality
+* (app) Added ChangeLog
+* (app) Added Legal and ChangeLog dialogs
+* (app) Added internal versioning
+* (app) Support for devices w/o external storage
+* (app) Added detailed debugging messages
+* (app) Added automated crash reporting
+* (app) Added app interrupt functionality
