@@ -1,6 +1,6 @@
 Current $Revision$
 
-v.0.4.6, (open)
+v.0.4.6, (2015-10-05)
 
 v.0.4.5, (2015-10-05)
 * (server) Added "smart" end-of-bit locating algorithm
