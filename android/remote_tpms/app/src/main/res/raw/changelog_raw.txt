@@ -1,6 +1,8 @@
 Current $Revision$
 
-v.0.4.2, (open)
+v.0.4.3, (open)
+
+v.0.4.2, (2015-10-05)
 
 v.0.4.1, (2015-10-04)
 * Added caching of samples while processing
