@@ -5,7 +5,7 @@
 THIS_FILE=`which $0`
 THIS_DIR=`dirname "$THIS_FILE"`
 
-CURR_VERSION=`./current_version`
+CURR_VERSION=`./$THIS_DIR/current_version`
 # get new version from argument list
 NEW_VERSION=$1
 
