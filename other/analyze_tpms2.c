@@ -634,7 +634,7 @@ unsigned long get_current_read_loc() {
 	return x;
 }
 
-static FILE *file2;
+// static FILE *file2;
 
 float complex *get_next_sample() {
 	if (!initialized) {
@@ -642,7 +642,7 @@ float complex *get_next_sample() {
 		nco     = nco_crcf_create(LIQUID_VCO);
 		float fsk_freq_offset = -102.40e3 / SAMPLE_RATE;
 		nco_crcf_set_frequency(nco, fsk_freq_offset);
-		file2 = fopen("/tmp/STOU.300.cfileout", "wb");
+		// file2 = fopen("/tmp/STOU.300.cfileout", "wb");
 		initialized = true;
 	}
 
@@ -676,12 +676,12 @@ float complex *get_next_sample() {
 		nco_crcf_mix_down(nco, (*x), x);
 		nco_crcf_step(nco);
 
-		{
-			float buff[2];
-			buff[0] = crealf(*x);
-			buff[1] = cimagf(*x);
-			fwrite(buff, sizeof(float), 2, file2);
-		}
+		// {
+		// 	float buff[2];
+		// 	buff[0] = crealf(*x);
+		// 	buff[1] = cimagf(*x);
+		// 	fwrite(buff, sizeof(float), 2, file2) ;
+		// }
 
 		if (write_to_cache) {
 			symbol_cache[cache_loc] = crealf(*x) + cimagf(*x) * _Complex_I;
