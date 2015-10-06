@@ -1,0 +1,26 @@
+- # $Id$
+- # $(c)$
+
+%meta{"http-equiv" => "refresh", content: "120"}
+
+%h2 Tire Samples
+
+= smart_listing_controls_for(:tire_samples, {class: "form-inline text-right"}) do
+  .form-group.filter.input-append
+    = label_tag 'Filter PSI Values:'
+    = number_field_tag :min_psi, '', class: " form-control", step: 0.001, maxlength: 7
+    &mdash;
+    = number_field_tag :max_psi, '', class: " form-control", step: 0.001, maxlength: 7
+
+    %br/
+
+    = label_tag 'Filter Strings:'
+    = text_field_tag :filter, '', class: "search form-control", placeholder: "Search...", autocomplete: :off
+
+  %button.btn.btn-primary.disabled{type: :submit}
+    %span.glyphicon.glyphicon-search
+
+  %p/
+
+= smart_listing_render :tire_samples
+
