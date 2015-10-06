@@ -1,5 +1,7 @@
 Current $Revision$
 
+v.0.4.8, (open)
+
 v.0.4.7, (2015-10-06)
 * (server) Added "tcp_wrappers = yes" to config file to prevent disconnections
 
