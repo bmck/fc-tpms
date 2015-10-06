@@ -27,6 +27,7 @@
             android:paddingTop="@dimen/activity_vertical_margin"
             android:bufferType="editable"
             android:editable="true"
+            android:freezesText="true"
             />
     </ScrollView>
 

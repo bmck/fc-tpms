@@ -29,8 +29,6 @@ local_root=/var/empty
 
 seccomp_sandbox=NO
 
-tcp_wrappers=YES
-
 # Allow anonymous FTP? (Beware - allowed by default if you comment this out).
 anonymous_enable=YES
 #
