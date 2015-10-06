@@ -42,6 +42,11 @@ VERCODE=`echo $CURR_VERSION | awk -F \. '{ printf("%02d%02d%02d\n",$1,$2,$3) }'`
 cat $VERSION_FN4 | sed -e "s/versionCode=\"[0-9.]*\"/versionCode=\"$VERCODE\"/" -e "s/versionName=\"[0-9.]*\"/versionName=\"$CURR_VERSION\"/" > $VERSION_FN4.tmp
 mv $VERSION_FN4.tmp $VERSION_FN4
 
+# update android/remote_tpms/gradle.properties
+VERSION_FN5="$THIS_DIR/../android/remote_tpms/gradle.properties"
+cat $VERSION_FN5 | sed -e "s/version=*/version=$CURR_VERSION/" > $VERSION_FN5.tmp
+mv $VERSION_FN5.tmp $VERSION_FN5
+
 cd $THIS_DIR/../android/remote_tpms && gradlew clean && gradlew :app:assembleArmDebug && cd -
 cd $THIS_DIR/../server && make clean && make && cd -
 
@@ -53,5 +58,5 @@ echo "Press CTRL-C to abort, or any other key to continue."
 read C
 
 # add subversion tag
-svn commit $VERSION_FN2 $VERSION_FN3 $VERSION_FN4 -m "updated to close version $CURR_VER"
+svn commit $VERSION_FN2 $VERSION_FN3 $VERSION_FN4 $VERSION_FN5 -m "updated to close version $CURR_VER"
 svn copy svn://svn.bmck.org/fc/trunk svn://svn.bmck.org/fc/tags/$CURR_VER -m "Added $CURR_VER tag."

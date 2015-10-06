@@ -145,16 +145,17 @@ public class SdrFtpService extends IntentService {
 
                 if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
 
-                log_it("i", LOGTAG, "connecting to Fleet Cents server at " + addr);
+                log_it("i", LOGTAG, "Connecting to Fleet Cents server at " + addr);
 
-                ftpClient.setControlKeepAliveTimeout(10);
-                ftpClient.setConnectTimeout(50000);
+//                ftpClient.setControlKeepAliveTimeout(1000);
+//                ftpClient.setConnectTimeout(50000);
                 ftpClient.connect(addr);
-                ftpClient.setSoTimeout(50000);
+//                ftpClient.setSoTimeout(50000);
+
+                log_it("i", LOGTAG, "Connected to Fleet Cents server at " + addr);
 
                 displayMessage(getString(R.string.msg_uploading_sensor_data) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
                 // TODO: use password field of login to identify user or hardware being used?
-                ftpClient.enterLocalPassiveMode();
                 ftpClient.login("anonymous", "guest");
 
                 if (abort_requested())  { try { ftpClient.logout();  ftpClient.disconnect();  completeOk(); } catch (InterruptedException e) { } }

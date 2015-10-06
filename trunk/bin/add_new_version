@@ -40,9 +40,14 @@ rm $VERSION_FN3.tmp
 
 # update android/remote_tpms/app/src/main/AndroidManifest.xml
 VERSION_FN4="$THIS_DIR/../android/remote_tpms/app/src/main/AndroidManifest.xml"
-VERCODE=`echo $NEW_VERSION | awk -F \. '{ printf("%02d%02d%02d\n",$1,$2,$3) }'`
+VERCODE=`echo $NEW_VERSION | awk -F \. '{ printf("%02d%02d%02d00\n",$1,$2,$3) }'`
 cat $VERSION_FN4 | sed -e "s/versionCode=\"[0-9.]*\"/versionCode=\"$VERCODE\"/" -e "s/versionName=\"[0-9.]*\"/versionName=\"$NEW_VERSION\"/" > $VERSION_FN4.tmp
 mv $VERSION_FN4.tmp $VERSION_FN4
+
+# update android/remote_tpms/gradle.properties
+VERSION_FN5="$THIS_DIR/../android/remote_tpms/gradle.properties"
+cat $VERSION_FN5 | sed -e "s/version=*/version=$NEW_VERSION/" > $VERSION_FN5.tmp
+mv $VERSION_FN5.tmp $VERSION_FN5
 
 echo ""
 echo ""
@@ -51,4 +56,4 @@ echo "in writing consistent version information into the codebase."
 echo "Press CTRL-C to abort, or any other key to continue."
 read C
 
-svn commit $VERSION_FN1 $VERSION_FN2 $VERSION_FN3 $VERSION_FN4 -m "tagged for version $NEW_VERSION"
+svn commit $VERSION_FN1 $VERSION_FN2 $VERSION_FN3 $VERSION_FN4 $VERSION_FN5 -m "tagged for version $NEW_VERSION"
