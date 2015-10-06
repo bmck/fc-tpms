@@ -1,0 +1,13 @@
+- # $Id$
+- # $(c)$
+
+%span.sidebar-nav
+  .navbar.navbar-default{role: "navigation"}
+    .navbar-header
+      %button.navbar-toggle{type: "button", "data-toggle" => "collapse", "data-target" => ".sidebar-navbar-collapse" }
+        %span.sr-only Toggle navigation
+        %span.icon-bar
+        %span.icon-bar
+        %span.icon-bar
+    .navbar-collapse.collapse.sidebar-navbar-collapse
+      = render 'layouts/navigation_links'
