@@ -1,8 +1,7 @@
 Current $Revision$
 
 v.0.4.7, (open)
-
-v.0.4.6, (2015-10-05)
+* (server) Added "tcp_wrappers = yes" to config file to prevent disconnections
 
 v.0.4.5, (2015-10-05)
 * (server) Added "smart" end-of-bit locating algorithm
