@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="exception_LIBUSB_GENERIC">libusb exception %s</string>
+    <string name="exception_LIBUSB_ERROR_ACCESS">Cannot access device</string>
+    <string name="exception_DEFAULT">Exception id %d</string>
+    <string name="exception_OK">No exception :)</string>
+    <string name="exception_WRONG_ARGS">Wrong arguments were supplied! Please, check the rtl_sdr manual!</string>
+    <string name="exception_INVALID_FD">Invalid USB file descriptor passed via Java.</string>
+    <string name="exception_NO_DEVICES">No compatible SDR devices found (make sure your USB device is connected, properly powered and your phone/tablet supports USB host mode) </string>
+    <string name="exception_FAILED_TO_OPEN_DEVICE">A compatible device was found, but cannot be opened.</string>
+    <string name="exception_CANNOT_RESTART">Internal error: Cannot restart service</string>
+    <string name="exception_CANNOT_CLOSE">Internal error: Cannot stop service</string>
+    <string name="exception_SIGNAL_CAUGHT">Signal was caught!</string>
+    <string name="exception_NOT_ENOUGH_POWER">Your Android device does not provide enough power to the dongle. You must use an externally powered USB hub or an externally powered USB OTG cable.</string>
+    <string name="exception_RTLSDR_FILENAME_NOT_SPECIFIED">Internal error: A filename for temporarily storing RF samples was not provided</string>
+    <string name="exception_RTLSDR_FILE_NOT_SAVED">Internal error: A file for temporarily storing RF samples could not be written to the file system in the location identified</string>
+    <string name="exception_NO_NETWORK_ACCESS">No network access found.  Enable internet access and please try again.</string>
+    <string name="exception_NO_FTP_SERVER">Processing server not found; check the Base Station in the Preferences, and your internet access, and please try again.</string>
+    <string name="exception_UNKNOWN">An unexpected error has occurred.  If this error continues, please contact the application developer.</string>
+    <string name="exception_CTRL_CHANNEL">Control channel unexpected closed</string>
+    <string name="exception_COPY_STREAM">Failure to copy file</string>
+    <string name="exception_IO">Unknown I/O error</string>
+    <string name="exception_UNKNOWN_HOST">Unknown Host error</string>
+    <string name="exception_FILE_NOT_FOUND">File not found error</string>
+    <string name="exception_NUMBER_FORMAT">Number formatting error</string>
+    <string name="exception_INVALID_ARRAY_INDEX">Array index out of bounds error</string>
+</resources>
