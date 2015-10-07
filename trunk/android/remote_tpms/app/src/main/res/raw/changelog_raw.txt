@@ -1,6 +1,6 @@
 Current $Revision$
 
-v.0.4.10, (open)
+v.0.4.10, (2015-10-07)
 
 v.0.4.9, (2015-10-06)
 * (app) Added "sticky" scroll to bottom of scrolling text
