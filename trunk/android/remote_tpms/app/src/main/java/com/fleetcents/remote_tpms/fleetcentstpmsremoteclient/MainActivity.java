@@ -27,6 +27,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import org.acra.ACRA;
@@ -59,6 +60,7 @@ public class MainActivity extends Activity {
     public boolean abort_requested = false;
     private MenuItem mi_startStop = null;
     private TextView myText = null;
+    private ScrollView scroll = null;
     private boolean testing = false;
     private String arguments = "";
     private String uspfs_path = null;
@@ -96,6 +98,8 @@ public class MainActivity extends Activity {
 
         Log.i(LOGTAG, "whats wrong with following line?");
         setContentView(R.layout.main_layout);
+
+        scroll = (ScrollView) this.findViewById(R.id.scroll);
 
         myText = (TextView) findViewById(R.id.main_messages);
         myText.setInputType(0x00020001);
@@ -234,6 +238,7 @@ public class MainActivity extends Activity {
             @Override
             public void run() {
                 myText.append(str + "\n");
+                scroll.scrollTo(0, scroll.getBottom());
             }
         });
     }
