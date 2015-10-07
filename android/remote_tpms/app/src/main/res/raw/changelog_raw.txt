@@ -1,5 +1,7 @@
 Current $Revision$
 
+v.0.4.10, (open)
+
 v.0.4.9, (2015-10-06)
 * (app) Added "sticky" scroll to bottom of scrolling text
 * (server) Bug fix to min and max samples/symbol ratio
