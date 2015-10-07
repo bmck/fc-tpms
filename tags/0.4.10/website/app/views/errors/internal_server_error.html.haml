@@ -1,0 +1,10 @@
+-# $Id$
+-# $(c)$
+%div
+  - @title = "500 Internal Server Error"
+  %h1 "Oh! This is embarrassing!"
+  %p
+    Oops! Something went wrong;
+    We apologize for the problem. We have been notified about this issue, and we will take a look at it shortly.
+
+= render partial: "errors/development_trace", formats: [:html], layout: false
