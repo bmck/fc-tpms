@@ -167,7 +167,6 @@ public class SdrFtpService extends IntentService {
                 ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
                 BufferedInputStream buffIn = null;
                 buffIn = new BufferedInputStream(new FileInputStream(fn));
-//                ftpClient.enterLocalPassiveMode();
 
                 if (abort_requested())  { try { ftpClient.logout();  ftpClient.disconnect();  completeOk(); } catch (InterruptedException e) { } }
 

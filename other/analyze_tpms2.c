@@ -20,13 +20,13 @@
 #define HIGHBIT                 1
 #define LOWBIT                  0
 
-#define MIN_PRELUDE_HF_SAMPLES (0.001 * SAMPLE_RATE)
-#define MAX_PRELUDE_HF_SAMPLES (0.002 * SAMPLE_RATE)
-#define MIN_PRELUDE_LF_SAMPLES (0.001 * SAMPLE_RATE)
-#define MAX_PRELUDE_LF_SAMPLES (0.002 * SAMPLE_RATE)
+#define MIN_PRELUDE_HF_SAMPLES (int)(0.001 * SAMPLE_RATE)
+#define MAX_PRELUDE_HF_SAMPLES (int)(0.002 * SAMPLE_RATE)
+#define MIN_PRELUDE_LF_SAMPLES (int)(0.001 * SAMPLE_RATE)
+#define MAX_PRELUDE_LF_SAMPLES (int)(0.002 * SAMPLE_RATE)
 
-#define MIN_SAMPLES_PER_SYMBOL (0.00015 * SAMPLE_RATE)
-#define MAX_SAMPLES_PER_SYMBOL (0.00025 * SAMPLE_RATE)
+#define MIN_SAMPLES_PER_SYMBOL (int)(0.0003 * SAMPLE_RATE)
+#define MAX_SAMPLES_PER_SYMBOL (int)(0.0005 * SAMPLE_RATE)
 
 #define DELTA_PHI_DEFN (fmod(fabs(2.0 * M_PI + phi - prev_phi), 2.0 * M_PI))
 
@@ -196,7 +196,7 @@ int *try_to_get_packet_symbols(unsigned int pkt_start, int num_syms, unsigned in
 	valid_pkt = true;
 
 	if ((est_samples_per_sym > MAX_SAMPLES_PER_SYMBOL) || (est_samples_per_sym < MIN_SAMPLES_PER_SYMBOL)) {
-		LOGI("%s: (%s:%d) --> Invalid estimated samples/symbol = %d", src_name, __FILE__, __LINE__, est_samples_per_sym);
+		LOGI("%s: (%s:%d) --> Invalid estimated samples/symbol = %d (%d < %d < %d)", src_name, __FILE__, __LINE__, est_samples_per_sym, MIN_SAMPLES_PER_SYMBOL, est_samples_per_sym, MAX_SAMPLES_PER_SYMBOL);
 		return NULL;
 	}
 

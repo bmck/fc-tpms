@@ -1,8 +1,12 @@
 Current $Revision$
 
 v.0.4.9, (open)
+* (app) Added "sticky" scroll to bottom of scrolling text
+* (server) Bug fix to min and max samples/symbol ratio
 
 v.0.4.8, (2015-10-06)
+* (app) Networking bug fixes
+* (server) Reverted "tcp_wrappers = yes" change
 
 v.0.4.7, (2015-10-06)
 * (server) Added "tcp_wrappers = yes" to config file to prevent disconnections
