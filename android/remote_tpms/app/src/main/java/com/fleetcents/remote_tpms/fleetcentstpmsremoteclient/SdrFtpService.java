@@ -364,7 +364,7 @@ public class SdrFtpService extends IntentService {
 
     public String getHexAddr() {
         String addr = resp.split(",")[0].trim();
-        if (addr.length() <= 6)
+        if (addr.length() <= 4)
             throw new ArrayIndexOutOfBoundsException();
         return addr;
     }
