@@ -1,5 +1,7 @@
 Current $Revision$
 
+v.0.5.1, (open)
+
 v.0.5.0, (2015-10-09)
 * (app) Provide for local and remote processing of SDR samples
 
