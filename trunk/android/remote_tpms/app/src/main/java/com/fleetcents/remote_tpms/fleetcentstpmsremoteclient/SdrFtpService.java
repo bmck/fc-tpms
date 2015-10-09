@@ -49,6 +49,9 @@ public class SdrFtpService extends IntentService {
         super("SdrFtpService");
     }
 
+    @SuppressWarnings("JniMissingFunction")
+    public static native String analyzeFile(final String src_filename);
+
     @Override
     protected void onHandleIntent(Intent workIntent) {
         SystemClock.sleep(1500);
@@ -57,10 +60,13 @@ public class SdrFtpService extends IntentService {
         // Gets data from the incoming Intent
         String str = workIntent.getDataString();
         Uri u = Uri.parse("rtlsdr://" + str);
+        log_it("d", LOGTAG, str);
         boolean testing = u.getBooleanQueryParameter("t", true);
         boolean cDisplay = u.getBooleanQueryParameter("c", true);
         boolean psiDisplay = u.getBooleanQueryParameter("p", true);
         boolean gainAdjust = u.getBooleanQueryParameter("q", true);
+        int loc = Integer.parseInt(u.getQueryParameter("l"));
+        boolean procLocal = (loc == 1);
         String fn = u.getQueryParameter("fn");
         int sample_rate = Integer.parseInt(u.getQueryParameter("s"));
         int num_samples = Integer.parseInt(u.getQueryParameter("n"));
@@ -137,144 +143,180 @@ public class SdrFtpService extends IntentService {
                 return;
             }
 
-            FTPClient ftpClient = new FTPClient();
             resp = " , , , ";
             int found = 0;
-            try {
-                String addr = InetAddress.getByName(base).getHostAddress();
 
-                if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
+            if (procLocal) {
+                resp = SdrFtpService.analyzeFile(fn);
+            }
+            else {
+                FTPClient ftpClient = new FTPClient();
+                try {
+                    String addr = InetAddress.getByName(base).getHostAddress();
 
-                log_it("i", LOGTAG, "Connecting to Fleet Cents server at " + addr);
+                    if (abort_requested()) {
+                        try {
+                            completeOk();
+                        } catch (InterruptedException e) {
+                        }
+                    }
+
+                    log_it("i", LOGTAG, "Connecting to Fleet Cents server at " + addr);
 
 //                ftpClient.setControlKeepAliveTimeout(1000);
 //                ftpClient.setConnectTimeout(50000);
-                ftpClient.connect(addr);
+                    ftpClient.connect(addr);
 //                ftpClient.setSoTimeout(50000);
 
-                log_it("i", LOGTAG, "Connected to Fleet Cents server at " + addr);
+                    log_it("i", LOGTAG, "Connected to Fleet Cents server at " + addr);
 
-                displayMessage(getString(R.string.msg_uploading_sensor_data) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
-                // TODO: use password field of login to identify user or hardware being used?
-                ftpClient.login("anonymous", "guest");
+                    displayMessage(getString(R.string.msg_uploading_sensor_data) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
+                    // TODO: use password field of login to identify user or hardware being used?
+                    ftpClient.login("anonymous", "guest");
 
-                if (abort_requested())  { try { ftpClient.logout();  ftpClient.disconnect();  completeOk(); } catch (InterruptedException e) { } }
-
-                log_it("i", LOGTAG, "Logged into Fleet Cents server");
-                log_it("i", LOGTAG, ftpClient.getReplyString());
-
-                ftpClient.changeWorkingDirectory("fleet_server");
-                ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
-                BufferedInputStream buffIn = null;
-                buffIn = new BufferedInputStream(new FileInputStream(fn));
-
-                if (abort_requested())  { try { ftpClient.logout();  ftpClient.disconnect();  completeOk(); } catch (InterruptedException e) { } }
-
-                log_it("i", LOGTAG, "Before sending file to Fleet Cents server");
-
-                boolean uploaded = false;
-                int count = 0;
-                int maxTries = 3;
-                while(uploaded == false) {
-                    try {
-                        ftpClient.storeUniqueFile(buffIn);
-                        uploaded = true;
+                    if (abort_requested()) {
+                        try {
+                            ftpClient.logout();
+                            ftpClient.disconnect();
+                            completeOk();
+                        } catch (InterruptedException e) {
+                        }
                     }
-                    catch (FTPConnectionClosedException e) {
-                        displayMessage(getString(R.string.exception_CTRL_CHANNEL) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
-                        displayMessage("--> Error type: " + e.getClass().getName());
-                        if ((e.getMessage() != null) && (e.getMessage().length() > 0))
-                            displayMessage("--> " + e.getMessage());
-                        ACRA.getErrorReporter().handleSilentException(e);
-                        if (++count == maxTries) throw e;
 
-                        displayMessage("--> " + getString(R.string.retrying));
-                    }
-                    catch (CopyStreamException e) {
-                        displayMessage(getString(R.string.exception_COPY_STREAM) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
-                        displayMessage("--> Error type: " + e.getClass().getName());
-                        if ((e.getMessage() != null) && (e.getMessage().length() > 0))
-                            displayMessage("--> " + e.getMessage());
-                        displayMessage("  " + e.getTotalBytesTransferred() + " bytes transferred out of " + (2*num_samples) + " bytes");
-                        ACRA.getErrorReporter().handleSilentException(e);
-                        if (++count == maxTries) throw e;
+                    log_it("i", LOGTAG, "Logged into Fleet Cents server");
+                    log_it("i", LOGTAG, ftpClient.getReplyString());
 
-                        displayMessage("--> " + getString(R.string.retrying));
-                    }
-                    catch (IOException e) {
-                        displayMessage(getString(R.string.exception_IO) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
-                        displayMessage("--> Error type: " + e.getClass().getName());
-                        if ((e.getMessage() != null) && (e.getMessage().length() > 0))
-                            displayMessage("--> " + e.getMessage());
-                        ACRA.getErrorReporter().handleSilentException(e);
-                        if (++count == maxTries) throw e;
+                    ftpClient.changeWorkingDirectory("fleet_server");
+                    ftpClient.setFileType(FTP.BINARY_FILE_TYPE);
+                    BufferedInputStream buffIn = null;
+                    buffIn = new BufferedInputStream(new FileInputStream(fn));
 
-                        displayMessage("--> " + getString(R.string.retrying));
+                    if (abort_requested()) {
+                        try {
+                            ftpClient.logout();
+                            ftpClient.disconnect();
+                            completeOk();
+                        } catch (InterruptedException e) {
+                        }
                     }
+
+                    log_it("i", LOGTAG, "Before sending file to Fleet Cents server");
+
+                    boolean uploaded = false;
+                    int count = 0;
+                    int maxTries = 3;
+                    while (uploaded == false) {
+                        try {
+                            ftpClient.storeUniqueFile(buffIn);
+                            uploaded = true;
+                        } catch (FTPConnectionClosedException e) {
+                            displayMessage(getString(R.string.exception_CTRL_CHANNEL) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
+                            displayMessage("--> Error type: " + e.getClass().getName());
+                            if ((e.getMessage() != null) && (e.getMessage().length() > 0))
+                                displayMessage("--> " + e.getMessage());
+                            ACRA.getErrorReporter().handleSilentException(e);
+                            if (++count == maxTries) throw e;
+
+                            displayMessage("--> " + getString(R.string.retrying));
+                        } catch (CopyStreamException e) {
+                            displayMessage(getString(R.string.exception_COPY_STREAM) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
+                            displayMessage("--> Error type: " + e.getClass().getName());
+                            if ((e.getMessage() != null) && (e.getMessage().length() > 0))
+                                displayMessage("--> " + e.getMessage());
+                            displayMessage("  " + e.getTotalBytesTransferred() + " bytes transferred out of " + (2 * num_samples) + " bytes");
+                            ACRA.getErrorReporter().handleSilentException(e);
+                            if (++count == maxTries) throw e;
+
+                            displayMessage("--> " + getString(R.string.retrying));
+                        } catch (IOException e) {
+                            displayMessage(getString(R.string.exception_IO) + " at " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()));
+                            displayMessage("--> Error type: " + e.getClass().getName());
+                            if ((e.getMessage() != null) && (e.getMessage().length() > 0))
+                                displayMessage("--> " + e.getMessage());
+                            ACRA.getErrorReporter().handleSilentException(e);
+                            if (++count == maxTries) throw e;
+
+                            displayMessage("--> " + getString(R.string.retrying));
+                        }
+                    }
+
+                    if (abort_requested()) {
+                        try {
+                            ftpClient.logout();
+                            ftpClient.disconnect();
+                            completeOk();
+                        } catch (InterruptedException e) {
+                        }
+                    }
+                    log_it("i", LOGTAG, "Completed sending file to Fleet Cents server");
+                    buffIn.close();
+                    resp = ftpClient.getReplyString();
+                    ftpClient.logout();
+                    ftpClient.disconnect();
+                    if (abort_requested()) {
+                        try {
+                            completeOk();
+                        } catch (InterruptedException e) {
+                        }
+                    }
+                } catch (UnknownHostException e) {
+                    log_it("e", LOGTAG, getString(R.string.exception_UNKNOWN_HOST) + " (" + e.getClass().getName() + "): " + e.toString());
+                    ACRA.getErrorReporter().handleSilentException(e);
+                    errorModalBox(getString(R.string.exception_NO_FTP_SERVER));
+                    return;
+                } catch (FileNotFoundException e) {
+                    log_it("e", LOGTAG, getString(R.string.exception_FILE_NOT_FOUND) + "File Not Found Exception (" + e.getClass().getName() + "): " + e.toString());
+                    ACRA.getErrorReporter().handleSilentException(e);
+                    errorModalBox(getString(R.string.exception_RTLSDR_FILE_NOT_SAVED));
+                    return;
+                } catch (IOException e) {
+                    log_it("e", LOGTAG, getString(R.string.exception_IO) + " (" + e.getClass().getName() + "): " + e.toString());
+                    ACRA.getErrorReporter().handleSilentException(e);
+                    errorModalBox(getString(R.string.exception_NO_NETWORK_ACCESS));
+                    return;
                 }
+            }
 
-                if (abort_requested())  { try { ftpClient.logout();  ftpClient.disconnect();  completeOk(); } catch (InterruptedException e) { } }
-                log_it("i", LOGTAG, "Completed sending file to Fleet Cents server");
-                buffIn.close();
-                resp = ftpClient.getReplyString();
-                Integer resp_code = Integer.parseInt(resp.split(" ")[0]);
-                if (resp_code == 226) {
-                    log_it("i", LOGTAG, "Complete response to upload: " + resp);
-                    resp = resp.split(" ")[1];
-                    resp = TextUtils.join(",", Arrays.copyOfRange(resp.split(","), 0, 3));
-                    log_it("i", LOGTAG, "Relevant response to upload: " + resp);
+            log_it("i", LOGTAG, "resp = " + resp);
+            Integer resp_code = Integer.parseInt(resp.split(" ")[0]);
+            if (resp_code == 226) {
+                log_it("i", LOGTAG, "Complete response to upload: " + resp);
+                resp = resp.split(" ")[1];
+                resp = TextUtils.join(",", Arrays.copyOfRange(resp.split(","), 0, 3));
+                log_it("i", LOGTAG, "Relevant response to upload: " + resp);
 //                Log.i(LOGTAG, "resp = " + resp);
 //                Log.i(LOGTAG, "resp[0] = >" + resp.split(",")[0] + "<");
 //                Log.i(LOGTAG, "resp[1] = >" + resp.split(",")[1] + "<");
 //                Log.i(LOGTAG, "resp[2] = >" + resp.split(",")[2] + "<");
 
-                    if (abort_requested())  { try { ftpClient.logout();  ftpClient.disconnect();  completeOk(); } catch (InterruptedException e) { } }
+                if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
 
-                    if (resp.length() > 3) {
-                        try {
-                            displayMessage("\n" +
-                                    new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()) + "\n" +
-                                    getString(R.string.sensor_id) + " " + getHexAddr() + "\n" +
-                                    getString(R.string.temp) + " " +
-                                    (cDisplay ? (getTempC() + " " + getString(R.string.celsius)) : (getTempF() + " " + getString(R.string.fahrenheit))) +
-                                    "\n" +
-                                    getString(R.string.pressure) + " " +
-                                    (psiDisplay ? (getPsi() + " " + getString(R.string.psi)) : (getKpa() + " " + getString(R.string.kpa))) +
-                                    "\n");
-                            found = 1;
-                        } catch (NumberFormatException e) {
-                            log_it("e", LOGTAG, getString(R.string.exception_NUMBER_FORMAT) + ": " + e.toString());
-                            ACRA.getErrorReporter().handleSilentException(e);
-                            found = 0;
-                        } catch (ArrayIndexOutOfBoundsException e) {
-                            log_it("e", LOGTAG, getString(R.string.exception_INVALID_ARRAY_INDEX) + ": " + e.toString());
-                            ACRA.getErrorReporter().handleSilentException(e);
-                            found = 0;
-                        }
+                if (resp.length() > 14) {
+                    try {
+                        displayMessage("\n" +
+                                new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()) + "\n" +
+                                getString(R.string.sensor_id) + " " + getHexAddr() + "\n" +
+                                getString(R.string.temp) + " " +
+                                (cDisplay ? (getTempC() + " " + getString(R.string.celsius)) : (getTempF() + " " + getString(R.string.fahrenheit))) +
+                                "\n" +
+                                getString(R.string.pressure) + " " +
+                                (psiDisplay ? (getPsi() + " " + getString(R.string.psi)) : (getKpa() + " " + getString(R.string.kpa))) +
+                                "\n");
+                        found = 1;
+                    } catch (NumberFormatException e) {
+                        log_it("e", LOGTAG, getString(R.string.exception_NUMBER_FORMAT) + ": " + e.toString());
+                        ACRA.getErrorReporter().handleSilentException(e);
+                        found = 0;
+                    } catch (ArrayIndexOutOfBoundsException e) {
+                        log_it("e", LOGTAG, getString(R.string.exception_INVALID_ARRAY_INDEX) + ": " + e.toString());
+                        ACRA.getErrorReporter().handleSilentException(e);
+                        found = 0;
                     }
                 }
-
-                // resp code is standard FTP (unchanged) indicating success/failure
-                // resp format is CSV: hex address, tempC, pressure_kpa
-                ftpClient.logout();
-                ftpClient.disconnect();
-                if (abort_requested())  { try { completeOk(); } catch (InterruptedException e) { } }
-            } catch (UnknownHostException e) {
-                log_it("e", LOGTAG, getString(R.string.exception_UNKNOWN_HOST) + " (" + e.getClass().getName() + "): " + e.toString());
-                ACRA.getErrorReporter().handleSilentException(e);
-                errorModalBox(getString(R.string.exception_NO_FTP_SERVER));
-                return;
-            } catch (FileNotFoundException e) {
-                log_it("e", LOGTAG, getString(R.string.exception_FILE_NOT_FOUND) + "File Not Found Exception (" + e.getClass().getName() + "): " + e.toString());
-                ACRA.getErrorReporter().handleSilentException(e);
-                errorModalBox(getString(R.string.exception_RTLSDR_FILE_NOT_SAVED));
-                return;
-            } catch (IOException e) {
-                log_it("e", LOGTAG, getString(R.string.exception_IO) + " (" + e.getClass().getName() + "): " + e.toString());
-                ACRA.getErrorReporter().handleSilentException(e);
-                errorModalBox(getString(R.string.exception_NO_NETWORK_ACCESS));
-                return;
             }
+
+            // resp code is standard FTP (unchanged) indicating success/failure
+            // resp format is CSV: hex address, tempC, pressure_kpa
 
             if (found == 1) {
                 displayMessage(getString(R.string.msg_sending_data));

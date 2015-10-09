@@ -50,6 +50,8 @@ public class MainActivity extends Activity {
             Log.i(LOGTAG, "Loading libraries");
             System.loadLibrary("crystax");
             System.loadLibrary("rtlsdr");
+            System.loadLibrary("liquid");
+            System.loadLibrary("fleetcents");
             Log.i(LOGTAG, "Successfully loaded native libraries");
         } catch (Throwable t) {
             Log.w(LOGTAG, "Failed to load native libraries");
@@ -154,7 +156,9 @@ public class MainActivity extends Activity {
                     }
                     int sample_rate = 2048000;
                     double secs = Double.parseDouble(sharedPrefs.getString("basestation_secssent", "1.0"));
-                    String base = sharedPrefs.getString("basestation_hostname", "127.0.0.1");
+                    String loc = sharedPrefs.getString("basestation_local_remote", getString(R.string.local));
+                    int proc_local = (loc.equals(getString(R.string.local)) ? 1 : 0);
+                    String base = sharedPrefs.getString("basestation_remote_hostname", "127.0.0.1");
                     String tempDisplay = sharedPrefs.getString("units_temp", getString(R.string.celsius));
                     String pressDisplay = sharedPrefs.getString("units_pressure", getString(R.string.psi));
                     boolean gain_adjust = sharedPrefs.getBoolean("gain_adjust", true);
@@ -162,6 +166,7 @@ public class MainActivity extends Activity {
                     String arguments = "?f=314980000&s=" + sample_rate + "&n=" + Math.round(secs * sample_rate) +
                             "&base=" + base + "&c=" + (tempDisplay == getString(R.string.celsius) ? "1" : "0") +
                             "&p=" + (pressDisplay == getString(R.string.psi) ? "1" : "0") + "&q=" + (gain_adjust == true ? "1" : "0") +
+                            "&l=" + proc_local +
                             "&t=" + (testing ? "1" : "0") + "&fn=" + file;
 
                     Intent mServiceIntent = new Intent(this, SdrFtpService.class);

@@ -4,16 +4,17 @@
 #ifndef __MATH_ISNAN_H
 #define __MATH_ISNAN_H
 
+#include <tgmath.h>
 #include <complex.h>
 #include <math.h>
 
-inline int __inline_cisnan(const double complex x);
-inline int __inline_cisnanf(const float complex x);
-inlien int __inline_cisnanl(const long double complex x);
+int __inline_cisnan(const double complex x);
+int __inline_cisnanf(const float complex x);
+int __inline_cisnanl(const long double complex x);
 
-#if !defined(__clang__) && (!defined(__GNUC__) || \
-    (defined(__GNUC__) && ((__GNUC__ < 4) || \
-                      (__GNUC__ == 4 && (__GNUC_MINOR__ < 9)))))
+//#if !defined(__clang__) && (!defined(__GNUC__) || \
+//    (defined(__GNUC__) && ((__GNUC__ < 4) || \
+//                      (__GNUC__ == 4 && (__GNUC_MINOR__ < 9)))))
 
 #undef isnan
 #define isnan(x) \
@@ -27,4 +28,4 @@ inlien int __inline_cisnanl(const long double complex x);
 
 #endif
 
-#endif
+//#endif
