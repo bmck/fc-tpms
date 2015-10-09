@@ -47,7 +47,9 @@ VERSION_FN5="$THIS_DIR/../android/remote_tpms/gradle.properties"
 cat $VERSION_FN5 | sed -e "s/version=(.*)$/version=$CURR_VERSION/" > $VERSION_FN5.tmp
 mv $VERSION_FN5.tmp $VERSION_FN5
 
+cd $THIS_DIR/../android/remote_tpms/app/src/main/jni/liquid-dsp && rm config.h && ln -s config.h.android config.h && cd -
 cd $THIS_DIR/../android/remote_tpms && gradlew clean && gradlew :app:assembleArmDebug && cd -
+cd $THIS_DIR/../server/liquid && rm config.h && ln -s config.h.macosx config.h && cd -
 cd $THIS_DIR/../server && make clean && make && cd -
 
 echo ""
