@@ -1,0 +1,10 @@
+#!/bin/bash
+# $Id$
+# $(c)$
+
+cd ~/newco
+
+rubocop ./app --only IndentArray,StringConversionInInterpolation,IndentationWidth,AlignParameters,DeprecatedClassMethods,PerlBackrefs,CommentIndentation,NegatedWhile,IndentationConsistency,SpaceBeforeBlockBraces,MethodCallParentheses,SpaceBeforeSemicolon,SpaceAroundEqualsInParameterDefault,WhenThen,StringLiterals,SpaceAroundOperators,HashSyntax,SpaceBeforeComma,SpaceAfterComma,SingleLineMethods,Semicolon,EmptyLineBetweenDefs,RedundantReturn,SpaceInsideBlockBraces,TrailingWhitespace,BracesAroundHashParameters,EmptyLineBetweenDefs,EmptyLines,EmptyLinesAroundAccessModifier,EmptyLinesAroundClassBody,EmptyLinesAroundMethodBody,EmptyLinesAroundModuleBody,WordArray,SpaceInsideHashLiteralBraces,SpaceAfterColon,TrailingComma,Not,Proc,ActionFilter,NumericLiterals,ParenthesesAroundCondition,SingleLineMethods,EmptyLineBetweenDefs,EmptyLines,NegatedIf,SignalException,CollectionMethods,SpaceInsideParens,RedundantBegin,ColonMethodCall,SpaceAfterNot,UnusedMethodArgument -a
+rubocop -o tmp/rubocop.txt >/dev/null 2>&1
+
+cd -
