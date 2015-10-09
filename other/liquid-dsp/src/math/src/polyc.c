@@ -35,7 +35,7 @@
 #define T_ABS(X)        cabs(X)
 #define TC_ABS(X)       cabs(X)
 
-//#include "math.isnan.c"
+#include "math.isnan.h"
 #include "poly.common.c"
 #include "poly.expand.c"
 #include "poly.findroots.c"

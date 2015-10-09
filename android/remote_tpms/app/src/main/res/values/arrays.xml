@@ -26,4 +26,9 @@
     <item>@string/kpa</item>
     <item>@string/psi</item>
 </string-array>
+
+<string-array name="localRemoteArray">
+    <item>@string/local</item>
+    <item>@string/remote</item>
+</string-array>
 </resources>

@@ -40,8 +40,11 @@ public class RtlSdr {
 	private static volatile AtomicInteger exitcode = new AtomicInteger(EXIT_UNKNOWN);
 	private static volatile AtomicBoolean exitcode_set = new AtomicBoolean(false);
 
+	@SuppressWarnings("JniMissingFunction")
 	public static native void open(final String args, final int fd, final String uspfs_path);// throws RtlSdrException;
+	@SuppressWarnings("JniMissingFunction")
 	public static native void close();// throws RtlSdrException;
+	@SuppressWarnings("JniMissingFunction")
 	public static native boolean isNativeRunning();
 
 	private static void onclose(int exitcode) {
