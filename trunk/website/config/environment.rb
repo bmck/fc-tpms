@@ -13,9 +13,9 @@ ActionMailer::Base.delivery_method = :smtp
 ActionMailer::Base.smtp_settings = {
   address: 'smtp.gmail.com',
   port: 587,
-  domain: 'capitalytics.com',
-  user_name: 'info@capitalytics.com',
-  password: 'w4r4w4Rjp',
+  domain: 'fleetcents.com',
+  user_name: 'bmck@fleetcents.com',
+  password: 'w4r4w4R',
   authentication: :plain,
   enable_starttls_auto: true
 }
