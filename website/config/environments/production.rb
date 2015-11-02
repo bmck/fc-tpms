@@ -82,4 +82,14 @@ Rails.application.configure do
   config.active_record.dump_schema_after_migration = false
 
   config.active_record.raise_in_transactional_callbacks = true
+
+  config.middleware.use ExceptionNotification::Rack,
+  email: {
+    email_prefix: "[FC] ",
+    sender_address: %{"Exception Notification" <bmck@fleetcents.com>},
+    exception_recipients: %w{bmck@fleetcents.com},
+    ignore_crawlers: %w{Googlebot bingbot},
+    normalize_subject: true
+  }
+
 end

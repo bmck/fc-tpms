@@ -430,14 +430,14 @@ chown -h mysql:mysql /var/lib/mysql
 
 chmod 777 /data/mysql
 ls -d1 /var/lib/mysql/* | xargs chmod 777
-su - $USR -c "/home/$CUST/src/bin/sync_db"
+su - $USR -c "/home/${CUST}/src/bin/sync_db"
 chown -R mysql:mysql /var/lib/mysql/*
 ls -d1 /var/lib/mysql/* | xargs chmod 700
 chmod 644 /var/lib/mysql/*/*
 chmod 755 /data/mysql
 service mysql start; chkconfig mysql on
 
-mysql -u admin --password=w4r4w4R -e "create database $CUST_test;"
+mysql -u admin --password=w4r4w4R -e "create database ${CUST}_test;"
 mysql_upgrade -u admin --password=w4r4w4R
 mysql -u admin --password=w4r4w4R -D mysql -e "repair table proc;"
 
