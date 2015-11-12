@@ -1,0 +1,13 @@
+- # $Id$
+- # $(c)$
+
+- actions = []
+- if can? :view_audit, object
+  - actions << {name: :custom,  icon: "glyphicon glyphicon-book", title: 'View Tire Type History', url: view_audit_tire_type_path(object)}
+- if can? :edit, object
+  - actions << {name: :edit,    url: edit_tire_type_path(object)}
+- if can? :destroy, object
+  - actions << {name: :destroy, url: tire_type_path(object), confirmation: "Are you sure you want to delete this tire type?"}
+
+%td= object.name
+%td.actions= smart_listing_item_actions [ *actions ]
