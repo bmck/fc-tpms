@@ -1,0 +1,17 @@
+- # $Id$
+- # $(c)$
+
+%h2 Forgot your password?
+%p
+  Enter your email address below and we will send instructions to you for resetting your password.
+= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f|
+  = devise_error_messages!
+  .field
+    = f.label :email
+    %br/
+    = f.email_field :email, autofocus: true
+  %br/
+  .actions
+    = f.submit "Send me reset password instructions"
+%br/
+= render "user/shared/links"
