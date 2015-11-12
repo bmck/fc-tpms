@@ -62,8 +62,10 @@ public class SdrFtpService extends IntentService {
         Uri u = Uri.parse("rtlsdr://" + str);
         log_it("d", LOGTAG, str);
         boolean testing = u.getBooleanQueryParameter("t", true);
-        boolean cDisplay = u.getBooleanQueryParameter("c", true);
-        boolean psiDisplay = u.getBooleanQueryParameter("p", true);
+        int cDisp = Integer.parseInt(u.getQueryParameter("c"));
+        boolean cDisplay = (cDisp == 1);
+        int psiDisp = Integer.parseInt(u.getQueryParameter("p"));
+        boolean psiDisplay = (psiDisp == 1);
         boolean gainAdjust = u.getBooleanQueryParameter("q", true);
         int loc = Integer.parseInt(u.getQueryParameter("l"));
         boolean procLocal = (loc == 1);
@@ -408,7 +410,7 @@ public class SdrFtpService extends IntentService {
         String addr = resp.split(",")[0].trim();
         if (addr.length() <= 4)
             throw new ArrayIndexOutOfBoundsException();
-        return ("0000000" + addr).substring(7);
+        return ("00000000" + addr).substring(7);
     }
 
     public String getFullUrl() {
