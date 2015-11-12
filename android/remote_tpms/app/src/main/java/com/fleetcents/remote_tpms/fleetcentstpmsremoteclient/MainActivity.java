@@ -163,12 +163,12 @@ public class MainActivity extends Activity {
 
                     String tempDisplay = sharedPrefs.getString("units_temp", getString(R.string.celsius));
                     log_it("i", LOGTAG, "tempDisplay: " + tempDisplay);
-                    int temp_var = tempDisplay.equals(R.string.celsius) ? 1 : 0;
+                    int temp_var = tempDisplay.equals(getString(R.string.celsius)) ? 1 : 0;
                     log_it("i", LOGTAG, "temp_var: " + temp_var);
 
                     String pressDisplay = sharedPrefs.getString("units_pressure", getString(R.string.psi));
                     log_it("i", LOGTAG, "pressDisplay: " + pressDisplay);
-                    int temp_press = pressDisplay.equals(R.string.psi) ? 1 : 0;
+                    int temp_press = pressDisplay.equals(getString(R.string.psi)) ? 1 : 0;
                     log_it("i", LOGTAG, "temp_press: " + temp_press);
 
                     boolean gain_adjust = sharedPrefs.getBoolean("gain_adjust", true);
