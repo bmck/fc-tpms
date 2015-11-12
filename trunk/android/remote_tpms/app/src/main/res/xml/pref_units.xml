@@ -5,7 +5,6 @@
         android:title="@string/pref_header_presentation">
 
         <ListPreference
-            android:defaultValue="@string/celsius"
             android:entries="@array/tempOptionsArray"
             android:entryValues="@array/tempOptionsArray"
             android:key="units_temp"
@@ -13,7 +12,6 @@
             android:positiveButtonText="@null"
             android:title="@string/pref_presentation_temp" />
         <ListPreference
-            android:defaultValue="@string/psi"
             android:entries="@array/pressureOptionsArray"
             android:entryValues="@array/pressureOptionsArray"
             android:key="units_pressure"
