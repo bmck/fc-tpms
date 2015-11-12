@@ -160,7 +160,9 @@ public class MainActivity extends Activity {
                     int proc_local = (loc.equals(getString(R.string.local)) ? 1 : 0);
                     String base = sharedPrefs.getString("basestation_remote_hostname", "127.0.0.1");
                     String tempDisplay = sharedPrefs.getString("units_temp", getString(R.string.celsius));
+                    log_it("i", LOGTAG, "tempDisplay: " + tempDisplay);
                     String pressDisplay = sharedPrefs.getString("units_pressure", getString(R.string.psi));
+                    log_it("i", LOGTAG, "pressDisplay: " + pressDisplay);
                     boolean gain_adjust = sharedPrefs.getBoolean("gain_adjust", true);
 
                     String arguments = "?f=314980000&s=" + sample_rate + "&n=" + Math.round(secs * sample_rate) +
