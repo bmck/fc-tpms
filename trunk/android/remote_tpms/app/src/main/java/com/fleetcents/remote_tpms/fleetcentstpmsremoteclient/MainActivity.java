@@ -158,16 +158,24 @@ public class MainActivity extends Activity {
                     double secs = Double.parseDouble(sharedPrefs.getString("basestation_secssent", "1.0"));
                     String loc = sharedPrefs.getString("basestation_local_remote", getString(R.string.local));
                     int proc_local = (loc.equals(getString(R.string.local)) ? 1 : 0);
+
                     String base = sharedPrefs.getString("basestation_remote_hostname", "127.0.0.1");
+
                     String tempDisplay = sharedPrefs.getString("units_temp", getString(R.string.celsius));
                     log_it("i", LOGTAG, "tempDisplay: " + tempDisplay);
+                    int temp_var = tempDisplay.equals(R.string.celsius) ? 1 : 0;
+                    log_it("i", LOGTAG, "temp_var: " + temp_var);
+
                     String pressDisplay = sharedPrefs.getString("units_pressure", getString(R.string.psi));
                     log_it("i", LOGTAG, "pressDisplay: " + pressDisplay);
+                    int temp_press = pressDisplay.equals(R.string.psi) ? 1 : 0;
+                    log_it("i", LOGTAG, "temp_press: " + temp_press);
+
                     boolean gain_adjust = sharedPrefs.getBoolean("gain_adjust", true);
 
                     String arguments = "?f=314980000&s=" + sample_rate + "&n=" + Math.round(secs * sample_rate) +
-                            "&base=" + base + "&c=" + (tempDisplay.equals(R.string.celsius) ? "1" : "0") +
-                            "&p=" + (pressDisplay.equals(R.string.psi) ? "1" : "0") + "&q=" + (gain_adjust == true ? "1" : "0") +
+                            "&base=" + base + "&c=" + temp_var +
+                            "&p=" + temp_press + "&q=" + (gain_adjust == true ? "1" : "0") +
                             "&l=" + proc_local +
                             "&t=" + (testing ? "1" : "0") + "&fn=" + file;
 
