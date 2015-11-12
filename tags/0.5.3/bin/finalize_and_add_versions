@@ -1,0 +1,18 @@
+#!/bin/bash
+# $Id$
+# $(c)$
+
+THIS_FILE=`which $0`
+THIS_DIR=`dirname "$THIS_FILE"`
+CURR_VER=`./$THIS_DIR/current_version`
+NEW_VERSION=$1
+
+echo ""
+echo ""
+echo "You are about to try to finalize the current version, $CURR_VER, and open a new version, $NEW_VERSION."
+echo "Are you sure? Press CTRL-C to stop, or any other key to continue."
+read C
+
+./$THIS_DIR/finalize_current_version
+
+./$THIS_DIR/add_new_version $NEW_VERSION
