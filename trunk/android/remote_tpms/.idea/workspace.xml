@@ -114,20 +114,20 @@
       <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.84090906">
-              <caret line="171" column="67" selection-start-line="171" selection-start-column="67" selection-end-line="171" selection-end-column="67" />
+            <state vertical-scroll-proportion="0.8181818">
+              <caret line="170" column="80" selection-start-line="170" selection-start-column="80" selection-end-line="170" selection-end-column="80" />
               <folding>
                 <element signature="e#3942#3973#0" expanded="true" />
                 <element signature="e#5801#5852#0" expanded="true" />
                 <element signature="e#6153#6178#0" expanded="true" />
                 <element signature="e#6230#6255#0" expanded="true" />
                 <element signature="e#6447#6474#0" expanded="true" />
-                <element signature="e#6603#6619#0" expanded="true" />
-                <element signature="e#6779#6802#0" expanded="true" />
-                <element signature="e#6936#6948#0" expanded="true" />
-                <element signature="e#11005#11019#0" expanded="true" />
-                <element signature="e#11063#11089#0" expanded="true" />
-                <element signature="e#15424#15461#0" expanded="true" />
+                <element signature="e#6603#6630#0" expanded="true" />
+                <element signature="e#6790#6813#0" expanded="true" />
+                <element signature="e#6947#6970#0" expanded="true" />
+                <element signature="e#11027#11041#0" expanded="true" />
+                <element signature="e#11085#11111#0" expanded="true" />
+                <element signature="e#15446#15483#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -2752,20 +2752,20 @@
     </entry>
     <entry file="file://$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.84090906">
-          <caret line="171" column="67" selection-start-line="171" selection-start-column="67" selection-end-line="171" selection-end-column="67" />
+        <state vertical-scroll-proportion="0.8181818">
+          <caret line="170" column="80" selection-start-line="170" selection-start-column="80" selection-end-line="170" selection-end-column="80" />
           <folding>
             <element signature="e#3942#3973#0" expanded="true" />
             <element signature="e#5801#5852#0" expanded="true" />
             <element signature="e#6153#6178#0" expanded="true" />
             <element signature="e#6230#6255#0" expanded="true" />
             <element signature="e#6447#6474#0" expanded="true" />
-            <element signature="e#6603#6619#0" expanded="true" />
-            <element signature="e#6779#6802#0" expanded="true" />
-            <element signature="e#6936#6948#0" expanded="true" />
-            <element signature="e#11005#11019#0" expanded="true" />
-            <element signature="e#11063#11089#0" expanded="true" />
-            <element signature="e#15424#15461#0" expanded="true" />
+            <element signature="e#6603#6630#0" expanded="true" />
+            <element signature="e#6790#6813#0" expanded="true" />
+            <element signature="e#6947#6970#0" expanded="true" />
+            <element signature="e#11027#11041#0" expanded="true" />
+            <element signature="e#11085#11111#0" expanded="true" />
+            <element signature="e#15446#15483#0" expanded="true" />
           </folding>
         </state>
       </provider>
