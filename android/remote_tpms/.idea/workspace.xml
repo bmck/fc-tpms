@@ -11,10 +11,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="f3792064-ffbb-4bfb-ae01-40292129a4fb" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/AndroidManifest.xml" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/AndroidManifest.xml" />
       <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/MainActivity.java" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/MainActivity.java" />
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/raw/changelog_raw.txt" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/raw/changelog_raw.txt" />
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/values/strings_version.xml" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/values/strings_version.xml" />
+      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/.idea/workspace.xml" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="remote_tpms.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -115,9 +114,21 @@
       <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.79545456">
-              <caret line="164" column="71" selection-start-line="164" selection-start-column="71" selection-end-line="164" selection-end-column="71" />
-              <folding />
+            <state vertical-scroll-proportion="0.84090906">
+              <caret line="171" column="67" selection-start-line="171" selection-start-column="67" selection-end-line="171" selection-end-column="67" />
+              <folding>
+                <element signature="e#3942#3973#0" expanded="true" />
+                <element signature="e#5801#5852#0" expanded="true" />
+                <element signature="e#6153#6178#0" expanded="true" />
+                <element signature="e#6230#6255#0" expanded="true" />
+                <element signature="e#6447#6474#0" expanded="true" />
+                <element signature="e#6603#6619#0" expanded="true" />
+                <element signature="e#6779#6802#0" expanded="true" />
+                <element signature="e#6936#6948#0" expanded="true" />
+                <element signature="e#11005#11019#0" expanded="true" />
+                <element signature="e#11063#11089#0" expanded="true" />
+                <element signature="e#15424#15461#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -2741,9 +2752,21 @@
     </entry>
     <entry file="file://$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.79545456">
-          <caret line="164" column="71" selection-start-line="164" selection-start-column="71" selection-end-line="164" selection-end-column="71" />
-          <folding />
+        <state vertical-scroll-proportion="0.84090906">
+          <caret line="171" column="67" selection-start-line="171" selection-start-column="67" selection-end-line="171" selection-end-column="67" />
+          <folding>
+            <element signature="e#3942#3973#0" expanded="true" />
+            <element signature="e#5801#5852#0" expanded="true" />
+            <element signature="e#6153#6178#0" expanded="true" />
+            <element signature="e#6230#6255#0" expanded="true" />
+            <element signature="e#6447#6474#0" expanded="true" />
+            <element signature="e#6603#6619#0" expanded="true" />
+            <element signature="e#6779#6802#0" expanded="true" />
+            <element signature="e#6936#6948#0" expanded="true" />
+            <element signature="e#11005#11019#0" expanded="true" />
+            <element signature="e#11063#11089#0" expanded="true" />
+            <element signature="e#15424#15461#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
