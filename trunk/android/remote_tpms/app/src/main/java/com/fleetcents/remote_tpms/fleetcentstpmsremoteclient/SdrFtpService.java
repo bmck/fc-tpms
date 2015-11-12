@@ -408,7 +408,7 @@ public class SdrFtpService extends IntentService {
         String addr = resp.split(",")[0].trim();
         if (addr.length() <= 4)
             throw new ArrayIndexOutOfBoundsException();
-        return addr;
+        return ("0000000" + addr).substring(7);
     }
 
     public String getFullUrl() {
