@@ -62,13 +62,18 @@ public class SdrFtpService extends IntentService {
         Uri u = Uri.parse("rtlsdr://" + str);
         log_it("d", LOGTAG, str);
         boolean testing = u.getBooleanQueryParameter("t", true);
+
         int cDisp = Integer.parseInt(u.getQueryParameter("c"));
         boolean cDisplay = (cDisp == 1);
+
         int psiDisp = Integer.parseInt(u.getQueryParameter("p"));
         boolean psiDisplay = (psiDisp == 1);
+
         boolean gainAdjust = u.getBooleanQueryParameter("q", true);
+
         int loc = Integer.parseInt(u.getQueryParameter("l"));
         boolean procLocal = (loc == 1);
+
         String fn = u.getQueryParameter("fn");
         int sample_rate = Integer.parseInt(u.getQueryParameter("s"));
         int num_samples = Integer.parseInt(u.getQueryParameter("n"));
@@ -295,6 +300,8 @@ public class SdrFtpService extends IntentService {
 
                 if (resp.length() > 14) {
                     try {
+                        log_it("i", LOGTAG, "cDisp = " + cDisp);
+                        log_it("i", LOGTAG, "psiDisp = " + psiDisp);
                         displayMessage("\n" +
                                 new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS").format(new Date()) + "\n" +
                                 getString(R.string.sensor_id) + " " + getHexAddr() + "\n" +
