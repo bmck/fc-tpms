@@ -164,8 +164,8 @@ public class MainActivity extends Activity {
                     boolean gain_adjust = sharedPrefs.getBoolean("gain_adjust", true);
 
                     String arguments = "?f=314980000&s=" + sample_rate + "&n=" + Math.round(secs * sample_rate) +
-                            "&base=" + base + "&c=" + (tempDisplay == getString(R.string.celsius) ? "1" : "0") +
-                            "&p=" + (pressDisplay == getString(R.string.psi) ? "1" : "0") + "&q=" + (gain_adjust == true ? "1" : "0") +
+                            "&base=" + base + "&c=" + (tempDisplay.equals(R.string.celsius) ? "1" : "0") +
+                            "&p=" + (pressDisplay.equals(R.string.psi) ? "1" : "0") + "&q=" + (gain_adjust == true ? "1" : "0") +
                             "&l=" + proc_local +
                             "&t=" + (testing ? "1" : "0") + "&fn=" + file;
 
