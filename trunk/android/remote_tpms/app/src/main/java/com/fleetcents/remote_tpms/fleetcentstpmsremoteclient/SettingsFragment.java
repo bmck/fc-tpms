@@ -14,7 +14,15 @@ public class SettingsFragment extends PreferenceFragment {
             super.onCreate(savedInstanceState);
 
             // Load the preferences from an XML resource
-            addPreferencesFromResource(R.xml.pref_basestation);
+            if (getString(R.string.processTarget) == (getString(R.string.local)).toLowerCase()) {
+                addPreferencesFromResource(R.xml.pref_basestation_local);
+            }
+            else if (getString(R.string.processTarget) == (getString(R.string.remote)).toLowerCase()) {
+                addPreferencesFromResource(R.xml.pref_basestation_remote);
+            }
+            else {
+                addPreferencesFromResource(R.xml.pref_basestation_localremote);
+            }
             addPreferencesFromResource(R.xml.pref_units);
             addPreferencesFromResource(R.xml.pref_gain);
             addPreferencesFromResource(R.xml.pref_crash_report);
