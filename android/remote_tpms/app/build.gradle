@@ -38,8 +38,32 @@ android {
         abortOnError false
     }
 
+    flavorDimensions "processor"
+
     productFlavors {
-        arm {
+        local {
+            dimension "processor"
+            resValue "string", "processTarget", "local"
+            ndk {
+                moduleName "rtlsdr"
+                abiFilter "armeabi"
+                ldLibs "log", "m"
+            }
+        }
+
+        remote {
+            dimension "processor"
+            resValue "string", "processTarget", "remote"
+            ndk {
+                moduleName "rtlsdr"
+                abiFilter "armeabi"
+                ldLibs "log", "m"
+            }
+        }
+
+        localremote {
+            dimension "processor"
+            resValue "string", "processTarget", "localremote"
             ndk {
                 moduleName "rtlsdr"
                 abiFilter "armeabi"
