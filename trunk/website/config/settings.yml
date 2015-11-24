@@ -2,3 +2,5 @@
 # $(c)$
 
 bad_samples_filename: 'bad_samples.csv'
+tire_samples:
+  max: 50

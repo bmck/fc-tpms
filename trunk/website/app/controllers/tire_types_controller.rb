@@ -2,6 +2,8 @@
 # $(c)$
 
 class TireTypesController < ApplicationController
+  respond_to :html, :js
+
   include SmartListing::Helper::ControllerExtensions
   helper  SmartListing::Helper
 

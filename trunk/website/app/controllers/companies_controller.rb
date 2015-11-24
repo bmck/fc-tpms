@@ -2,6 +2,8 @@
 # $(c)$
 
 class CompaniesController < ApplicationController
+  respond_to :html, :js
+
   include SmartListing::Helper::ControllerExtensions
   helper  SmartListing::Helper
 

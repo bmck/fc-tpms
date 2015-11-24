@@ -58,6 +58,10 @@ class UsersController < ApplicationController
     @users ||= scoped_users
   end
 
+  def token_authenticatable?
+    !authentication_token.nil?
+  end
+
   private
 
   def find_user

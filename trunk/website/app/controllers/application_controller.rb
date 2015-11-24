@@ -6,7 +6,8 @@ class ApplicationController < ActionController::Base
 
   # Prevent CSRF attacks by raising an exception.
   # For APIs, you may want to use :null_session instead.
-  protect_from_forgery with: :exception
+  protect_from_forgery with: \
+    (Proc.new{ |c| c.request.format == 'application/json' } ? :null_session : :exception)
 
   before_action \
     :assign_current_user,
@@ -16,7 +17,6 @@ class ApplicationController < ActionController::Base
     %w(
       authenticity_token
       commit
-      current_layout
       current_user
       request
       utf8
@@ -24,21 +24,37 @@ class ApplicationController < ActionController::Base
   end
 
   rescue_from NewcoError::VerificationError do |exception|
-    render_403(exception)
+    respond_to do |format|
+      format.json { render json: exception.message.to_json, status: :forbidden }
+      format.html { render_403(exception) }
+    end
   end
 
   rescue_from NewcoError::AbstractMethodError do |exception|
-    render_500(exception)
+    respond_to do |format|
+      format.json { render json: exception.to_json, status: :forbidden }
+      format.html { render_500(exception) }
+    end
   end
 
   rescue_from CanCan::AccessDenied do |exception|
-    Rails.logger.debug "Access denied on #{exception.action} #{exception.subject.inspect}"
-    Rails.logger.debug "\n\n#{caller.join("\n")}\n\n"
-    render_550(exception)
+    respond_to do |format|
+      format.json {
+        render json: exception.message.to_json, status: :forbidden
+      }
+      format.html {
+        Rails.logger.debug "Access denied on #{exception.action} #{exception.subject.inspect}"
+        Rails.logger.debug "\n\n#{caller.join("\n")}\n\n"
+        render_550(exception)
+      }
+    end
   end
 
   rescue_from ActionView::MissingTemplate do |exception|
-    render_406(exception)
+    respond_to do |format|
+      format.json { render json: exception.message.to_json, status: :forbidden }
+      format.html { render_406(exception) }
+    end
   end
 
   rescue_from ActionController::UnpermittedParameters do |exception|

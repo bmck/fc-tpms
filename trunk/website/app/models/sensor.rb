@@ -8,6 +8,7 @@ class Sensor < ActiveRecord::Base
   validates_uniqueness_of :serial, scope: :sensor_type
 
   has_one :tire
+  has_many :tire_samples
 
   scope :all_sensors, -> {
     joins('join tires on tires.sensor_id = sensors.id')
