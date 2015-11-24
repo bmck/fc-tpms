@@ -62,6 +62,9 @@ class Ability
     can :read, Trailer, company_id: user.company_id
     can :read, Truck, company_id: user.company_id
     can :read, Storage, company_id: user.company_id
+    can :read, :"api/v1/trucks"
+    can :read, :"api/v1/tires"
+    can :read, :"api/v1/tire_samples"
 
     [
       Report::PerStoragePieReport,

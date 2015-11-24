@@ -2,6 +2,8 @@
 # $(c)$
 
 class ErrorsController < ApplicationController
+  respond_to :html, :js
+
   skip_before_action :login_required, :tos_agreement_required, :authorize_action
 
   ERRORS = [

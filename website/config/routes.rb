@@ -18,8 +18,6 @@ Rails.application.routes.draw do
 
   get '/home' => 'main#home'
 
-  get '/tire_samples/create' => 'tire_samples#create'
-
   resources :companies, :users, :sensors, :receivers, :tires, :tire_types, :tire_samples, :trailers, :trucks, :storages do
     member do
       get 'view_audit'
@@ -27,6 +25,14 @@ Rails.application.routes.draw do
   end
 
   resources :tire_sample_report, only: [:new, :create]
+
+  #api
+  namespace :api do
+    namespace :v1 do
+      resources :trucks, :tires, only: [:index], via: :get
+      resources :tire_samples, only: [:index, :create], via: :get
+    end
+  end
 
   # Example of regular route:
   #   get 'products/:id' => 'catalog#view'

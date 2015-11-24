@@ -25,5 +25,7 @@ module Newco
     config.assets.paths << Rails.root.join('app', 'assets', 'fonts')
 
     # config.i18n.default_locale = :de
+
+    config.api_only = false
   end
 end

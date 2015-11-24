@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150620194854) do
+ActiveRecord::Schema.define(version: 20151120031723) do
 
   create_table "companies", force: :cascade do |t|
     t.string   "name",            limit: 64,                 null: false
@@ -27,7 +27,7 @@ ActiveRecord::Schema.define(version: 20150620194854) do
     t.string   "domain_name",     limit: 128,                null: false
     t.datetime "created_at",                                 null: false
     t.datetime "updated_at",                                 null: false
-    t.boolean  "active",          limit: 1,   default: true, null: false
+    t.boolean  "active",                      default: true, null: false
   end
 
   create_table "receivers", force: :cascade do |t|
@@ -35,7 +35,7 @@ ActiveRecord::Schema.define(version: 20150620194854) do
     t.string   "receiver_type", limit: 255
     t.datetime "created_at",                               null: false
     t.datetime "updated_at",                               null: false
-    t.boolean  "active",        limit: 1,   default: true, null: false
+    t.boolean  "active",                    default: true, null: false
   end
 
   create_table "sensors", force: :cascade do |t|
@@ -43,7 +43,7 @@ ActiveRecord::Schema.define(version: 20150620194854) do
     t.string   "sensor_type", limit: 255
     t.datetime "created_at",                             null: false
     t.datetime "updated_at",                             null: false
-    t.boolean  "active",      limit: 1,   default: true, null: false
+    t.boolean  "active",                  default: true, null: false
   end
 
   create_table "sessions", force: :cascade do |t|
@@ -68,25 +68,25 @@ ActiveRecord::Schema.define(version: 20150620194854) do
     t.string   "location_name",   limit: 255,                null: false
     t.datetime "created_at",                                 null: false
     t.datetime "updated_at",                                 null: false
-    t.boolean  "active",          limit: 1,   default: true, null: false
+    t.boolean  "active",                      default: true, null: false
   end
 
   create_table "tire_samples", force: :cascade do |t|
     t.integer  "sensor_id",   limit: 4,                                         null: false
     t.integer  "receiver_id", limit: 4,                                         null: false
-    t.decimal  "kpa",                   precision: 10, scale: 6,                null: false
+    t.decimal  "psi",                   precision: 10, scale: 6,                null: false
     t.datetime "sample_time"
     t.datetime "created_at",                                                    null: false
     t.datetime "updated_at",                                                    null: false
-    t.boolean  "active",      limit: 1,                          default: true, null: false
-    t.integer  "tempC",       limit: 4
+    t.boolean  "active",                                         default: true, null: false
+    t.integer  "tempc",       limit: 4
   end
 
   create_table "tire_types", force: :cascade do |t|
     t.string   "name",       limit: 255,                null: false
     t.datetime "created_at",                            null: false
     t.datetime "updated_at",                            null: false
-    t.boolean  "active",     limit: 1,   default: true, null: false
+    t.boolean  "active",                 default: true, null: false
   end
 
   create_table "tires", force: :cascade do |t|
@@ -95,11 +95,11 @@ ActiveRecord::Schema.define(version: 20150620194854) do
     t.integer  "using_company_id",  limit: 4,                  null: false
     t.integer  "owning_company_id", limit: 4,                  null: false
     t.integer  "tire_location_id",  limit: 4,                  null: false
-    t.string   "serial",            limit: 255
     t.string   "location_notation", limit: 255
+    t.string   "serial",            limit: 255
     t.datetime "created_at",                                   null: false
     t.datetime "updated_at",                                   null: false
-    t.boolean  "active",            limit: 1,   default: true, null: false
+    t.boolean  "active",                        default: true, null: false
   end
 
   create_table "users", force: :cascade do |t|
@@ -126,9 +126,11 @@ ActiveRecord::Schema.define(version: 20150620194854) do
     t.integer  "failed_attempts",        limit: 4,   default: 0,            null: false
     t.string   "unlock_token",           limit: 255
     t.datetime "locked_at"
-    t.boolean  "active",                 limit: 1,   default: true,         null: false
+    t.boolean  "active",                             default: true,         null: false
+    t.string   "authentication_token",   limit: 255
   end
 
+  add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", using: :btree
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree

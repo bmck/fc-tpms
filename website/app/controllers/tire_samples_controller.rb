@@ -2,6 +2,8 @@
 # $(c)$
 
 class TireSamplesController < ApplicationController
+  respond_to :html, :js
+
   include SmartListing::Helper::ControllerExtensions
   helper  SmartListing::Helper
 
@@ -9,10 +11,32 @@ class TireSamplesController < ApplicationController
   before_action :authenticate_user!, except: [:create]
 
   def index
-    smart_listing_create partial: 'tire_samples/list',
-      sort_attributes: [[:tire_name, "tires.serial"], [:receiver_name, "receivers.serial"],
-                        [:psi, :psi], [:samptime, :sample_time], [:tc, "(tempc is null), tempc"]],
-      default_sort: { samptime: 'desc'}
+    respond_to do |format|
+      format.js {
+        smart_listing_create partial: 'tire_samples/list',
+        sort_attributes: [[:tire_name, "tires.serial"], [:receiver_name, "receivers.serial"],
+                          [:psi, :psi], [:samptime, :sample_time], [:tc, "(tempc is null), tempc"]],
+        default_sort: { samptime: 'desc'}
+      }
+      format.json {
+        trucks = Truck.all_trucks
+        trucks = trucks.company(current_user.company_id) unless current_user.global_admin?
+        trucks &= params[:truck_id] if params[:truck_id]
+
+        tires = trucks.map { |t| t.tires }.flatten
+        tires &= params[:tire_id] if params[:tire_id]
+
+        tire_samples = tires.map { |t| t.sensor.map { |s| s.tire_samples } }.flatten
+        tire_samples.sort! { |x, y| y.sample_time <=> x.sample_time }
+        tire_samples = tire_samples[0..(Settings.tire_samples.max - 1)]
+
+        render json: ActiveModel::ArraySerializer.new(
+          tire_samples,
+          each_serializer: Api::V1::TimeSampleSerializer,
+          root: 'tire_samples'
+        ).to_json
+      }
+    end
   end
 
   def new

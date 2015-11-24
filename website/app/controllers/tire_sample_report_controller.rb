@@ -2,6 +2,8 @@
 # $(c)$
 
 class TireSampleReportController < ApplicationController
+  respond_to :html, :js
+
   before_action :authenticate_user!
 
   def new

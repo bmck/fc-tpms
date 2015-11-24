@@ -3,6 +3,7 @@
 
 class User < ActiveRecord::Base
   has_paper_trail
+  acts_as_token_authenticatable
 
   validates_presence_of :first_name, :last_name, :email,
     :role, message: 'must be provided'
