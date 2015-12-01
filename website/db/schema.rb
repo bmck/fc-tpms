@@ -11,7 +11,19 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20151120031723) do
+ActiveRecord::Schema.define(version: 20151130024025) do
+
+  create_table "authentication_tokens", force: :cascade do |t|
+    t.string   "body",         limit: 255
+    t.integer  "user_id",      limit: 4,   null: false
+    t.datetime "last_used_at"
+    t.string   "ip_address",   limit: 255
+    t.string   "user_agent",   limit: 255
+    t.datetime "created_at",               null: false
+    t.datetime "updated_at",               null: false
+  end
+
+  add_index "authentication_tokens", ["user_id"], name: "index_authentication_tokens_on_user_id", using: :btree
 
   create_table "companies", force: :cascade do |t|
     t.string   "name",            limit: 64,                 null: false
@@ -28,6 +40,7 @@ ActiveRecord::Schema.define(version: 20151120031723) do
     t.datetime "created_at",                                 null: false
     t.datetime "updated_at",                                 null: false
     t.boolean  "active",                      default: true, null: false
+    t.integer  "time_threshold",  limit: 4
   end
 
   create_table "receivers", force: :cascade do |t|
@@ -83,10 +96,14 @@ ActiveRecord::Schema.define(version: 20151120031723) do
   end
 
   create_table "tire_types", force: :cascade do |t|
-    t.string   "name",       limit: 255,                null: false
-    t.datetime "created_at",                            null: false
-    t.datetime "updated_at",                            null: false
-    t.boolean  "active",                 default: true, null: false
+    t.string   "name",             limit: 255,                null: false
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
+    t.boolean  "active",                       default: true, null: false
+    t.integer  "time_threshold",   limit: 4
+    t.float    "hi_psi_threshold", limit: 24
+    t.float    "lo_psi_threshold", limit: 24
+    t.float    "nominal_psi",      limit: 24,  default: 0.0
   end
 
   create_table "tires", force: :cascade do |t|
@@ -100,6 +117,9 @@ ActiveRecord::Schema.define(version: 20151120031723) do
     t.datetime "created_at",                                   null: false
     t.datetime "updated_at",                                   null: false
     t.boolean  "active",                        default: true, null: false
+    t.integer  "time_threshold",    limit: 4
+    t.float    "hi_psi_threshold",  limit: 24
+    t.float    "lo_psi_threshold",  limit: 24
   end
 
   create_table "users", force: :cascade do |t|
@@ -127,10 +147,9 @@ ActiveRecord::Schema.define(version: 20151120031723) do
     t.string   "unlock_token",           limit: 255
     t.datetime "locked_at"
     t.boolean  "active",                             default: true,         null: false
-    t.string   "authentication_token",   limit: 255
+    t.integer  "time_threshold",         limit: 4
   end
 
-  add_index "users", ["authentication_token"], name: "index_users_on_authentication_token", using: :btree
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree

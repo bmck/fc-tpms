@@ -12,8 +12,7 @@ module Api
 
       def tires
         ActiveModel::ArraySerializer.new(
-          object.tires.to_a,
-          each_serializer: Api::V1::TireSerializer
+          object.tires.to_a.map { |tire| tire.id }
         )
       end
     end

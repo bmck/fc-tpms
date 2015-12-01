@@ -14,6 +14,8 @@ class Ability
     alias_action :update, :destroy, to: :modify
     # alias_action :show, :to => :read
 
+    puts "#{__FILE__}:#{__LINE__} user = #{user.inspect}"
+
     if user.try(:global_admin?) == true
       can :manage, :all
       return
@@ -24,6 +26,7 @@ class Ability
     can [:new, :create, :edit, :update], :"devise/passwords"
     can [:new, :create], :"user/registrations"
     can [:new, :show, :create], :"devise/confirmations"
+    can [:new, :create], :"api/v1/user/sessions"
     can :manage, :main
     can [:create], :tire_samples
 
@@ -57,6 +60,7 @@ class Ability
     can :main, :all
 
     can [:destroy], :"user/sessions"
+    can [:destroy], :"api/v1/user/sessions"
     can [:edit], :'user/registrations'
 
     can :read, Trailer, company_id: user.company_id

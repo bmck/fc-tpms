@@ -261,6 +261,9 @@ if defined? Devise
     # When using omniauth, Devise cannot automatically set Omniauth path,
     # so you need to do it manually. For the users scope, it would be:
     # config.omniauth_path_prefix = '/my_engine/users/auth'
+
+    # don't serialize tokens
+    Devise::Models::Authenticatable::BLACKLIST_FOR_SERIALIZATION << :tokens
   end
 
 end

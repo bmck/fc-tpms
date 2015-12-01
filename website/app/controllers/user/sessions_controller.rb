@@ -1,5 +1,10 @@
 class User::SessionsController < Devise::SessionsController
   # before_filter :configure_sign_in_params, only: [:create]
+  # if (Proc.new{ |c| c.request.format == 'application/json' })
+  #   include DeviseTokenAuth::Concerns::SetUserByToken
+  # end
+
+  respond_to :html
 
   # GET /resource/sign_in
   # def new

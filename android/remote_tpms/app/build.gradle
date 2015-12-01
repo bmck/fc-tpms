@@ -38,12 +38,13 @@ android {
         abortOnError false
     }
 
-    flavorDimensions "processor"
+    flavorDimensions "processor", "market"
 
     productFlavors {
-        local {
+        local_ {
             dimension "processor"
             resValue "string", "processTarget", "local"
+            resValue "string", "processingTitle", "Local"
             ndk {
                 moduleName "rtlsdr"
                 abiFilter "armeabi"
@@ -51,9 +52,10 @@ android {
             }
         }
 
-        remote {
+        remote_ {
             dimension "processor"
             resValue "string", "processTarget", "remote"
+            resValue "string", "processingTitle", "Remote"
             ndk {
                 moduleName "rtlsdr"
                 abiFilter "armeabi"
@@ -61,14 +63,27 @@ android {
             }
         }
 
-        localremote {
+        localremote_ {
             dimension "processor"
             resValue "string", "processTarget", "localremote"
+            resValue "string", "processingTitle", "Local and Remote"
             ndk {
                 moduleName "rtlsdr"
                 abiFilter "armeabi"
                 ldLibs "log", "m"
             }
+        }
+
+        consumer_ {
+            dimension "market"
+            resValue "string", "vehicles", "garage"
+            resValue "string", "marketTitle", "Consumer"
+        }
+
+        commercial_ {
+            dimension "market"
+            resValue "string", "vehicles", "fleet"
+            resValue "string", "marketTitle", "Commercial/Enterprise"
         }
     }
 

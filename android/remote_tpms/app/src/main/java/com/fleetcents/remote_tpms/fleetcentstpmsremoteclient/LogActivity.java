@@ -1,7 +1,5 @@
 package com.fleetcents.remote_tpms.fleetcentstpmsremoteclient;
 
-import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.BroadcastReceiver;
@@ -20,39 +18,38 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
 import android.view.WindowManager;
-import android.view.animation.AlphaAnimation;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
 import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
-import org.acra.ACRA;
-
 import java.io.File;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
-public class MainActivity extends Activity {
+public class LogActivity extends AbstractBaseActivity {
 
-    private static final String LOGTAG = "MainActivity";
+    private static final String LOGTAG = "LogActivity";
     private static final String TAG = "FleetCents";
     private static final String TMPFCBINFN = "fc.bin";
     public static PendingIntent permissionIntent;
     public static Intent intent;
-    public static MainActivity activity = null;
+    public static LogActivity activity = null;
+    private static boolean library_loaded = false;
 
-    static {
+    {
         try {
-            Log.i(LOGTAG, "Loading libraries");
-            System.loadLibrary("crystax");
-            System.loadLibrary("rtlsdr");
-            System.loadLibrary("liquid");
-            System.loadLibrary("fleetcents");
-            Log.i(LOGTAG, "Successfully loaded native libraries");
+            if (LogActivity.library_loaded == false) {
+                Log.i(LOGTAG, "Loading libraries");
+                System.loadLibrary("crystax");
+                System.loadLibrary("rtlsdr");
+                if (!getString(R.string.processTarget).equals(R.string.remote)) {
+                    System.loadLibrary("liquid");
+                    System.loadLibrary("fleetcents");
+                }
+                Log.i(LOGTAG, "Successfully loaded native libraries");
+                LogActivity.library_loaded = true;
+            }
         } catch (Throwable t) {
             Log.w(LOGTAG, "Failed to load native libraries");
         }
@@ -88,7 +85,7 @@ public class MainActivity extends Activity {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         Log.i(LOGTAG, "Enter onCreate");
-        MainActivity.activity = this;
+        LogActivity.activity = this;
         super.onCreate(savedInstanceState);
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
@@ -99,13 +96,13 @@ public class MainActivity extends Activity {
         LocalBroadcastManager.getInstance(this).registerReceiver(mFeedbackReceiver, mStatusIntentFilter);
 
         Log.i(LOGTAG, "whats wrong with following line?");
-        setContentView(R.layout.main_layout);
+        setContentView(R.layout.log_layout);
 
         scroll = (ScrollView) this.findViewById(R.id.scroll);
 
         myText = (TextView) findViewById(R.id.main_messages);
         myText.setInputType(0x00020001);
-        myText.setText(getString(R.string.hello_world) + "\n");
+        myText.setText(getString(R.string.log_instructs) + "\n");
 
         running = false;
 
@@ -116,7 +113,7 @@ public class MainActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         Log.i(LOGTAG, "Enter onCreateOptionsMenu");
 
-        getMenuInflater().inflate(R.menu.main_menu, menu);
+        super.onCreateOptionsMenu(menu);
 
         mi_startStop = menu.findItem(R.id.action_startstop);
         mi_startStop.setActionView(null);
@@ -133,10 +130,6 @@ public class MainActivity extends Activity {
         Log.i(LOGTAG, "Enter onOptionsItemSelected");
 
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                enterSettings(findViewById(R.id.action_settings));
-                return true;
-
             case R.id.action_startstop:
                 // TODO: Handle 3 cases -- stopped (show play, press to start), started (show pause or stop, press to request abort), abort requested (show flashing pause or stop, press to ignore)
                 // Stopped, now starting
@@ -156,10 +149,6 @@ public class MainActivity extends Activity {
                     }
                     int sample_rate = 2048000;
                     double secs = Double.parseDouble(sharedPrefs.getString("basestation_secssent", "1.0"));
-                    String loc = sharedPrefs.getString("basestation_local_remote", getString(R.string.local));
-                    int proc_local = (loc.equals(getString(R.string.local)) ? 1 : 0);
-
-                    String base = sharedPrefs.getString("basestation_remote_hostname", "127.0.0.1");
 
                     String tempDisplay = sharedPrefs.getString("units_temp", getString(R.string.celsius));
                     log_it("i", LOGTAG, "tempDisplay: " + tempDisplay);
@@ -174,10 +163,25 @@ public class MainActivity extends Activity {
                     boolean gain_adjust = sharedPrefs.getBoolean("gain_adjust", true);
 
                     String arguments = "?f=314980000&s=" + sample_rate + "&n=" + Math.round(secs * sample_rate) +
-                            "&base=" + base + "&c=" + temp_var +
+                            "&c=" + temp_var +
                             "&p=" + temp_press + "&q=" + (gain_adjust == true ? "1" : "0") +
-                            "&l=" + proc_local +
-                            "&t=" + (testing ? "1" : "0") + "&fn=" + file;
+                            "&t=" + (testing ? "1" : "0");
+
+                    int proc_local;
+                    if (getString(R.string.processTarget).equalsIgnoreCase(getString(R.string.local))) {
+                        proc_local = 1;
+                    } else {
+                        proc_local = (getString(R.string.processTarget).equalsIgnoreCase(getString(R.string.remote))) ? 0 :
+                                ((sharedPrefs.getString("basestation_local_remote", getString(R.string.local))).equals(
+                                        getString(R.string.local)) ? 1 : 0);
+                        if (proc_local == 0) {
+                            String base = sharedPrefs.getString("basestation_remote_hostname", "127.0.0.1");
+                            arguments += "&base=" + base;
+                        }
+                    }
+
+                    arguments += "&l=" + proc_local;
+                    arguments += "&fn=" + file;
 
                     Intent mServiceIntent = new Intent(this, SdrFtpService.class);
                     mServiceIntent.setData(Uri.parse("rtlsdr://" + arguments));
@@ -185,7 +189,7 @@ public class MainActivity extends Activity {
                 }
                 // Running, requested stop
                 else if (abort_requested == false) {
-                  abort_requested = true;
+                    abort_requested = true;
                     updateActionBarAnimation();
                 }
                 // Stop requested, now stopping
@@ -217,15 +221,16 @@ public class MainActivity extends Activity {
                 fader.setRepeatCount(Animation.INFINITE);
                 iv.startAnimation(fader);
                 mi_startStop.setActionView(iv);
-            }
-            else if (running) {
+            } else if (running) {
                 // Stopped, now starting
-                if (mi_startStop.getActionView() != null)  mi_startStop.getActionView().clearAnimation();
+                if (mi_startStop.getActionView() != null)
+                    mi_startStop.getActionView().clearAnimation();
                 mi_startStop.setActionView(null);
                 mi_startStop.setIcon(R.drawable.ic_action_pause);
             } else {
                 // Stop requested, now stopping
-                if (mi_startStop.getActionView() != null) mi_startStop.getActionView().clearAnimation();
+                if (mi_startStop.getActionView() != null)
+                    mi_startStop.getActionView().clearAnimation();
                 mi_startStop.setActionView(null);
                 mi_startStop.setIcon(R.drawable.ic_action_play);
             }
@@ -241,11 +246,6 @@ public class MainActivity extends Activity {
         else if (log_lvl == "w") Log.w(tag, str);
         else if (log_lvl == "e") Log.e(tag, str);
         else Log.v(tag, str);
-    }
-
-    public void enterSettings(View view) {
-        Intent intent = new Intent(this, SettingsActivity.class);
-        startActivity(intent);
     }
 
     private void displayMessage(final String str) {
