@@ -67,7 +67,7 @@ public class UsbHelper {
         return ans;
     }
 
-    public static UsbDevice findDevice(MainActivity activity) {
+    public static UsbDevice findDevice(LogActivity activity) {
         // auto selection by enumeration
         UsbDevice device = null;
         final UsbManager manager = (UsbManager) activity.getSystemService(Context.USB_SERVICE);
@@ -95,7 +95,7 @@ public class UsbHelper {
         return device;
     }
 
-    public static UsbDeviceConnection openDevice(MainActivity activity, final UsbDevice device) {
+    public static UsbDeviceConnection openDevice(LogActivity activity, final UsbDevice device) {
         final UsbManager manager = (UsbManager) activity.getSystemService(Context.USB_SERVICE);
 
         if (device != null && !manager.hasPermission(device)) {
@@ -104,7 +104,7 @@ public class UsbHelper {
             while (!manager.hasPermission(device)) {
                 synchronized (manager) {
                     if (!mPermissionRequestPending) {
-                        manager.requestPermission(device, MainActivity.permissionIntent);
+                        manager.requestPermission(device, LogActivity.permissionIntent);
                         mPermissionRequestPending = true;
                     }
                 }

@@ -40,6 +40,7 @@ class ApplicationController < ActionController::Base
   rescue_from CanCan::AccessDenied do |exception|
     respond_to do |format|
       format.json {
+        puts "#{__FILE__}:#{__LINE__} -- #{exception.backtrace.join("\n")}"
         render json: exception.message.to_json, status: :forbidden
       }
       format.html {
@@ -72,6 +73,7 @@ class ApplicationController < ActionController::Base
   end
 
   def authorize_action
+    puts "action = #{params[:action]}, controller = #{params[:controller]}"
     authorize!(params[:action].to_sym, params[:controller].to_sym)
   end
 

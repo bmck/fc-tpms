@@ -2,18 +2,15 @@
 # $(c)$
 
 class User < ActiveRecord::Base
+  # Include default devise modules.
+  devise :database_authenticatable, :registerable,
+    :recoverable, :rememberable, :trackable, :validatable,
+    :confirmable, :token_authenticatable #, :omniauthable
   has_paper_trail
-  acts_as_token_authenticatable
 
   validates_presence_of :first_name, :last_name, :email,
     :role, message: 'must be provided'
   validates_uniqueness_of :email
-
-  # Include default devise modules. Others available are:
-  # :confirmable, :lockable, :timeoutable and :omniauthable
-  devise :database_authenticatable, :registerable, \
-    :recoverable, :rememberable, :trackable, :validatable, \
-    :confirmable, :timeoutable
 
   after_update :send_password_change_email, if: :needs_password_change_email?
 
@@ -38,6 +35,7 @@ class User < ActiveRecord::Base
     )
   }
 
+  has_many :authentication_tokens
   belongs_to :company
 
   cattr_reader :timeout_in do 2.hours end

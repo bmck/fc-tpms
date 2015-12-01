@@ -43,7 +43,7 @@ public class SdrFtpService extends IntentService {
     private static final String LOGTAG = "SdrFtpService";
     private static final String TAG = "FleetCents";
     public String resp;
-    MainActivity activity = null;
+    LogActivity activity = null;
 
     public SdrFtpService() {
         super("SdrFtpService");
@@ -55,7 +55,7 @@ public class SdrFtpService extends IntentService {
     @Override
     protected void onHandleIntent(Intent workIntent) {
         SystemClock.sleep(1500);
-        activity = MainActivity.activity;
+        activity = LogActivity.activity;
 
         // Gets data from the incoming Intent
         String str = workIntent.getDataString();

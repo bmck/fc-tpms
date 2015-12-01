@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/display_activity_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    tools:context="com.fleetcents.remote_tpms.fleetcentstpmsremoteclient.DisplayTireActivity">
+
+    <ScrollView
+        android:id="@+id/tirestamp_scroll"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fadeScrollbars="false"
+        android:fillViewport="false">
+
+        <TextView
+            android:id="@+id/tirestamp_dirs"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:bufferType="editable"
+            android:editable="true"
+            android:freezesText="true"
+            android:paddingBottom="@dimen/activity_vertical_margin"
+            android:paddingLeft="@dimen/activity_horizontal_margin"
+            android:paddingRight="@dimen/activity_horizontal_margin"
+            android:paddingTop="@dimen/activity_vertical_margin" />
+
+        <TableLayout
+            android:id="@+id/tirestamps_table"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:padding="10dip"
+            android:stretchColumns="*">
+
+            <TableRow
+                android:id="@+id/tirestamps_row"
+                android:layout_width="fill_parent"
+                android:padding="10dip">
+
+                <TextView
+                    android:id="@+id/tire_press"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dip" />
+
+                <TextView
+                    android:id="@+id/tire_sample_time"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:padding="5dip" />
+
+            </TableRow>
+        </TableLayout>
+    </ScrollView>
+
+</RelativeLayout>

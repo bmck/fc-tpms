@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="userid">User name</string>
+    <string name="userid_summary">Fleet Cents user id</string>
+
+    <string name="password">Password</string>
+</resources>

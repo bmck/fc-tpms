@@ -3,25 +3,31 @@
 
 module Api
   module V1
-    class TireSamplesController < BaseController
-      before_action :authenticate_user!
+    class TireSamplesController < ApplicationController
+      before_action :authenticate_user!, :assign_current_user, :authorize_action
       respond_to :json
 
       def index
         trucks = Truck.all_trucks
         trucks = trucks.company(current_user.company_id) unless current_user.global_admin?
-        trucks &= params[:truck_id] if params[:truck_id]
+        trucks &= Array(params[:truck_id]).map(&:to_i).map { |tr| Truck.find(tr) } if params[:truck_id]
 
         tires = trucks.map { |t| t.tires }.flatten
-        tires &= params[:tire_id] if params[:tire_id]
+        tires &= Array(params[:tire_id]).map(&:to_i).map { |ti| Tire.find(ti) } if params[:tire_id]
 
-        tire_samples = tires.map { |t| t.sensor.map { |s| s.tire_samples } }.flatten
+        puts "tires = #{tires.inspect}"
+        tire_samples = tires.map { |t| t.sensor.tire_samples }.flatten
+        puts "tire_samples = #{tire_samples.inspect}"
         tire_samples.sort! { |x, y| y.sample_time <=> x.sample_time }
-        tire_samples = tire_samples[0..(Settings.tire_samples.max - 1)]
+        puts "tire_samples = #{tire_samples.inspect}"
+        puts "Settings.tire_samples.max = #{Settings.max_tire_samples}"
+        tire_samples = tire_samples[0..(Settings.max_tire_samples - 1)]
+        puts "tire_samples = #{tire_samples.inspect}"
 
         render json: ActiveModel::ArraySerializer.new(
           tire_samples,
-          each_serializer: Api::V1::TimeSampleSerializer
+          each_serializer: Api::V1::TireSampleSerializer,
+          "tire_samples"
         )
       end
 

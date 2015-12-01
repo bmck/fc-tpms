@@ -29,6 +29,7 @@ Rails.application.routes.draw do
   #api
   namespace :api do
     namespace :v1 do
+      devise_for :user, controllers: { sessions: "api/v1/user/sessions" }
       resources :trucks, :tires, only: [:index], via: :get
       resources :tire_samples, only: [:index, :create], via: :get
     end

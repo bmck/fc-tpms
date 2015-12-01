@@ -65,7 +65,8 @@ public class LegalActivity extends Activity {
                 "\n" +
                 "\nrtl-sdr\n\n" + total.toString() + "\n\n";
 
-        String aboutText = getString(R.string.app_name) + "\n" +
+        String aboutText = getString(R.string.app_name) +
+                " (" + getString(R.string.processingTitle) + " Processing, " + getString(R.string.marketTitle) + " Version)" + "\n" +
                 "Version " + getString(R.string.version) + "\n\n" +
                 "Included Packages and Relevant Licenses\n\n" + gpls;
         aboutTextView.setText(aboutText);
