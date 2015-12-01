@@ -15,7 +15,7 @@
 # You should have received a copy of the GNU General Public License
 # along with liquid.  If not, see <http://www.gnu.org/licenses/>.
 
-# 
+#
 # Makefile for liquid-dsp libraries
 #
 # Targets:
@@ -61,14 +61,14 @@ RANLIB		:= ranlib
 
 # flags
 INCLUDE_CFLAGS	= $(addprefix -I ,$(include_dirs))
-CONFIG_CFLAGS	= -g -O2 -march=core2  
+CONFIG_CFLAGS	= -g -O2 -march=core2
 # -g : debugging info
 CFLAGS		+= $(INCLUDE_CFLAGS) -Wall -fPIC $(CONFIG_CFLAGS)
-LDFLAGS		+= -lm -lc 
+LDFLAGS		+= -lm -lc
 ARFLAGS		= r
 PATHSEP		= /
 
-# 
+#
 # liquid headers
 #
 headers_install	:= liquid.h
@@ -76,7 +76,7 @@ headers		:= $(headers_install) liquid.internal.h
 include_headers	:= $(addprefix include/,$(headers))
 
 
-## 
+##
 ## liquid-dsp modules
 ##
 
@@ -132,9 +132,9 @@ audio_benchmarks :=						\
 	src/audio/bench/cvsd_benchmark.c			\
 
 
-# 
+#
 # MODULE : buffer
-# 
+#
 
 buffer_objects :=						\
 	src/buffer/src/bufferf.o				\
@@ -154,7 +154,7 @@ buffer_autotests :=						\
 	src/buffer/tests/cbuffer_autotest.c			\
 	src/buffer/tests/wdelay_autotest.c			\
 	src/buffer/tests/window_autotest.c			\
-	
+
 #	src/buffer/tests/sbuffer_autotest.c
 
 buffer_benchmarks :=						\
@@ -162,7 +162,7 @@ buffer_benchmarks :=						\
 	src/buffer/bench/window_push_benchmark.c		\
 	src/buffer/bench/window_read_benchmark.c		\
 
-# 
+#
 # MODULE : dotprod
 #
 dotprod_objects :=						\
@@ -210,7 +210,7 @@ dotprod_benchmarks :=						\
 	src/dotprod/bench/sumsqf_benchmark.c			\
 	src/dotprod/bench/sumsqcf_benchmark.c			\
 
-# 
+#
 # MODULE : equalization
 #
 equalization_objects :=						\
@@ -231,7 +231,7 @@ equalization_benchmarks :=					\
 	src/equalization/bench/eqlms_cccf_benchmark.c		\
 	src/equalization/bench/eqrls_cccf_benchmark.c		\
 
-# 
+#
 # MODULE : fec - forward error-correction
 #
 fec_objects :=							\
@@ -294,7 +294,7 @@ fec_benchmarks :=						\
 	src/fec/bench/interleaver_benchmark.c			\
 	src/fec/bench/packetizer_decode_benchmark.c		\
 
-# 
+#
 # MODULE : fft - fast Fourier transforms, discrete sine/cosine transforms, etc.
 #
 
@@ -578,7 +578,7 @@ filter_benchmarks :=						\
 	src/filter/bench/resamp2_crcf_benchmark.c		\
 	src/filter/bench/symsync_crcf_benchmark.c		\
 
-# 
+#
 # MODULE : framing
 #
 
@@ -664,7 +664,7 @@ framing_benchmarks :=						\
 	src/framing/bench/gmskframesync_benchmark.c		\
 
 
-# 
+#
 # MODULE : math
 #
 
@@ -673,7 +673,8 @@ math_objects :=							\
 	src/math/src/polyc.o					\
 	src/math/src/polyf.o					\
 	src/math/src/polycf.o					\
-	src/math/src/math.o					\
+  src/math/src/math.o         \
+  src/math/src/math.isnan.o         \
 	src/math/src/math.bessel.o				\
 	src/math/src/math.gamma.o				\
 	src/math/src/math.complex.o				\
@@ -696,6 +697,8 @@ src/math/src/polyf.o : %.o : %.c $(include_headers) $(poly_includes)
 src/math/src/polycf.o : %.o : %.c $(include_headers) $(poly_includes)
 
 src/math/src/math.o : %.o : %.c $(include_headers)
+
+src/math/src/math.isnan.o : %.o : %.c $(include_headers)
 
 src/math/src/math.bessel.o : %.o : %.c $(include_headers)
 
@@ -801,7 +804,7 @@ matrix_benchmarks :=						\
 	src/matrix/bench/smatrixf_mul_benchmark.c		\
 
 
-# 
+#
 # MODULE : modem
 #
 
@@ -830,7 +833,7 @@ modem_includes :=						\
 	src/modem/src/modem_sqam32.c				\
 	src/modem/src/modem_sqam128.c				\
 	src/modem/src/modem_arb.c				\
-	
+
 #src/modem/src/modem_demod_soft_const.c
 
 # main modem object
@@ -866,7 +869,7 @@ modem_benchmarks :=						\
 	src/modem/bench/modem_demodulate_benchmark.c		\
 	src/modem/bench/modem_demodsoft_benchmark.c		\
 
-# 
+#
 # MODULE : multichannel
 #
 
@@ -901,7 +904,7 @@ multichannel_benchmarks :=					\
 	src/multichannel/bench/ofdmframesync_acquire_benchmark.c	\
 	src/multichannel/bench/ofdmframesync_rxsymbol_benchmark.c	\
 
-# 
+#
 # MODULE : nco - numerically-controlled oscillator
 #
 
@@ -934,7 +937,7 @@ nco_benchmarks :=						\
 	src/nco/bench/nco_benchmark.c				\
 	src/nco/bench/vco_benchmark.c				\
 
-# 
+#
 # MODULE : optim - optimization
 #
 
@@ -956,7 +959,7 @@ optim_autotests :=						\
 optim_benchmarks :=
 
 
-# 
+#
 # MODULE : quantization
 #
 
@@ -987,7 +990,7 @@ quantization_benchmarks :=					\
 	src/quantization/bench/quantizer_benchmark.c		\
 	src/quantization/bench/compander_benchmark.c		\
 
-# 
+#
 # MODULE : random
 #
 
@@ -1016,7 +1019,7 @@ random_benchmarks :=						\
 	src/random/bench/random_benchmark.c			\
 
 
-# 
+#
 # MODULE : sequence
 #
 
@@ -1038,7 +1041,7 @@ sequence_autotests :=						\
 sequence_benchmarks :=						\
 	src/sequence/bench/bsequence_benchmark.c		\
 
-# 
+#
 # MODULE : utility
 #
 
@@ -1122,7 +1125,7 @@ objects :=							\
 	$(sequence_objects)					\
 	$(utility_objects)					\
 	$(vector_objects)					\
-	
+
 
 autotest_sources :=						\
 	autotest/null_autotest.c				\
@@ -1146,7 +1149,7 @@ autotest_sources :=						\
 	$(sequence_autotests)					\
 	$(utility_autotests)					\
 	$(vector_autotests)					\
-	
+
 
 benchmark_sources :=						\
 	bench/null_benchmark.c					\
@@ -1187,7 +1190,7 @@ libliquid.a: $(objects)
 
 # darwin
 #
-# gcc -dynamiclib -install_name libliquid.dylib -o libliquid.dylib libmodem.a libutility.a 
+# gcc -dynamiclib -install_name libliquid.dylib -o libliquid.dylib libmodem.a libutility.a
 libliquid.dylib: $(objects)
 	$(CC) -dynamiclib -install_name $@ -o $@ $^ $(LDFLAGS)
 
@@ -1206,7 +1209,7 @@ help:
 	@echo "Targets for liquid-dsp makefile:"
 	@$(GREP) -E "^## TARGET : " [Mm]akefile | $(SED) 's/## TARGET : /  /'
 
-## 
+##
 ## TARGET : install   - installs the libraries and header files in the host system
 ##
 
@@ -1231,7 +1234,7 @@ install:
 	@echo "---------------------------------------------------------"
 	@echo ""
 
-## 
+##
 ## TARGET : uninstall - uninstalls the libraries and header files in the host system
 ##
 
@@ -1371,7 +1374,7 @@ clean-bench:
 	$(RM) bench/fftbench
 
 
-## 
+##
 ## TARGET : examples  - build all examples binaries
 ##
 .PHONY: examples
@@ -1512,7 +1515,7 @@ clean-examples:
 	$(RM) examples/*.o
 	$(RM) $(example_programs)
 
-## 
+##
 ## TARGET : sandbox   - build all sandbox binaries
 ##
 
