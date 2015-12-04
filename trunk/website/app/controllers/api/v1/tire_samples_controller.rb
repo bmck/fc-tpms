@@ -15,14 +15,9 @@ module Api
         tires = trucks.map { |t| t.tires }.flatten
         tires &= Array(params[:tire_id]).map(&:to_i).map { |ti| Tire.find(ti) } if params[:tire_id]
 
-        puts "tires = #{tires.inspect}"
         tire_samples = tires.map { |t| t.sensor.tire_samples }.flatten
-        puts "tire_samples = #{tire_samples.inspect}"
         tire_samples.sort! { |x, y| y.sample_time <=> x.sample_time }
-        puts "tire_samples = #{tire_samples.inspect}"
-        puts "Settings.tire_samples.max = #{Settings.max_tire_samples}"
         tire_samples = tire_samples[0..(Settings.max_tire_samples - 1)]
-        puts "tire_samples = #{tire_samples.inspect}"
 
         render json: ActiveModel::ArraySerializer.new(
           tire_samples,
