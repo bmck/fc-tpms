@@ -12,7 +12,7 @@ class TiresController < ApplicationController
 
   def index
     respond_to do |format|
-      format.js {
+      format.any(:js, :html) {
         smart_listing_create partial: 'tires/list',
         sort_attributes: [[:name, :serial], [:sensor_name, "sensors.serial"],
                           [:tire_type_name, "tire_types.name"], [:owning_company_name, "owning_company.name"],

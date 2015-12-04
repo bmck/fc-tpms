@@ -12,7 +12,7 @@ class TrucksController < ApplicationController
 
   def index
     respond_to do |format|
-      format.js {
+      format.any(:js ,:html) {
         smart_listing_create partial: 'trucks/list',
         sort_attributes: [[:company_name, "companies.name"], [:serial, :truck_serial]]
       }
