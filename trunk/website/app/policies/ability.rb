@@ -14,8 +14,6 @@ class Ability
     alias_action :update, :destroy, to: :modify
     # alias_action :show, :to => :read
 
-    puts "#{__FILE__}:#{__LINE__} user = #{user.inspect}"
-
     if user.try(:global_admin?) == true
       can :manage, :all
       return

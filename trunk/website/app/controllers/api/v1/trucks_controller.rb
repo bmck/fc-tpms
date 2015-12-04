@@ -15,7 +15,7 @@ module Api
         render json: ActiveModel::ArraySerializer.new(
           trucks,
           each_serializer: Api::V1::TruckSerializer,
-          "trucks"
+          root: "trucks"
         )
 
       end
