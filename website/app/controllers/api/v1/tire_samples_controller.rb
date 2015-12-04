@@ -27,7 +27,7 @@ module Api
         render json: ActiveModel::ArraySerializer.new(
           tire_samples,
           each_serializer: Api::V1::TireSampleSerializer,
-          "tire_samples"
+          root: "tire_samples"
         )
       end
 

@@ -1,0 +1,2 @@
+AuthInfo:smtp.gmail.com "U:newco" "I:info@capitalytics.com" "P:w4r4w4Rjp" "M:PLAIN"
+AuthInfo:smtp.gmail.com:587 "U:newco" "I:info@capitalytics.com" "P:w4r4w4Rjp" "M:PLAIN"

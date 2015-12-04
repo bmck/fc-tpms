@@ -15,7 +15,7 @@ ActionMailer::Base.smtp_settings = {
   port: 587,
   domain: 'fleetcents.com',
   user_name: 'bmck@fleetcents.com',
-  password: 'w4r4w4R',
+  password: 'w4r4w4r4W',
   authentication: :plain,
   enable_starttls_auto: true
 }

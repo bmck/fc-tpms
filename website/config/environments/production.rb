@@ -85,8 +85,8 @@ Rails.application.configure do
 
   config.middleware.use ExceptionNotification::Rack,
   email: {
-    email_prefix: "[FC] ",
-    sender_address: %{"Exception Notification" <bmck@fleetcents.com>},
+    email_prefix: "[FC ERROR] ",
+    sender_address: %{"production" <production@capitalytics.com>},
     exception_recipients: %w{bmck@fleetcents.com},
     ignore_crawlers: %w{Googlebot bingbot},
     normalize_subject: true

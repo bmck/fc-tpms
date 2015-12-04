@@ -17,7 +17,7 @@ if ! test "$WHOAMI" = "root"; then
     echo "error: you must be root to run this script"
     exit 1
 fi
-su - newco -c "cd ~/src && rake delayed_jobs:force_stop --trace"
+# su - newco -c "cd ~/src && rake delayed_jobs:force_stop --trace"
 service httpd stop
 
 rvm=`type rvm | head -1`
@@ -54,7 +54,7 @@ for FILE in `ls vendor/gems/*.gem`; do
 done
 cd -
 
-su - newco -c "cd ~/src && rake assets:precompile --trace"
+su - newco -c "cd ~/src && rake assets:precompile --trace && cd public/assets && ln -s ../../app/assets/fonts/* ."
 
 service httpd start
 # /home/newco/src/bin/renice_processes_for_root
