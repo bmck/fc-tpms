@@ -13,6 +13,8 @@ public class SettingsFragment extends PreferenceFragment {
         public void onCreate(Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
 
+            addPreferencesFromResource(R.xml.pref_user);
+
             // Load the preferences from an XML resource
             if (getString(R.string.processTarget).equalsIgnoreCase (getString(R.string.local))) {
                 addPreferencesFromResource(R.xml.pref_basestation_local);
@@ -23,6 +25,7 @@ public class SettingsFragment extends PreferenceFragment {
             else {
                 addPreferencesFromResource(R.xml.pref_basestation_localremote);
             }
+            
             addPreferencesFromResource(R.xml.pref_units);
             addPreferencesFromResource(R.xml.pref_gain);
             addPreferencesFromResource(R.xml.pref_crash_report);

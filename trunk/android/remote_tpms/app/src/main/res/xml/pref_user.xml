@@ -1,23 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-    <EditTextPreference
-        android:key="userid"
-        android:title="@string/userid"
-        android:summary="@string/userid_summary"
-        android:defaultValue=""
-        android:selectAllOnFocus="true"
-        android:inputType="text"
-        android:capitalize="none"
-        android:singleLine="true"
-        android:maxLines="1" />
-    <EditTextPreference
-        android:key="password"
-        android:title="@string/password"
-        android:defaultValue=""
-        android:password="true"
-        android:selectAllOnFocus="true"
-        android:inputType="text"
-        android:capitalize="none"
-        android:singleLine="true"
-        android:maxLines="1" />
+    <PreferenceScreen
+        android:key="user_creds_screen"
+        android:title="@string/user_creds"
+        android:summary="@string/user_creds_summary">
+
+        <EditTextPreference
+            android:capitalize="none"
+            android:defaultValue=""
+            android:inputType="text"
+            android:key="userid"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="@string/userid_summary"
+            android:title="@string/userid" />
+        <EditTextPreference
+            android:capitalize="none"
+            android:defaultValue=""
+            android:inputType="text"
+            android:key="password"
+            android:maxLines="1"
+            android:password="true"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/password" />
+
+    </PreferenceScreen>
 </PreferenceScreen>

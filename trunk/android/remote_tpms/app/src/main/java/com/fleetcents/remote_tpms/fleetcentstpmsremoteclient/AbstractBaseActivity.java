@@ -1,10 +1,14 @@
 package com.fleetcents.remote_tpms.fleetcentstpmsremoteclient;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.hardware.usb.UsbManager;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,6 +20,9 @@ import android.view.View;
 public class AbstractBaseActivity extends Activity {
 
     private static final String LOGTAG = "AbstractBaseActivity";
+    SharedPreferences sharedPrefs = null;
+    protected static boolean credsProvided = false;
+    protected boolean serviceCallHandled = false;
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -28,7 +35,38 @@ public class AbstractBaseActivity extends Activity {
         startActivity(intent);
     }
 
-    protected void enterLogView(View view) {
+    SharedPreferences.OnSharedPreferenceChangeListener listener = null;
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (sharedPrefs == null) {
+            sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
+        }
+
+        credsProvided = ((sharedPrefs.getString("userid", "").length() > 0) &&
+                (sharedPrefs.getString("password", "").length() > 0));
+
+        listener = new SharedPreferences.OnSharedPreferenceChangeListener() {
+            public void onSharedPreferenceChanged(SharedPreferences prefs, String key) {
+                // listener implementation
+                if ((key.equals("userid")) || (key.equals("password"))) {
+                    // Set summary to be the user-description for the selected value
+                    credsProvided = (sharedPrefs.getString("userid", "").length() > 0) &&
+                            (sharedPrefs.getString("password", "").length() > 0);
+                }
+            }
+        };
+        sharedPrefs.registerOnSharedPreferenceChangeListener(listener);
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        if ((sharedPrefs != null) && (listener != null)) {
+            sharedPrefs.unregisterOnSharedPreferenceChangeListener(listener);
+        }
+    }    protected void enterLogView(View view) {
         Intent intent = new Intent(this, LogActivity.class);
         startActivity(intent);
     }
