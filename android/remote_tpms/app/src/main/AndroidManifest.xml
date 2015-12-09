@@ -19,7 +19,7 @@
         android:name=".RemoteTpmsApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/app_name"
+        android:label="@string/qualifiedAppName"
         android:theme="@style/AppTheme" >
         <activity
             android:name=".LogActivity"
@@ -27,7 +27,7 @@
         </activity>
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/app_name" >
+            android:label="@string/action_settings" >
         </activity>
         <activity
             android:name=".ChangeLogActivity"
@@ -48,21 +48,29 @@
             </intent-filter>
         </activity>
 
-        <service
-            android:name=".SdrFtpService"
-            android:exported="false" />
-
-        <activity android:name=".DisplayFleetActivity" >
+        <activity android:name=".DisplayFleetActivity"
+            android:label="@string/display_fleet_activity" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DisplayVehicleActivity" >
+        <activity android:name=".DisplayVehicleActivity"
+            android:label="@string/display_vehicle_activity" >
         </activity>
-        <activity android:name=".DisplayTireActivity" >
+        <activity android:name=".DisplayTireActivity"
+            android:label="@string/display_tire_activity" >
         </activity>
+
+        <service
+            android:name=".SdrFtpService"
+            android:exported="false" />
+
+        <service
+            android:name=".FcQueryService"
+            android:exported="false" />
+
     </application>
 
 </manifest>

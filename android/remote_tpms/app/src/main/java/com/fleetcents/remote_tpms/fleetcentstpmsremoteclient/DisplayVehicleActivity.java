@@ -1,12 +1,18 @@
 package com.fleetcents.remote_tpms.fleetcentstpmsremoteclient;
 
 import android.app.Activity;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.v4.content.LocalBroadcastManager;
 import android.text.format.Time;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.RelativeLayout;
@@ -23,10 +29,11 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
-public class DisplayVehicleActivity extends AbstractClientActivity {
+public class DisplayVehicleActivity extends AbstractBaseActivity {
 
-    protected String vehicleUri = "api/v1/tires.json";
-    protected String vehicleParms = "tire_id=";
+    private static final String LOGTAG = "DisplayVehicleActivity";
+    protected String vehicleUri = "/api/v1/tires.json";
+    protected String vehicleParms = "truck_id=";
 
     private int truckId;
 
@@ -36,37 +43,64 @@ public class DisplayVehicleActivity extends AbstractClientActivity {
         setContentView(R.layout.activity_display_vehicle);
     }
 
+    private BroadcastReceiver bReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            //put here whaterver you want your activity to do with the intent received
+            String response = intent.getStringExtra("response");
+            try {
+                JSONObject jsonObj = new JSONObject(response);
+                handleServerResponse(jsonObj);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
     protected void onResume() {
         super.onResume();
+        String prms = "meth=GET";
+
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            truckId = extras.getInt("EXTRA_TRUCK_ID");
+            prms = prms + "&" + vehicleParms + truckId;
+        }
+
+        String arguments = vehicleUri + "?" + prms;
+        LocalBroadcastManager.getInstance(this).registerReceiver(bReceiver, new IntentFilter(arguments));
 
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.display_fleet_layout);
 
-        TextView fleet_instructs = (TextView) findViewById(R.id.vehicle_dirs);
-        fleet_instructs.setInputType(0x00020001);
+        TextView vehicle_instructs = (TextView) findViewById(R.id.vehicle_dirs);
+        vehicle_instructs.setInputType(0x00020001);
 
-        if ((getString(R.string.userid).length() > 0) && (getString(R.string.password).length() > 0)) {
-            fleet_instructs.setText(getString(R.string.vehicle_instructs));
+        if (credsProvided) {
+            if (!serviceCallHandled) {
+                serviceCallHandled = true;
 
-            String prms = "";
+                vehicle_instructs.setTextSize(16);
+                vehicle_instructs.setText(getString(R.string.vehicle_instructs));
 
-            Bundle extras = getIntent().getExtras();
-            if (extras != null) {
-                truckId = extras.getInt("EXTRA_TRUCK_ID");
-                prms = vehicleParms + truckId;
+//            callToServer(vehicleUri, prms, "GET");
+                Intent mServiceIntent = new Intent(this, FcQueryService.class);
+                mServiceIntent.setData(Uri.parse("fc://" + arguments));
+                startService(mServiceIntent);
             }
-
-            callToServer(vehicleUri, prms, "GET");
-        }
-        else {
-            fleet_instructs.setText(getString(R.string.update_creds));
+        } else {
+            vehicle_instructs.setTextSize(24);
+            vehicle_instructs.setText(getString(R.string.update_creds));
         }
     }
 
     protected void handleServerResponse(JSONObject jsonObj) {
+        Log.i(LOGTAG, "Calling " + LOGTAG + "handleServerResponse\n");
+
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.display_vehicle_layout);
 
         try {
+            Log.i(LOGTAG, "D @ " + jsonObj.toString() + "\n");
             // parse response, and add buttons to UI panel
             JSONArray tires = jsonObj.getJSONArray("tires");
             int num_tires = (tires.length() > 4) ? 4 : tires.length();
@@ -85,17 +119,20 @@ public class DisplayVehicleActivity extends AbstractClientActivity {
 
                 /* Create a new row to be added. */
                 TableRow tr = new TableRow(this);
-                tr.setLayoutParams(new TableRow.LayoutParams(TableRow.LayoutParams.MATCH_PARENT, TableRow.LayoutParams.MATCH_PARENT));
+                tr.setLayoutParams(new TableRow.LayoutParams(
+                        TableRow.LayoutParams.MATCH_PARENT,
+                        TableRow.LayoutParams.MATCH_PARENT
+                ));
 
                 TextView tire_color = new TextView(this);
-                int grn = Color.GREEN;
-                int ylo = Color.YELLOW;
-                int red = Color.RED;
+                int grn = (R.color.fc_green);
+                int ylo = (R.color.fc_yellow);
+                int red = (R.color.fc_red);
                 int col = grn;
 
-                Calendar c = Calendar.getInstance();
-                int seconds = c.get(Calendar.SECOND);
+                long seconds = Math.round(System.currentTimeMillis()/1000.0);
 
+                Log.i(LOGTAG, "tm = " + tm + ", seconds = " + seconds + ", tm_thresh = " + tm_thresh + "\n");
                 if (tm < seconds - tm_thresh) {
                     col = ylo;
                 }
@@ -119,7 +156,7 @@ public class DisplayVehicleActivity extends AbstractClientActivity {
 
                 TextView tire_press = new TextView(this);
                 boolean showPsi = sharedPrefs.getString("units_pressure", getString(R.string.psi)).equals(getString(R.string.psi));
-                tire_press.setText("" + (showPsi ? psi + " " + getString(R.string.psi) : (psi/0.145037738) + " " + getString(R.string.kpa)));
+                tire_press.setText("" + (showPsi ? psi + " " + getString(R.string.psi) : (psi / 0.145037738) + " " + getString(R.string.kpa)));
                 tr.addView(tire_press);
 
                 TextView tire_sample_time = new TextView(this);
@@ -131,6 +168,15 @@ public class DisplayVehicleActivity extends AbstractClientActivity {
                 Button b = new Button(this);
                 b.setText("Timestamps");
                 b.setId(tire_id);
+
+                b.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        Intent i = new Intent(getApplicationContext(), DisplayTireActivity.class);
+                        i.putExtra("EXTRA_TIRE_ID", v.getId());
+                        startActivity(i);
+                    }
+                });
+
                 tr.addView(b);
 
                 /* Add row to TableLayout. */
@@ -139,10 +185,5 @@ public class DisplayVehicleActivity extends AbstractClientActivity {
         } catch (JSONException e) {
             ACRA.getErrorReporter().handleSilentException(null);
         }
-    }
-    public void onClick(View v) {
-        Intent i = new Intent(getApplicationContext(), DisplayTireActivity.class);
-        i.putExtra("EXTRA_TIRE_ID", v.getId());
-        startActivity(i);
     }
 }

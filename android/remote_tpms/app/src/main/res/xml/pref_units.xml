@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
     <PreferenceScreen
-        android:key="units_preferencescreen"
-        android:title="@string/pref_header_presentation">
+        android:key="user_creds_screen"
+        android:title="@string/user_creds">
 
         <ListPreference
             android:entries="@array/tempOptionsArray"

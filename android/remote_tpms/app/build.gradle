@@ -41,10 +41,11 @@ android {
     flavorDimensions "processor", "market"
 
     productFlavors {
-        local_ {
+        local {
             dimension "processor"
             resValue "string", "processTarget", "local"
             resValue "string", "processingTitle", "Local"
+            resValue "string", "qualifiedAppName", "Local FleetCents TPMS Client"
             ndk {
                 moduleName "rtlsdr"
                 abiFilter "armeabi"
@@ -52,10 +53,11 @@ android {
             }
         }
 
-        remote_ {
+        remote {
             dimension "processor"
             resValue "string", "processTarget", "remote"
             resValue "string", "processingTitle", "Remote"
+            resValue "string", "qualifiedAppName", "Remote FleetCents TPMS Client"
             ndk {
                 moduleName "rtlsdr"
                 abiFilter "armeabi"
@@ -63,10 +65,11 @@ android {
             }
         }
 
-        localremote_ {
+        localremote {
             dimension "processor"
             resValue "string", "processTarget", "localremote"
             resValue "string", "processingTitle", "Local and Remote"
+            resValue "string", "qualifiedAppName", "Local+Remote FleetCents TPMS Client"
             ndk {
                 moduleName "rtlsdr"
                 abiFilter "armeabi"
@@ -74,16 +77,22 @@ android {
             }
         }
 
-        consumer_ {
+        consumer {
             dimension "market"
             resValue "string", "vehicles", "garage"
             resValue "string", "marketTitle", "Consumer"
+            resValue "string", "display_fleet_activity", "Your Garage"
+            resValue "string", "display_vehicle_activity", "Your Car"
+            resValue "string", "display_tire_activity", "Your Tire"
         }
 
-        commercial_ {
+        commercial {
             dimension "market"
             resValue "string", "vehicles", "fleet"
             resValue "string", "marketTitle", "Commercial/Enterprise"
+            resValue "string", "display_fleet_activity", "Fleet Status"
+            resValue "string", "display_vehicle_activity", "Vehicle Status"
+            resValue "string", "display_tire_activity", "Tire History"
         }
     }
 

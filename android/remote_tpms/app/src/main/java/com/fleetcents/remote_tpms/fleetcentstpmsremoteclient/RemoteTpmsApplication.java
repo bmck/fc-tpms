@@ -27,10 +27,16 @@ public class RemoteTpmsApplication extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-        ACRA.init(this);
+        init();
 
         HashMap<String,String> ACRAData = new HashMap<String,String>();
 //        ACRAData.put("my_app_info", "custom data");
         ACRA.getErrorReporter().addReportSender(new ACRAPostSender(ACRAData));
     }
+
+    private void init() {
+        ACRA.init(this);
+        FcQueryService.init(this);
+    }
+
 }
