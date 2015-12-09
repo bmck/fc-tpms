@@ -1,0 +1,143 @@
+import org.apache.tools.ant.taskdefs.condition.Os
+
+apply plugin: 'com.android.application'
+apply from: 'versioning.gradle'
+
+android {
+    signingConfigs {
+        release {
+            keyAlias 'release'
+            keyPassword 'w4r4w4Rfc'
+            storeFile file('/Users/bmck/Documents/workspace/fleetcents/android/remote_tpms/keystore.jks')
+            storePassword 'w4r4w4Rfc'
+        }
+    }
+    compileSdkVersion 21
+    buildToolsVersion '21.1.2'
+    sourceSets.main.jni.srcDirs = []
+    sourceSets.main.jniLibs.srcDir 'src/main/libs'
+
+    defaultConfig {
+        applicationId "com.fleetcents.remote_tpms.fleetcentstpmsremoteclient"
+        minSdkVersion 18
+        targetSdkVersion 22
+        signingConfig signingConfigs.release
+        versionCode buildVersionCode()
+        versionName version
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    dexOptions {
+        preDexLibraries = false
+    }
+    lintOptions {
+        abortOnError false
+    }
+
+    flavorDimensions "processor", "market"
+
+    productFlavors {
+        local {
+            dimension "processor"
+            resValue "string", "processTarget", "local"
+            resValue "string", "processingTitle", "Local"
+            resValue "string", "qualifiedAppName", "Local FleetCents TPMS Client"
+            ndk {
+                moduleName "rtlsdr"
+                abiFilter "armeabi"
+                ldLibs "log", "m"
+            }
+        }
+
+        remote {
+            dimension "processor"
+            resValue "string", "processTarget", "remote"
+            resValue "string", "processingTitle", "Remote"
+            resValue "string", "qualifiedAppName", "Remote FleetCents TPMS Client"
+            ndk {
+                moduleName "rtlsdr"
+                abiFilter "armeabi"
+                ldLibs "log", "m"
+            }
+        }
+
+        localremote {
+            dimension "processor"
+            resValue "string", "processTarget", "localremote"
+            resValue "string", "processingTitle", "Local and Remote"
+            resValue "string", "qualifiedAppName", "Local+Remote FleetCents TPMS Client"
+            ndk {
+                moduleName "rtlsdr"
+                abiFilter "armeabi"
+                ldLibs "log", "m"
+            }
+        }
+
+        consumer {
+            dimension "market"
+            resValue "string", "vehicles", "garage"
+            resValue "string", "marketTitle", "Consumer"
+            resValue "string", "display_fleet_activity", "Your Garage"
+            resValue "string", "display_vehicle_activity", "Your Car"
+            resValue "string", "display_tire_activity", "Your Tire"
+        }
+
+        commercial {
+            dimension "market"
+            resValue "string", "vehicles", "fleet"
+            resValue "string", "marketTitle", "Commercial/Enterprise"
+            resValue "string", "display_fleet_activity", "Fleet Status"
+            resValue "string", "display_vehicle_activity", "Vehicle Status"
+            resValue "string", "display_tire_activity", "Tire History"
+        }
+    }
+
+    // call regular ndk-build(.cmd) script from app directory
+    task ndkBuild(type: Exec) {
+        workingDir file('src/main')
+        commandLine getNdkBuildCmd()
+    }
+
+    tasks.withType(JavaCompile) {
+        compileTask -> compileTask.dependsOn ndkBuild
+    }
+
+    task cleanNative(type: Exec) {
+        workingDir file('src/main')
+        commandLine getNdkBuildCmd(), 'clean'
+    }
+
+    clean.dependsOn cleanNative
+}
+
+def getNdkDir() {
+    if (System.env.ANDROID_NDK_ROOT != null)
+        return System.env.ANDROID_NDK_ROOT
+
+    Properties properties = new Properties()
+    properties.load(project.rootProject.file('local.properties').newDataInputStream())
+    def ndkdir = properties.getProperty('ndk.dir', null)
+    if (ndkdir == null)
+        throw new GradleException("NDK location not found. Define location with ndk.dir in the local.properties file or with an ANDROID_NDK_ROOT environment variable.")
+
+    return ndkdir
+}
+
+def getNdkBuildCmd() {
+    def ndkbuild = getNdkDir() + "/ndk-build"
+    if (Os.isFamily(Os.FAMILY_WINDOWS))
+        ndkbuild += ".cmd"
+
+    return ndkbuild
+}
+
+
+dependencies {
+    compile fileTree(include: ['*.jar'], dir: 'libs')
+    compile 'com.android.support:support-v4:22.2.1'
+    compile 'com.mcxiaoke.volley:library-aar:1.0.0'
+}

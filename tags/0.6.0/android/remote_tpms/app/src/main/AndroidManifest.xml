@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.fleetcents.remote_tpms.fleetcentstpmsremoteclient"
+    android:versionCode="00050700"
+    android:versionName="0.5.7" >
+
+    <uses-sdk android:minSdkVersion="18" />
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+
+    <uses-feature
+        android:name="android.hardware.usb.host"
+        android:required="false" />
+
+    <application
+        android:name=".RemoteTpmsApplication"
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/qualifiedAppName"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name=".LogActivity"
+            android:label="@string/app_name" >
+        </activity>
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/action_settings" >
+        </activity>
+        <activity
+            android:name=".ChangeLogActivity"
+            android:label="@string/pref_about_changelog" >
+            <intent-filter>
+                <action android:name="android.intent.changelog.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".LegalActivity"
+            android:label="@string/pref_about_legal" >
+            <intent-filter>
+                <action android:name="android.intent.legal.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity android:name=".DisplayFleetActivity"
+            android:label="@string/display_fleet_activity" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity android:name=".DisplayVehicleActivity"
+            android:label="@string/display_vehicle_activity" >
+        </activity>
+        <activity android:name=".DisplayTireActivity"
+            android:label="@string/display_tire_activity" >
+        </activity>
+
+        <service
+            android:name=".SdrFtpService"
+            android:exported="false" />
+
+        <service
+            android:name=".FcQueryService"
+            android:exported="false" />
+
+    </application>
+
+</manifest>

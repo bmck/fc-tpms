@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <item type="color" name="fc_red">#FFFF0000</item>
+    <item type="color" name="fc_green">#FF00FF00</item>
+    <item type="color" name="fc_yellow">#FFFFCE23</item>
+</resources>

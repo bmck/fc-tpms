@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
+    <PreferenceScreen
+        android:key="user_creds_screen"
+        android:title="@string/user_creds"
+        android:summary="@string/user_creds_summary">
+
+        <EditTextPreference
+            android:capitalize="none"
+            android:defaultValue=""
+            android:inputType="text"
+            android:key="userid"
+            android:maxLines="1"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:summary="@string/userid_summary"
+            android:title="@string/userid" />
+        <EditTextPreference
+            android:capitalize="none"
+            android:defaultValue=""
+            android:inputType="text"
+            android:key="password"
+            android:maxLines="1"
+            android:password="true"
+            android:selectAllOnFocus="true"
+            android:singleLine="true"
+            android:title="@string/password" />
+
+    </PreferenceScreen>
+</PreferenceScreen>
