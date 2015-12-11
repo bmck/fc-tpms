@@ -43,9 +43,9 @@ android {
     productFlavors {
         local {
             dimension "processor"
-            resValue "string", "processTarget", "local"
-            resValue "string", "processingTitle", "Local"
-            resValue "string", "qualifiedAppName", "Local FleetCents TPMS Client"
+//            resValue "string", "processTarget", "local"
+//            resValue "string", "processingTitle", "Local"
+            applicationId = "com.fleetcents.remote_tpms.fleetcentstpmsremoteclient.l"
             ndk {
                 moduleName "rtlsdr"
                 abiFilter "armeabi"
@@ -55,9 +55,9 @@ android {
 
         remote {
             dimension "processor"
-            resValue "string", "processTarget", "remote"
-            resValue "string", "processingTitle", "Remote"
-            resValue "string", "qualifiedAppName", "Remote FleetCents TPMS Client"
+//            resValue "string", "processTarget", "remote"
+//            resValue "string", "processingTitle", "Remote"
+            applicationId = "com.fleetcents.remote_tpms.fleetcentstpmsremoteclient.r"
             ndk {
                 moduleName "rtlsdr"
                 abiFilter "armeabi"
@@ -67,9 +67,9 @@ android {
 
         localremote {
             dimension "processor"
-            resValue "string", "processTarget", "localremote"
-            resValue "string", "processingTitle", "Local and Remote"
-            resValue "string", "qualifiedAppName", "Local+Remote FleetCents TPMS Client"
+//            resValue "string", "processTarget", "localremote"
+//            resValue "string", "processingTitle", "Local and Remote"
+            applicationId = "com.fleetcents.remote_tpms.fleetcentstpmsremoteclient.lr"
             ndk {
                 moduleName "rtlsdr"
                 abiFilter "armeabi"
@@ -79,22 +79,40 @@ android {
 
         consumer {
             dimension "market"
-            resValue "string", "vehicles", "garage"
-            resValue "string", "marketTitle", "Consumer"
-            resValue "string", "display_fleet_activity", "Your Garage"
-            resValue "string", "display_vehicle_activity", "Your Car"
-            resValue "string", "display_tire_activity", "Your Tire"
+            applicationIdSuffix ".consumer"
         }
 
         commercial {
             dimension "market"
-            resValue "string", "vehicles", "fleet"
-            resValue "string", "marketTitle", "Commercial/Enterprise"
-            resValue "string", "display_fleet_activity", "Fleet Status"
-            resValue "string", "display_vehicle_activity", "Vehicle Status"
-            resValue "string", "display_tire_activity", "Tire History"
+            applicationIdSuffix ".commercial"
         }
     }
+
+//    android.variantFilter { variant ->
+//        def flavorString = ""
+//        def flavors = variant.getFlavors()
+//        for (int i = 0; i < flavors.size(); i++) {
+//            flavorString += flavors[i].name;
+//        }
+//        if(flavorString.equalsIgnoreCase("localConsumer")) {
+//            variant.getDefaultConfig().applicationId = "com.fleetcents.remote_tpms.fleetcentstpmsremoteclient.l.consumer"
+//        }
+//        if(flavorString.equalsIgnoreCase("remoteConsumer")) {
+//            variant.getDefaultConfig().applicationId = "com.fleetcents.remote_tpms.fleetcentstpmsremoteclient.r.consumer"
+//        }
+//        if(flavorString.equalsIgnoreCase("localremoteConsumer")) {
+//            variant.getDefaultConfig().applicationId = "com.fleetcents.remote_tpms.fleetcentstpmsremoteclient.lr.consumer"
+//        }
+//        if(flavorString.equalsIgnoreCase("localCommercial")) {
+//            variant.getDefaultConfig().applicationId = "com.fleetcents.remote_tpms.fleetcentstpmsremoteclient.l.commercial"
+//        }
+//        if(flavorString.equalsIgnoreCase("remoteCommercial")) {
+//            variant.getDefaultConfig().applicationId = "com.fleetcents.remote_tpms.fleetcentstpmsremoteclient.r.commercial"
+//        }
+//        if(flavorString.equalsIgnoreCase("localremoteCommercial")) {
+//            variant.getDefaultConfig().applicationId = "com.fleetcents.remote_tpms.fleetcentstpmsremoteclient.lr.commercial"
+//        }
+//    }
 
     // call regular ndk-build(.cmd) script from app directory
     task ndkBuild(type: Exec) {
@@ -140,4 +158,5 @@ dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
     compile 'com.android.support:support-v4:22.2.1'
     compile 'com.mcxiaoke.volley:library-aar:1.0.0'
+    compile 'com.android.support:support-v13:21.0.3'
 }
