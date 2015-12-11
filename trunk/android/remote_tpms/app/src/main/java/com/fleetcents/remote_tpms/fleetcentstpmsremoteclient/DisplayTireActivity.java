@@ -11,6 +11,7 @@ import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
+import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
@@ -72,7 +73,6 @@ public class DisplayTireActivity extends AbstractBaseActivity {
                 tire_instructs.setTextSize(16);
                 tire_instructs.setText(getString(R.string.tire_samples_instructs));
 
-//            callToServer(tireSampleUri, prms, "GET");
                 Intent mServiceIntent = new Intent(this, FcQueryService.class);
                 mServiceIntent.setData(Uri.parse("fc://" + arguments));
                 startService(mServiceIntent);
@@ -103,11 +103,13 @@ public class DisplayTireActivity extends AbstractBaseActivity {
                             TableRow.LayoutParams.MATCH_PARENT)
             );
             TextView hdr_tire_press = new TextView(this);
-            hdr_tire_press.setText("Pressure (" + (showPsi ?  getString(R.string.psi) :  getString(R.string.kpa)) + ")");
+            hdr_tire_press.setText("Pressure\n(" + (showPsi ?  getString(R.string.psi) :  getString(R.string.kpa)) + ")");
+            hdr_tire_press.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             hdr_tr.addView(hdr_tire_press);
 
             TextView hdr_tire_sample_time = new TextView(this);
             hdr_tire_sample_time.setText("Time");
+            hdr_tire_sample_time.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             hdr_tr.addView(hdr_tire_sample_time);
 
             tl.addView(hdr_tr, new TableLayout.LayoutParams(

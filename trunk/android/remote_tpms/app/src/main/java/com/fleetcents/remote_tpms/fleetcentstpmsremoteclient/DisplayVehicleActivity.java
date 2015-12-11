@@ -117,14 +117,17 @@ public class DisplayVehicleActivity extends AbstractBaseActivity {
 
             TextView tire_hdr = new TextView(this);
             tire_hdr.setText("Tires");
+            tire_hdr.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             hdr_tr.addView(tire_hdr);
 
             TextView press_hdr = new TextView(this);
-            press_hdr.setText("Sample Pressure");
+            press_hdr.setText("Sample\nPressure");
+            press_hdr.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             hdr_tr.addView(press_hdr);
 
             TextView time_hdr = new TextView(this);
             time_hdr.setText("Sample Times");
+            time_hdr.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
             hdr_tr.addView(time_hdr);
 
             TextView btn_hdr = new TextView(this);
@@ -175,6 +178,7 @@ public class DisplayVehicleActivity extends AbstractBaseActivity {
 
                 Button b = new Button(this);
                 b.setText("Timestamps");
+                b.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
                 b.setId(tire_id);
 
                 b.setOnClickListener(new View.OnClickListener() {
