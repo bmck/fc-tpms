@@ -98,6 +98,9 @@ public class DisplayVehicleActivity extends AbstractBaseActivity {
 
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
         RelativeLayout layout = (RelativeLayout) findViewById(R.id.display_vehicle_layout);
+        int grn = (R.color.fc_green);
+        int ylo = (R.color.fc_yellow);
+        int red = (R.color.fc_red);
 
         try {
             Log.i(LOGTAG, "D @ " + jsonObj.toString() + "\n");
@@ -107,6 +110,31 @@ public class DisplayVehicleActivity extends AbstractBaseActivity {
 
             /* Find Tablelayout defined in main.xml */
             TableLayout tl = (TableLayout) findViewById(R.id.vehicle_tires_table);
+            TableRow hdr_tr = new TableRow(this);
+
+            TextView tire_color_hdr = new TextView(this);
+            hdr_tr.addView(tire_color_hdr);
+
+            TextView tire_hdr = new TextView(this);
+            tire_hdr.setText("Tires");
+            hdr_tr.addView(tire_hdr);
+
+            TextView press_hdr = new TextView(this);
+            press_hdr.setText("Sample Pressure");
+            hdr_tr.addView(press_hdr);
+
+            TextView time_hdr = new TextView(this);
+            time_hdr.setText("Sample Times");
+            hdr_tr.addView(time_hdr);
+
+            TextView btn_hdr = new TextView(this);
+            hdr_tr.addView(btn_hdr);
+
+            tl.addView(hdr_tr, new TableLayout.LayoutParams(
+                    TableLayout.LayoutParams.MATCH_PARENT,
+                    TableLayout.LayoutParams.MATCH_PARENT
+            ));
+
 
             for (int i = 0; i < num_tires; i++) {
                 JSONObject tire = tires.getJSONObject(i);
@@ -125,27 +153,7 @@ public class DisplayVehicleActivity extends AbstractBaseActivity {
                 ));
 
                 TextView tire_color = new TextView(this);
-                int grn = (R.color.fc_green);
-                int ylo = (R.color.fc_yellow);
-                int red = (R.color.fc_red);
-                int col = grn;
-
-                long seconds = Math.round(System.currentTimeMillis()/1000.0);
-
-                Log.i(LOGTAG, "tm = " + tm + ", seconds = " + seconds + ", tm_thresh = " + tm_thresh + "\n");
-                if (tm < seconds - tm_thresh) {
-                    col = ylo;
-                }
-                if (hi_psi > 0.0) {
-                    if (psi > hi_psi) {
-                        col = red;
-                    }
-                }
-                if (lo_psi > 0.0) {
-                    if (psi < lo_psi) {
-                        col = red;
-                    }
-                }
+                int col = TireColorizer.getInstance().getColor(psi, hi_psi, lo_psi, tm, tm_thresh);
 
                 tire_color.setBackgroundResource(col);
                 tr.addView(tire_color);

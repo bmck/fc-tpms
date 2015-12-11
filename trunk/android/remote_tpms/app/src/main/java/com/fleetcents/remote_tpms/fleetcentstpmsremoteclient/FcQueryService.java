@@ -43,9 +43,9 @@ public class FcQueryService extends IntentService {
     private static final String serverProtocol = "http";
     private static final String serverHostname = "server11288.baremetalcloud.com";
 
-    private static final String loginUri = "/api/v1/user/sign_in.json";
-    private static final String loginParms = "";
-    private static final int loginMethod = StringRequest.Method.POST;
+    public static final String loginUri = "/api/v1/user/sign_in.json";
+    public static final String loginParms = "";
+    public static final int loginMethod = StringRequest.Method.POST;
 
     private static final String logoutUri = "/api/v1/user/sign_out.json";
     private static final String logoutParms = "";
@@ -84,11 +84,11 @@ public class FcQueryService extends IntentService {
 //        else if (method.equals("PATCH")) { meth = Request.Method.PATCH; }
 
         try {
-            Log.i(LOGTAG, " pre fetch\n");
-            Log.i(LOGTAG, "u = " + u.toString() + "\n");
-            Log.i(LOGTAG, "u.getPath() = " + u.getPath() + "\n");
+//            Log.i(LOGTAG, " pre fetch\n");
+//            Log.i(LOGTAG, "u = " + u.toString() + "\n");
+//            Log.i(LOGTAG, "u.getPath() = " + u.getPath() + "\n");
             fetchUrl(getFullUrl(u.getPath(), u.getQuery()), meth);
-            Log.i(LOGTAG, "post fetch\n");
+//            Log.i(LOGTAG, "post fetch\n");
         } catch (JSONException e) {
             handleServerError(e);
             return logoutOfServer();
@@ -149,6 +149,7 @@ public class FcQueryService extends IntentService {
             subparams.put("password", sharedPrefs.getString("password", ""));
             JSONObject params = new JSONObject();
             params.put("user", subparams);
+            Log.i(LOGTAG, "params = " + params.toString() + "\n");
 
             // issue blocking request to queue
             RequestFuture<JSONObject> future = RequestFuture.newFuture();

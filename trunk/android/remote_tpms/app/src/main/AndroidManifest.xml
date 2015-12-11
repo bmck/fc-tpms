@@ -2,7 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fleetcents.remote_tpms.fleetcentstpmsremoteclient"
     android:versionCode="00060100"
-    android:versionName="0.6.1" >
+    android:versionName="0.6.1">
 
     <uses-sdk android:minSdkVersion="18" />
 
@@ -15,58 +15,76 @@
         android:name="android.hardware.usb.host"
         android:required="false" />
 
+    <!-- To auto-complete the email text field in the login form with the user's emails -->
+    <uses-permission android:name="android.permission.GET_ACCOUNTS" />
+    <uses-permission android:name="android.permission.READ_PROFILE" />
+    <uses-permission android:name="android.permission.READ_CONTACTS" />
+
+    <android:uses-permission android:name="android.permission.READ_CALL_LOG" />
+
     <application
         android:name=".RemoteTpmsApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
-        android:label="@string/qualifiedAppName"
-        android:theme="@style/AppTheme" >
-        <activity
-            android:name=".LogActivity"
-            android:label="@string/app_name" >
-        </activity>
-        <activity
-            android:name=".SettingsActivity"
-            android:label="@string/action_settings" >
-        </activity>
-        <activity
-            android:name=".ChangeLogActivity"
-            android:label="@string/pref_about_changelog" >
-            <intent-filter>
-                <action android:name="android.intent.changelog.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".LegalActivity"
-            android:label="@string/pref_about_legal" >
-            <intent-filter>
-                <action android:name="android.intent.legal.VIEW" />
-
-                <category android:name="android.intent.category.DEFAULT" />
-            </intent-filter>
-        </activity>
-
-        <activity android:name=".DisplayFleetActivity"
-            android:label="@string/display_fleet_activity" >
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme">
+        <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".DisplayVehicleActivity"
-            android:label="@string/display_vehicle_activity" >
+
+        <activity
+            android:name=".LogActivity"
+            android:label="@string/collect_tire_sample" />
+
+        <activity
+            android:name=".SettingsActivity"
+            android:label="@string/action_settings" />
+
+        <activity
+            android:name=".ChangeLogActivity"
+            android:label="@string/pref_about_changelog">
+            <intent-filter>
+                <action android:name="android.intent.changelog.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
         </activity>
-        <activity android:name=".DisplayTireActivity"
-            android:label="@string/display_tire_activity" >
+
+        <activity
+            android:name=".LegalActivity"
+            android:label="@string/pref_about_legal">
+            <intent-filter>
+                <action android:name="android.intent.legal.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".DisplayFleetActivity"
+            android:label="@string/display_fleet_activity" />
+
+        <activity
+            android:name=".DisplayVehicleActivity"
+            android:label="@string/display_vehicle_activity" />
+
+        <activity
+            android:name=".DisplayTireActivity"
+            android:label="@string/display_tire_activity" />
+
+        <activity
+            android:name=".LoginActivity"
+            android:label="@string/title_activity_login"
+            android:parentActivityName=".SettingsActivity">
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.fleetcents.remote_tpms.fleetcentstpmsremoteclient.SettingsActivity" />
         </activity>
 
         <service
             android:name=".SdrFtpService"
             android:exported="false" />
-
         <service
             android:name=".FcQueryService"
             android:exported="false" />

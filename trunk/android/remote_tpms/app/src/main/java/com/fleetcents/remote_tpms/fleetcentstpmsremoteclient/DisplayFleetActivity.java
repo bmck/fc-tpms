@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.SharedPreferences;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
@@ -40,7 +41,7 @@ public class DisplayFleetActivity extends AbstractBaseActivity {
         setContentView(R.layout.activity_display_fleet);
     }
 
-    private BroadcastReceiver bReceiver = new BroadcastReceiver(){
+    private BroadcastReceiver bReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
             //put here whaterver you want your activity to do with the intent received
@@ -79,8 +80,7 @@ public class DisplayFleetActivity extends AbstractBaseActivity {
                 mServiceIntent.setData(Uri.parse("fc://" + arguments));
                 startService(mServiceIntent);
             }
-        }
-        else {
+        } else {
             fleet_instructs.setTextSize(24);
             fleet_instructs.setText(getString(R.string.update_creds));
         }
@@ -115,25 +115,26 @@ public class DisplayFleetActivity extends AbstractBaseActivity {
                 Button b = new Button(this);
                 b.setLayoutParams(
                         new ViewGroup.LayoutParams(
-                                ViewGroup.LayoutParams.WRAP_CONTENT,
+                                ViewGroup.LayoutParams.MATCH_PARENT,
                                 ViewGroup.LayoutParams.WRAP_CONTENT
                         )
                 );
                 b.setText(truck_name);
+                b.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+                b.setTextSize(16);
+                b.setTypeface(b.getTypeface(), Typeface.BOLD);
                 b.setId(truck_id);
+                b.setOnClickListener(new View.OnClickListener() {
+                    public void onClick(View v) {
+                        Log.i(LOGTAG, "clicking" + v.getId() + "\n");
+                        Intent i = new Intent(getApplicationContext(), DisplayVehicleActivity.class);
+                        i.putExtra("EXTRA_TRUCK_ID", v.getId());
 
-                b.setOnClickListener(new View.OnClickListener()
-                                     {
-                                         public void onClick(View v) {
-                                             Log.i(LOGTAG, "clicking" + v.getId() + "\n");
-                                             Intent i = new Intent(getApplicationContext(), DisplayVehicleActivity.class);
-                                             i.putExtra("EXTRA_TRUCK_ID", v.getId());
+                        startActivity(i);
+                    }
+                });
 
-                                             startActivity(i);
-                                         }
-                                     });
-
-                        Log.i(LOGTAG, "truck " + truck_name + " completed\n");
+                Log.i(LOGTAG, "truck " + truck_name + " completed\n");
 
                 //add button to the layout
                 layout.addView(b);
