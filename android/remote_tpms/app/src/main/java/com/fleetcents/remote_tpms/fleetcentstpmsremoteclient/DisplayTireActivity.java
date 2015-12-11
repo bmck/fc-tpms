@@ -67,13 +67,16 @@ public class DisplayTireActivity extends AbstractBaseActivity {
         tire_instructs.setInputType(0x00020001);
 
         if (credsProvided) {
-            tire_instructs.setTextSize(16);
-            tire_instructs.setText(getString(R.string.tire_samples_instructs));
+            if (!serviceCallHandled) {
+                serviceCallHandled = true;
+                tire_instructs.setTextSize(16);
+                tire_instructs.setText(getString(R.string.tire_samples_instructs));
 
 //            callToServer(tireSampleUri, prms, "GET");
-            Intent mServiceIntent = new Intent(this, FcQueryService.class);
-            mServiceIntent.setData(Uri.parse("fc://" + arguments));
-            startService(mServiceIntent);
+                Intent mServiceIntent = new Intent(this, FcQueryService.class);
+                mServiceIntent.setData(Uri.parse("fc://" + arguments));
+                startService(mServiceIntent);
+            }
         } else {
             tire_instructs.setTextSize(24);
             tire_instructs.setText(getString(R.string.update_creds));
@@ -90,9 +93,27 @@ public class DisplayTireActivity extends AbstractBaseActivity {
             Log.i(LOGTAG, "E @ " + jsonObj.toString() + "\n");
             JSONArray tire_samples = jsonObj.getJSONArray("tire_samples");
             int num_tire_samples = tire_samples.length();
+            boolean showPsi = sharedPrefs.getString("units_pressure", getString(R.string.psi)).equals(getString(R.string.psi));
 
             /* Find Tablelayout defined in main.xml */
             TableLayout tl = (TableLayout) findViewById(R.id.tirestamps_table);
+            TableRow hdr_tr = new TableRow(this);
+            hdr_tr.setLayoutParams(new TableRow.LayoutParams(
+                            TableRow.LayoutParams.MATCH_PARENT,
+                            TableRow.LayoutParams.MATCH_PARENT)
+            );
+            TextView hdr_tire_press = new TextView(this);
+            hdr_tire_press.setText("Pressure (" + (showPsi ?  getString(R.string.psi) :  getString(R.string.kpa)) + ")");
+            hdr_tr.addView(hdr_tire_press);
+
+            TextView hdr_tire_sample_time = new TextView(this);
+            hdr_tire_sample_time.setText("Time");
+            hdr_tr.addView(hdr_tire_sample_time);
+
+            tl.addView(hdr_tr, new TableLayout.LayoutParams(
+                            TableLayout.LayoutParams.MATCH_PARENT,
+                            TableLayout.LayoutParams.MATCH_PARENT)
+            );
 
             for (int i = 0; i < num_tire_samples; i++) {
                 TableRow tr = new TableRow(this);
@@ -107,7 +128,6 @@ public class DisplayTireActivity extends AbstractBaseActivity {
                 String tm = tire_sample.getString("sample_time");
 
                 TextView tire_press = new TextView(this);
-                boolean showPsi = sharedPrefs.getString("units_pressure", getString(R.string.psi)).equals(getString(R.string.psi));
                 tire_press.setText("" + (showPsi ? psi + " " + getString(R.string.psi) : (psi / 0.145037738) + " " + getString(R.string.kpa)));
                 tr.addView(tire_press);
 
