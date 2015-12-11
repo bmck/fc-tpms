@@ -1,6 +1,8 @@
 Current $Revision$
 
-v.0.6.1, (open)
+v.0.6.2, (open)
+
+v.0.6.1, (2015-12-11)
 
 v.0.6.0, (2015-12-08)
 * (app) New UI
