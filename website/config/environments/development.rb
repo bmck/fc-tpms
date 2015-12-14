@@ -46,7 +46,7 @@ Rails.application.configure do
   email: {
     email_prefix: "[FC ERROR] ",
     sender_address: %{"production" <production@fleetcents.com>},
-    exception_recipients: %w{fc@mckinnonsvcs.com},
+    exception_recipients: %w{bmck@fleetcents.com},
     ignore_crawlers: %w{Googlebot bingbot},
     normalize_subject: true
   }
