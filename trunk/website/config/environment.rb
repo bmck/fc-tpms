@@ -11,11 +11,11 @@ ActionMailer::Base.raise_delivery_errors = true
 ActionMailer::Base.perform_deliveries = true
 ActionMailer::Base.delivery_method = :smtp
 ActionMailer::Base.smtp_settings = {
-  address: 'smtp.gmail.com',
+  address: 'mckinnonsvcs.com',
   port: 587,
-  domain: 'fleetcents.com',
-  user_name: 'bmck@fleetcents.com',
-  password: 'w4r4w4r4W',
+  domain: 'mckinnonsvcs.com',
+  user_name: 'fc@mckinnonsvcs.com',
+  password: 'w4r4w4R',
   authentication: :plain,
   enable_starttls_auto: true
 }

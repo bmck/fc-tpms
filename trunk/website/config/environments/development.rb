@@ -18,8 +18,8 @@ Rails.application.configure do
 
   # Don't care if the mailer can't send.
   config.action_mailer.raise_delivery_errors = true
-  # config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
-  config.action_mailer.default_url_options = { :host => 'server11288.baremetalcloud.com' }
+  config.action_mailer.default_url_options = { host: 'localhost', port: 3000 }
+  # config.action_mailer.default_url_options = { :host => 'server11288.baremetalcloud.com' }
 
   # Print deprecation notices to the Rails logger.
   config.active_support.deprecation = :log
@@ -42,12 +42,12 @@ Rails.application.configure do
 
   config.active_record.raise_in_transactional_callbacks = true
 
-  # config.middleware.use ExceptionNotification::Rack,
-  # email: {
-  #   email_prefix: "[FC ERROR] ",
-  #   sender_address: %{"production" <production@capitalytics.com>},
-  #   exception_recipients: %w{test@capitalytics.com},
-  #   ignore_crawlers: %w{Googlebot bingbot},
-  #   normalize_subject: true
-  # }
+  config.middleware.use ExceptionNotification::Rack,
+  email: {
+    email_prefix: "[FC ERROR] ",
+    sender_address: %{"production" <production@fleetcents.com>},
+    exception_recipients: %w{fc@mckinnonsvcs.com},
+    ignore_crawlers: %w{Googlebot bingbot},
+    normalize_subject: true
+  }
 end

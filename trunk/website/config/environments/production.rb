@@ -83,13 +83,13 @@ Rails.application.configure do
 
   config.active_record.raise_in_transactional_callbacks = true
 
-  # config.middleware.use ExceptionNotification::Rack,
-  # email: {
-  #   email_prefix: "[FC ERROR] ",
-  #   sender_address: %{"production" <production@capitalytics.com>},
-  #   exception_recipients: %w{bmck@fleetcents.com},
-  #   ignore_crawlers: %w{Googlebot bingbot},
-  #   normalize_subject: true
-  # }
+  config.middleware.use ExceptionNotification::Rack,
+  email: {
+    email_prefix: "[FC ERROR] ",
+    sender_address: %{"production" <production@fleetcents.com>},
+    exception_recipients: %w{fc@mckinnonsvcs.com},
+    ignore_crawlers: %w{Googlebot bingbot},
+    normalize_subject: true
+  }
 
 end
