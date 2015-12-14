@@ -73,7 +73,7 @@ class ApplicationController < ActionController::Base
   end
 
   def authorize_action
-    puts "action = #{params[:action]}, controller = #{params[:controller]}"
+    Rails.logger.debug "action = #{params[:action]}, controller = #{params[:controller]}"
     authorize!(params[:action].to_sym, params[:controller].to_sym)
   end
 
