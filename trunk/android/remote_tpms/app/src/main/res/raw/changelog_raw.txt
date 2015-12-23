@@ -1,6 +1,8 @@
 Current $Revision$
 
-v.0.6.3, (open)
+v.0.6.4, (open)
+
+v.0.6.3, (2015-12-22)
 
 v.0.6.2, (2015-12-22)
 * (app) Fixed login panel to toggle login and logout buttons
