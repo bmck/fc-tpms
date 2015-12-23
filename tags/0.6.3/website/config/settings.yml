@@ -1,0 +1,5 @@
+# $Id$
+# $(c)$
+
+bad_samples_filename: 'bad_samples.csv'
+max_tire_samples: 50

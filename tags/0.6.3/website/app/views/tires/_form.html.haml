@@ -1,0 +1,39 @@
+- # $Id$
+- # $(c)$
+
+- locations = current_user.global_admin? ? TireLocation.all_locations : TireLocation.company_locations(current_user.company_id)
+
+%td{colspan: 8}
+  = render partial: 'components/form_error', formats: [:html], layout: false, locals: { object: object }
+  = form_for object, url: object.new_record? ? tires_path : tire_path(object), remote: true, html: {class: "form-horizontal"} do |f|
+    .field
+      = f.label :serial_number
+      \&nbsp;
+      = f.text_field :serial, :size => 15, :autofocus => true
+    .field
+      = f.label :sensor_serial_number
+      \&nbsp;
+      = f.text_field :sensor_serial, :size => 15, :autofocus => true
+    .field
+      = f.label :tire_type
+      \&nbsp;
+      = f.collection_select :tire_type_id, TireType.all, :id, :name, :include_blank => 'No Tire Type Specified', autofocus: true
+    .field
+      = f.label :owning_company
+      \&nbsp;
+      = f.collection_select :owning_company_id, Company.all, :id, :name, :include_blank => 'No Company Specified', autofocus: true
+    .field
+      = f.label :using_company
+      \&nbsp;
+      = f.collection_select :using_company_id, Company.all, :id, :name, :include_blank => 'No Company Specified', autofocus: true
+    .field
+      = f.label :tire_location
+      \&nbsp;
+      = f.collection_select :tire_location_id, locations, :id, :name, :include_blank => 'No Location Specified', autofocus: true
+    .field
+      = f.label :location_notation
+      \&nbsp;
+      = f.text_field :location_notation, :size => 25, :autofocus => true
+
+    = f.submit "Save", class: "btn btn-primary"
+    %button.btn.btn-link.cancel Cancel
