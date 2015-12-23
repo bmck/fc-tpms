@@ -2,8 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     package="com.fleetcents.remote_tpms.fleetcentstpmsremoteclient"
-    android:versionCode="00060200"
-    android:versionName="0.6.2">
+    android:versionCode="00060300"
+    android:versionName="0.6.3">
 
     <uses-sdk android:minSdkVersion="18" />
 
