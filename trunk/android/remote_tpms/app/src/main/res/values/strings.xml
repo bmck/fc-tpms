@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="log_instructs">\n\nPress the play button above to generate an activation tone and begin receiving data from your TPMS sensor for processing.\n\n</string>
-    <string name="fleet_instructs">"Choose a vehicle below.\n\n"</string>
-    <string name="vehicle_instructs">"TBD for tires"</string>
-    <string name="tire_samples_instructs">"TBD for tire_samples"</string>
+    <string name="fleet_instructs">"Choose a vehicle below.\n"</string>
+    <string name="vehicle_instructs">"Vehicle Tires"</string>
+    <string name="tire_samples_instructs">"Tire Pressure Samples"</string>
     <string name="update_creds">Update your user credentials to continue.</string>
     <string name="set_user_creds">Set User ID and Password</string>
 
@@ -19,20 +19,43 @@
     <string name="help">Help</string>
     <string name="error">Error</string>
     <string name="btn_ok">OK</string>
-    <string name="title_activity_main">MainActivity</string>
-    <string name="section_format">Hello World from section: %1$d</string>
-    <string name="title_activity_login">Sign in</string>
+
+    <string name="title_activity_main">Fleet Cents</string>
+    <string name="title_activity_login">Sign in to Fleet Cents</string>
+
+    <string name="sensor_id">Sensor ID:</string>
+    <string name="temp">Temperature:</string>
+    <string name="pressure">Pressure:</string>
+    <string name="kpa">kPa</string>
+    <string name="psi">psi</string>
+    <string name="celsius">deg C</string>
+    <string name="fahrenheit">deg F</string>
 
     <!-- Strings related to login -->
     <string name="prompt_email">Email (required)</string>
     <string name="prompt_password">Password (required)</string>
-    <string name="action_sign_in">Sign in or register</string>
+    <string name="action_sign_in">Sign in to Fleet Cents</string>
     <string name="action_sign_in_short">Sign in</string>
     <string name="error_invalid_email">This email address is invalid</string>
     <string name="error_invalid_password">This password is too short</string>
-    <string name="error_incorrect_password">This password is incorrect</string>
+    <string name="login_error">Login NOT successful</string>
     <string name="error_field_required">This field is required</string>
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="logout">Logout</string>
+
+    <!--Strings related to user credentials-->
+    <string name="user_creds">User credentials</string>
+    <string name="user_creds_summary">Fleet Cents user name and password are REQUIRED.</string>
+
+    <string name="userid">User name</string>
+    <string name="userid_summary">Fleet Cents user id</string>
+
+    <string name="password">Password</string>
+
+    <!--Strings related to local and remote operations-->
+    <string name="local">Local</string>
+    <string name="remote">Remote</string>
+
 </resources>

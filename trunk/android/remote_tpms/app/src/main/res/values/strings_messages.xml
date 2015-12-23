@@ -1,13 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="sensor_id">Sensor ID:</string>
-    <string name="temp">Temperature:</string>
-    <string name="pressure">Pressure:</string>
-    <string name="kpa">kPa</string>
-    <string name="psi">psi</string>
-    <string name="celsius">deg C</string>
-    <string name="fahrenheit">deg F</string>
-
     <string name="msg_send_activation">Sending Activation Signal</string>
     <string name="msg_wait_for_sensor_data">Receiving Sensor Data</string>
     <string name="msg_rcving_sensor_data">Finished Receiving Sensor Data</string>

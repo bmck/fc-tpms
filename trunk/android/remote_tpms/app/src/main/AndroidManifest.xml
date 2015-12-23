@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.fleetcents.remote_tpms.fleetcentstpmsremoteclient"
     android:versionCode="00060200"
     android:versionName="0.6.2">
@@ -10,6 +11,11 @@
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.READ_PHONE_STATE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+    <uses-permission android:name="android.permission.INSTALL_PACKAGES"
+        tools:ignore="ProtectedPermissions" />
+    <uses-permission android:name="android.permission.DELETE_PACKAGES"
+        tools:ignore="ProtectedPermissions" />
 
     <uses-feature
         android:name="android.hardware.usb.host"
@@ -31,48 +37,43 @@
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
+
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".LogActivity"
             android:label="@string/collect_tire_sample" />
-
         <activity
             android:name=".SettingsActivity"
             android:label="@string/action_settings" />
-
         <activity
             android:name=".ChangeLogActivity"
             android:label="@string/pref_about_changelog">
             <intent-filter>
                 <action android:name="android.intent.changelog.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".LegalActivity"
             android:label="@string/pref_about_legal">
             <intent-filter>
                 <action android:name="android.intent.legal.VIEW" />
+
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-
         <activity
             android:name=".DisplayFleetActivity"
-            android:label="@string/display_fleet_activity" />
-
+            android:label="@string/title_activity_display_fleet" />
         <activity
             android:name=".DisplayVehicleActivity"
-            android:label="@string/display_vehicle_activity" />
-
+            android:label="@string/title_activity_display_vehicle" />
         <activity
             android:name=".DisplayTireActivity"
-            android:label="@string/display_tire_activity" />
-
+            android:label="@string/title_activity_display_tire" />
         <activity
             android:name=".LoginActivity"
             android:label="@string/title_activity_login"

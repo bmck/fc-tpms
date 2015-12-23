@@ -8,7 +8,7 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.fleetcents.remote_tpms.fleetcentstpmsremoteclient.DisplayTireActivity">
+    tools:context="com.fleetcents.remote_tpms.fleetcentstpmsremoteclient.display_tireActivity">
 
     <TextView
         android:id="@+id/tirestamp_dirs"

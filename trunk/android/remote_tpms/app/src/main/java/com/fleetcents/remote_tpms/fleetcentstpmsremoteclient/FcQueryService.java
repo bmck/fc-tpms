@@ -36,18 +36,17 @@ public class FcQueryService extends IntentService {
 
     private static final String LOGTAG = "FcQueryService";
 
-    static String apiToken = "";
     private static RequestQueue queue;
     private static SharedPreferences sharedPrefs;
 
     private static final String serverProtocol = "http";
     private static final String serverHostname = "server11288.baremetalcloud.com";
 
-    public static final String loginUri = "/api/v1/user/sign_in.json";
+    public static final String loginUri = "/user/sign_in.json";
     public static final String loginParms = "";
     public static final int loginMethod = StringRequest.Method.POST;
 
-    private static final String logoutUri = "/api/v1/user/sign_out.json";
+    private static final String logoutUri = "/user/sign_out.json";
     private static final String logoutParms = "";
     private static final int logoutMethod = StringRequest.Method.DELETE;
 
@@ -72,7 +71,7 @@ public class FcQueryService extends IntentService {
     }
 
     protected boolean callToServer(Uri u) {
-        if (apiToken.length() == 0) {
+        if (!AbstractBaseActivity.apiTokenAvailable()) {
             if (loginToServer() == false) { return false; }
         }
 
@@ -84,12 +83,9 @@ public class FcQueryService extends IntentService {
 //        else if (method.equals("PATCH")) { meth = Request.Method.PATCH; }
 
         try {
-//            Log.i(LOGTAG, " pre fetch\n");
-//            Log.i(LOGTAG, "u = " + u.toString() + "\n");
-//            Log.i(LOGTAG, "u.getPath() = " + u.getPath() + "\n");
             fetchUrl(getFullUrl(u.getPath(), u.getQuery()), meth);
-//            Log.i(LOGTAG, "post fetch\n");
         } catch (JSONException e) {
+            Log.i(LOGTAG, "Error A\n");
             handleServerError(e);
             return logoutOfServer();
         }
@@ -103,14 +99,16 @@ public class FcQueryService extends IntentService {
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        Log.i(LOGTAG, "response = " + response + "\n");
+                        Log.i(LOGTAG, "response = >" + response + "<\n");
                         try {
-                            JSONObject jsonObj = new JSONObject(response);
+                            JSONObject jsonObj = (response.length() > 0 ? new JSONObject(response) : new JSONObject());
                             Uri u = Uri.parse(url);
                             String prms = u.getQuery();
-                            jsonObj.put("url", (u.getPath() + (prms.length() > 0 ? "?" + prms : "")));
+                            if (prms == null) { prms = ""; }
+                            jsonObj.put("url", (u.getPath() + (prms.length() > 0 ? ("?" + prms) : "")));
                             handleServerResponse(jsonObj);
                         } catch (JSONException e) {
+                            Log.i(LOGTAG, "Error B\n");
                             handleServerError(e);
                         }
                     }
@@ -121,11 +119,11 @@ public class FcQueryService extends IntentService {
             public HashMap<String, String> getHeaders() throws AuthFailureError {
                 HashMap<String, String> hdrs = new HashMap<String, String>();
                 hdrs.put("Content-Type", "application/json");
-                if (getString(R.string.userid).length() > 0) {
+                if (sharedPrefs.getString("userid", "").length() > 0) {
                     hdrs.put("X-USER-EMAIL", sharedPrefs.getString("userid", ""));
                 }
-                if (apiToken.length() > 0) {
-                    hdrs.put("X-USER-TOKEN", apiToken);
+                if (AbstractBaseActivity.apiTokenAvailable()) {
+                    hdrs.put("X-USER-TOKEN", AbstractBaseActivity.apiToken());
                 }
                 Log.i(LOGTAG, "hdrs = " + hdrs.toString() + "\n");
                 return hdrs;
@@ -158,8 +156,7 @@ public class FcQueryService extends IntentService {
 
             // set timeout to 2 sec
             JSONObject response = future.get(2, TimeUnit.SECONDS);
-            apiToken = response.getString("authentication_token");
-            Log.i(LOGTAG, "authentication_token received = " + apiToken);
+            AbstractBaseActivity.setApiToken(response.getString("authentication_token"));
             return true;
         } catch (InterruptedException e) {
             Log.e(LOGTAG, "Retrieve cards api call interrupted.  " + e);
@@ -178,9 +175,11 @@ public class FcQueryService extends IntentService {
 
     protected boolean logoutOfServer() {
         try {
+            AbstractBaseActivity.setApiToken("");
             fetchUrl(getFullUrl(logoutUri, logoutParms), logoutMethod);
             return true;
         } catch (JSONException e) {
+            Log.i(LOGTAG, "Error C\n");
             handleServerError(e);
         }
         return true;
@@ -194,8 +193,10 @@ public class FcQueryService extends IntentService {
             resultIntent = new Intent(u);
             Log.i(LOGTAG, "calling handleServerResponse w resultIntent = " + u + "\n");
             resultIntent.putExtra("response", jsonObj.toString());
+            Log.i(LOGTAG, "resultIntent = " + resultIntent.toString() + "\n");
             LocalBroadcastManager.getInstance(this).sendBroadcast(resultIntent);
         } catch (JSONException e) {
+            Log.i(LOGTAG, "Error D\n");
             e.printStackTrace();
         }
     }
@@ -204,7 +205,7 @@ public class FcQueryService extends IntentService {
         return new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError err) {
-                Log.i(LOGTAG, "in onErrorResponse\n");
+                Log.i(LOGTAG, "Error E\n");
                 handleServerError(err);
             }
         };
@@ -212,11 +213,13 @@ public class FcQueryService extends IntentService {
 
     protected void handleServerError(Exception err) {
         try {
+            AbstractBaseActivity.setApiToken("");
             JSONObject faux_response = new JSONObject();
             String e = err.toString();
             faux_response.put("error", e);
             Log.i(LOGTAG, "error = " + faux_response.toString() + "\n");
         } catch (JSONException e1) {
+            Log.i(LOGTAG, "Error F\n");
             Log.i(LOGTAG, "error = JSONException and something else\n");
         }
         ACRA.getErrorReporter().handleSilentException(null);

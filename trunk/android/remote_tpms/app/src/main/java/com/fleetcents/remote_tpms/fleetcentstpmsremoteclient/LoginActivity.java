@@ -89,6 +89,13 @@ public class LoginActivity extends AbstractBaseActivity implements LoaderCallbac
 
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        if (sharedPrefs.getString("userid", "").length() > 0) {
+            mEmailView.setText(sharedPrefs.getString("userid",""));
+        }
+        if (sharedPrefs.getString("password", "").length() > 0) {
+            mPasswordView.setText(sharedPrefs.getString("password",""));
+        }
     }
 
     private void populateAutoComplete() {
@@ -165,7 +172,7 @@ public class LoginActivity extends AbstractBaseActivity implements LoaderCallbac
 
     private boolean isPasswordValid(String password) {
         //TODO: Replace this with your own logic
-        return password.length() > 8;
+        return password.length() >= 8;
     }
 
     /**
@@ -270,9 +277,6 @@ public class LoginActivity extends AbstractBaseActivity implements LoaderCallbac
         UserLoginTask(String email, String password) {
             sharedPrefs.edit().putString("userid", mEmail = email).apply();
             sharedPrefs.edit().putString("password", mPassword = password).apply();
-            Log.i(LOGTAG, "saving username = " + sharedPrefs.getString("userid", "") + "\n");
-            Log.i(LOGTAG, "saving password = " + sharedPrefs.getString("password", "") + "\n");
-
             credsProvided = true;
         }
 
@@ -290,7 +294,7 @@ public class LoginActivity extends AbstractBaseActivity implements LoaderCallbac
             if (success) {
                 finish();
             } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
+                mPasswordView.setError(getString(R.string.login_error));
                 mPasswordView.requestFocus();
             }
         }
