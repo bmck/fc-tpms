@@ -249,7 +249,7 @@ public class LogActivity extends AbstractBaseActivity {
         else Log.v(tag, str);
     }
 
-    private void displayMessage(final String str) {
+    protected void displayMessage(final String str) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
@@ -259,7 +259,7 @@ public class LogActivity extends AbstractBaseActivity {
         });
     }
 
-    public void errorModalBox(final String str) {
+    protected void errorModalBox(final String str) {
         runOnUiThread(new Runnable() {
             @Override
             public void run() {

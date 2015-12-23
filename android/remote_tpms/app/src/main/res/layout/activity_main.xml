@@ -9,35 +9,81 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.fleetcents.remote_tpms.fleetcentstpmsremoteclient.MainActivity">
 
-    <Button xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/set_user_creds"
-        style="?android:textAppearanceMedium"
+    <TextView
+        android:id="@+id/main_title"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/set_user_creds"
-        android:textStyle="bold"
-        android:onClick="set_user_creds" />
+        android:layout_height="72px"
+        android:freezesText="true"
+        android:orientation="vertical"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingTop="@dimen/activity_vertical_margin" />
 
-    <Button xmlns:android="http://schemas.android.com/apk/res/android"
-        android:id="@+id/display_fleet_activity"
-        style="?android:textAppearanceMedium"
+    <RelativeLayout
+        android:id="@+id/user_login_w_space"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/display_fleet_activity"
-        android:onClick="display_fleet_activity"
-        android:layout_below="@id/set_user_creds"
-        android:textStyle="bold"
-        android:layout_alignParentLeft="true" />
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/main_title"
+        android:orientation="vertical">
+
+        <Button xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/set_user_creds"
+            style="?android:textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="set_user_creds"
+            android:text="@string/action_sign_in"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:id="@+id/display_fleet_w_space"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/user_login_w_space"
+        android:orientation="vertical">
+
+        <Button xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/display_fleet"
+            style="?android:textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="display_fleet"
+            android:text="@string/title_activity_display_fleet"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
 
     <Button xmlns:android="http://schemas.android.com/apk/res/android"
         android:id="@+id/collect_tire_sample"
         style="?android:textAppearanceMedium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="@string/collect_tire_sample"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/display_fleet_w_space"
         android:onClick="collect_tire_sample"
-        android:layout_below="@id/display_fleet_activity"
-        android:textStyle="bold"
-        android:layout_alignParentLeft="true" />
+        android:text="@string/collect_tire_sample"
+        android:textStyle="bold" />
 
+
+    <RelativeLayout
+        android:id="@+id/user_logout_w_space"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_below="@id/collect_tire_sample"
+        android:orientation="vertical">
+
+        <Button xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/user_logout"
+            style="?android:textAppearanceMedium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:onClick="user_logout"
+            android:text="@string/logout"
+            android:textStyle="bold" />
+
+    </RelativeLayout>
 </RelativeLayout>

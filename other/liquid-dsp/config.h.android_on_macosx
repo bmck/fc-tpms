@@ -13,22 +13,22 @@
 #define HAVE_COMPLEX_H 1
 
 /* Define to 1 if you have the <emmintrin.h> header file. */
-/* #undef HAVE_EMMINTRIN_H 1 */
+#define HAVE_EMMINTRIN_H 1
 
 /* Define to 1 if you have the <fec.h> header file. */
 /* #undef HAVE_FEC_H */
 
 /* Define to 1 if you have the <fftw3.h> header file. */
-/* #undef HAVE_FFTW3_H 1 */
+/* #undef HAVE_FFTW3_H */
 
 /* Define to 1 if you have the <float.h> header file. */
-/* #undef HAVE_FLOAT_H 1 */
+#define HAVE_FLOAT_H 1
 
 /* Define to 1 if you have the <getopt.h> header file. */
 #define HAVE_GETOPT_H 1
 
 /* Define to 1 if you have the <immintrin.h> header file. */
-/* #undef HAVE_IMMINTRIN_H 1 */
+#define HAVE_IMMINTRIN_H 1
 
 /* Define to 1 if you have the <inttypes.h> header file. */
 #define HAVE_INTTYPES_H 1
@@ -40,7 +40,7 @@
 /* #undef HAVE_LIBFEC */
 
 /* Define to 1 if you have the `fftw3f' library (-lfftw3f). */
-/* #undef HAVE_LIBFFTW3F 1 */
+/* #undef HAVE_LIBFFTW3F */
 
 /* Define to 1 if you have the `m' library (-lm). */
 #define HAVE_LIBM 1
@@ -56,38 +56,38 @@
 #define HAVE_MEMORY_H 1
 
 /* Define to 1 if you have the <mmintrin.h> header file. */
-/* #undef HAVE_MMINTRIN_H 1 */
+#define HAVE_MMINTRIN_H 1
 
 /* Support MMX instructions */
-/* #undef HAVE_MMX */
+#define HAVE_MMX /**/
 
 /* Define to 1 if you have the <pmmintrin.h> header file. */
-/* #undef HAVE_PMMINTRIN_H 1 */
+#define HAVE_PMMINTRIN_H 1
 
 /* Define to 1 if your system has a GNU libc compatible `realloc' function,
    and to 0 otherwise. */
 #define HAVE_REALLOC 1
 
 /* Define to 1 if you have the <smmintrin.h> header file. */
-/* #undef HAVE_SMMINTRIN_H 1 */
+#define HAVE_SMMINTRIN_H 1
 
 /* Support SSE (Streaming SIMD Extensions) instructions */
-/* #undef HAVE_SSE */
+#define HAVE_SSE /**/
 
 /* Support SSE2 (Streaming SIMD Extensions 2) instructions */
-/* #undef HAVE_SSE2 */
+#define HAVE_SSE2 /**/
 
 /* Support SSE3 (Streaming SIMD Extensions 3) instructions */
-/* #undef HAVE_SSE3 */
+#define HAVE_SSE3 /**/
 
 /* Support SSE4.1 (Streaming SIMD Extensions 4.1) instructions */
-/* #undef HAVE_SSE41 */
+#define HAVE_SSE41 /**/
 
 /* Support SSE4.2 (Streaming SIMD Extensions 4.2) instructions */
 /* #undef HAVE_SSE42 */
 
 /* Support SSSE3 (Supplemental Streaming SIMD Extensions 3) instructions */
-/* #undef HAVE_SSSE3 */
+#define HAVE_SSSE3 /**/
 
 /* Define to 1 if you have the <stdint.h> header file. */
 #define HAVE_STDINT_H 1
@@ -114,13 +114,13 @@
 #define HAVE_SYS_TYPES_H 1
 
 /* Define to 1 if you have the <tmmintrin.h> header file. */
-/* #undef HAVE_TMMINTRIN_H 1 */
+#define HAVE_TMMINTRIN_H 1
 
 /* Define to 1 if you have the <unistd.h> header file. */
 #define HAVE_UNISTD_H 1
 
 /* Define to 1 if you have the <xmmintrin.h> header file. */
-/* #undef HAVE_XMMINTRIN_H 1 */
+#define HAVE_XMMINTRIN_H 1
 
 /* Force internal FFT even if libfftw is available */
 /* #undef LIQUID_FFTOVERRIDE */
@@ -190,3 +190,4 @@
 
 
 #endif // __LIQUID_CONFIG_H__
+

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="vehicles">fleet</string>
+  <string name="market">commercial</string>
+  <string name="marketTitle">Commercial-Enterprise</string>
+  <string name="title_activity_display_fleet">Fleet Status</string>
+  <string name="title_activity_display_vehicle">Vehicle Status</string>
+  <string name="title_activity_display_tire">Tire History</string>
+</resources>

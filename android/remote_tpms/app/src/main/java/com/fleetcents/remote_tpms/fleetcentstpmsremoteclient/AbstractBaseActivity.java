@@ -22,7 +22,12 @@ public class AbstractBaseActivity extends Activity {
     private static final String LOGTAG = "AbstractBaseActivity";
     SharedPreferences sharedPrefs = null;
     protected static boolean credsProvided = false;
+    static String apiToken = "";
     protected boolean serviceCallHandled = false;
+
+    public static String apiToken() { return apiToken; }
+    public static boolean apiTokenAvailable() { return ((apiToken != null) && (apiToken.length() > 0)); }
+    public static void setApiToken(String newToken) { apiToken = newToken; }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -84,5 +89,24 @@ public class AbstractBaseActivity extends Activity {
                 Log.i(LOGTAG, "Exit onOptionsItemSelected");
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    protected void errorModalBox(final String str) {
+        final AbstractBaseActivity activity = this;
+
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(activity);
+                builder.setMessage(str).setTitle(R.string.error).setNeutralButton(
+                        getString(R.string.btn_ok), new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                // User clicked button
+                                dialog.dismiss();
+                            }
+                        });
+                builder.show();
+            }
+        });
     }
 }

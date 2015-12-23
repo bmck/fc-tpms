@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+  <string name="vehicles">garage</string>
+  <string name="market">consumer</string>
+  <string name="marketTitle">Consumer</string>
+  <string name="title_activity_display_fleet">Your Garage</string>
+  <string name="title_activity_display_vehicle">Your Car</string>
+  <string name="title_activity_display_tire">Your Tire</string>
+</resources>
