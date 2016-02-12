@@ -40,7 +40,7 @@ public class FcQueryService extends IntentService {
     private static SharedPreferences sharedPrefs;
 
     private static final String serverProtocol = "http";
-    private static final String serverHostname = "server11288.baremetalcloud.com";
+    private static final String serverHostname = "www.fleetcents.com";
 
     public static final String loginUri = "/user/sign_in.json";
     public static final String loginParms = "";

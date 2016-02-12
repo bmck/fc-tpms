@@ -19,7 +19,7 @@ if test "$SYSTYPE" = "Darwin"; then
   mkdir -p /usr/local/mysql/data/$LOCAL_DBDIR
   chmod 777 /usr/local/mysql/data/$LOCAL_DBDIR
   chown $SUDO_USER:staff /usr/local/mysql/data/$LOCAL_DBDIR /usr/local/mysql/data/$LOCAL_DBDIR/*
-  su $SUDO_USER -c "rsync -z -v -r -t --delete -e ssh server11288.baremetalcloud.com:/var/lib/mysql/$PROD_DBDIR/* /usr/local/mysql/data/$LOCAL_DBDIR"
+  su $SUDO_USER -c "rsync -z -v -r -t --delete -e ssh www.fleetcents.com:/var/lib/mysql/$PROD_DBDIR/* /usr/local/mysql/data/$LOCAL_DBDIR"
   chown _mysql:wheel /usr/local/mysql/data/$LOCAL_DBDIR /usr/local/mysql/data/$LOCAL_DBDIR/*
   chmod 700 /usr/local/mysql/data/$LOCAL_DBDIR
   chmod 755 /usr/local/mysql/data

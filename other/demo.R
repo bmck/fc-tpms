@@ -184,7 +184,7 @@ for (infile in files) {
       cat("pressure(psi) = "); print((strtoi(paste(bit_val[37:44], collapse=''), base=2)*2.5-100)*0.145037738)
       pr <- ((strtoi(paste(bit_val[37:44], collapse=''), base=2)*2.5-100)*0.145037738)
       dt_tm <- strftime(Sys.time(), "%Y-%m-%d%%20%H:%M:%S", tz="GMT")
-      u = paste("http://server11288.baremetalcloud.com/tire_samples/create?tire_sample[sensor_id]=", ad, "&tire_sample[receiver_id]=",
+      u = paste("http://www.fleetcents.com/tire_samples/create?tire_sample[sensor_id]=", ad, "&tire_sample[receiver_id]=",
         rc, "&tire_sample[psi]=", pr, "&tire_sample[tempc]=", tc, "&tire_sample[sample_time]=", dt_tm, sep = '')
       library(httr)
       print(u)

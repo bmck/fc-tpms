@@ -423,7 +423,7 @@ public class SdrFtpService extends IntentService {
     public String getFullUrl() {
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd'%20'HH:mm:ss", Locale.US);
         sdf.setTimeZone(TimeZone.getTimeZone("UTC"));
-        return ("http://server11288.baremetalcloud.com/tire_samples/create?tire_sample[sensor_id]=" +
+        return ("http://www.fleetcents.com/tire_samples/create?tire_sample[sensor_id]=" +
                 getDecAddr() +
                 "&tire_sample[receiver_id]=" +
                 "8" +

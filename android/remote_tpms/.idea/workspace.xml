@@ -11,34 +11,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" readonly="true" id="f3792064-ffbb-4bfb-ae01-40292129a4fb" name="Default" comment="">
-      <change type="DELETED" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/values/strings_local_remote_options.xml" afterPath="" />
-      <change type="DELETED" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/values/strings_user.xml" afterPath="" />
-      <change type="MOVED" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/values/strings_crash_report.xml" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/values/strings_acra.xml" />
-      <change type="MOVED" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/xml/pref_basestation_local.xml" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/xml/pref_local.xml" />
-      <change type="MOVED" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/xml/pref_basestation_localremote.xml" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/xml/pref_localremote.xml" />
-      <change type="MOVED" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/xml/pref_basestation_remote.xml" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/xml/pref_remote.xml" />
-      <change type="MOVED" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/xml/pref_crash_report.xml" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/xml/pref_acra.xml" />
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/AbstractBaseActivity.java" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/AbstractBaseActivity.java" />
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/AndroidManifest.xml" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/AndroidManifest.xml" />
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/DisplayFleetActivity.java" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/DisplayFleetActivity.java" />
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/FcQueryService.java" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/FcQueryService.java" />
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/LogActivity.java" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/LogActivity.java" />
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/LoginActivity.java" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/LoginActivity.java" />
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/MainActivity.java" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/MainActivity.java" />
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/RemoteTpmsApplication.java" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/RemoteTpmsApplication.java" />
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/SettingsFragment.java" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/SettingsFragment.java" />
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/layout/activity_display_fleet.xml" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/layout/activity_display_fleet.xml" />
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/layout/activity_display_tire.xml" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/layout/activity_display_tire.xml" />
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/layout/activity_login.xml" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/layout/activity_login.xml" />
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/layout/activity_main.xml" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/layout/activity_main.xml" />
       <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/app.iml" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/app.iml" />
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/raw/changelog_raw.txt" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/raw/changelog_raw.txt" />
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/local.properties" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/local.properties" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/local.properties" afterPath="$PROJECT_DIR$/local.properties" />
       <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/remote_tpms.iml" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/remote_tpms.iml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/remote_tpms.iml" afterPath="$PROJECT_DIR$/remote_tpms.iml" />
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/values/strings.xml" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/values/strings.xml" />
-      <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/values/strings_messages.xml" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/res/values/strings_messages.xml" />
       <change type="MODIFICATION" beforePath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/.idea/workspace.xml" afterPath="$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
@@ -76,13 +51,11 @@
       <file leaf-file-name="MainActivity.java" pinned="false" current-in-tab="true">
         <entry file="file://$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/MainActivity.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.40379405">
+            <state vertical-scroll-proportion="0.0">
               <caret line="42" column="27" selection-start-line="42" selection-start-column="27" selection-end-line="42" selection-end-column="27" />
               <folding>
                 <element signature="e#1227#1255#0" expanded="true" />
                 <element signature="e#1274#1301#0" expanded="true" />
-                <element signature="e#1338#1366#0" expanded="true" />
-                <element signature="e#1385#1412#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -94,7 +67,7 @@
             <state vertical-scroll-proportion="0.0">
               <caret line="81" column="36" selection-start-line="81" selection-start-column="36" selection-end-line="81" selection-end-column="36" />
               <folding>
-                <element signature="e#2793#2825#0" expanded="true" />
+                <element signature="imports" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -6079,10 +6052,30 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scratches">
-        <subPane />
+      <pane id="AndroidView">
+        <subPane>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="remote_tpms" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="Gradle Scripts" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidBuildScriptsGroupNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="remote_tpms" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="app" />
+              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
+            </PATH_ELEMENT>
+          </PATH>
+        </subPane>
       </pane>
-      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -6217,30 +6210,10 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="AndroidView">
-        <subPane>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="remote_tpms" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="Gradle Scripts" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidBuildScriptsGroupNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="remote_tpms" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="app" />
-              <option name="myItemType" value="com.android.tools.idea.navigator.nodes.AndroidModuleNode" />
-            </PATH_ELEMENT>
-          </PATH>
-        </subPane>
+      <pane id="Scratches">
+        <subPane />
       </pane>
+      <pane id="PackagesPane" />
       <pane id="Scope">
         <subPane subId="Problems" />
         <subPane subId="Production">
@@ -6596,7 +6569,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="0" y="23" width="1440" height="829" extended-state="1" />
+    <frame x="0" y="23" width="1440" height="829" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
@@ -6608,28 +6581,28 @@
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Maven Projects" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Android Monitor" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.42777" sideWeight="0.49213162" order="13" side_tool="false" content_ui="tabs" />
-      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3297568" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3015428" sideWeight="0.4914163" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Terminal" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.44319776" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.44319776" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Captures" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3297568" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Gradle Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3015428" sideWeight="0.50429183" order="11" side_tool="true" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24964234" sideWeight="0.47685835" order="0" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32959327" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.24964234" sideWeight="0.47685835" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Gradle" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3297568" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.24964234" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Android Model" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3297568" sideWeight="0.5" order="6" side_tool="true" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="4" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3997093" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3297568" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.3015428" sideWeight="0.4914163" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Android" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.53488374" sideWeight="0.49713877" order="12" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.32959327" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -6820,7 +6793,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -6828,7 +6800,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -6836,7 +6807,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -6844,7 +6814,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -6852,7 +6821,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -6887,7 +6855,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="173" column="45" selection-start-line="173" selection-start-column="45" selection-end-line="173" selection-end-column="45" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -6911,7 +6878,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -6919,7 +6885,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -6951,16 +6916,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.35106382">
           <caret line="261" column="13" selection-start-line="261" selection-start-column="13" selection-end-line="261" selection-end-column="13" />
-          <folding>
-            <element signature="e#10867#11060#0" expanded="true" />
-            <element signature="e#11059#11060#0" expanded="true" />
-            <element signature="e#11145#12024#0" expanded="true" />
-            <element signature="e#11346#11360#0" expanded="true" />
-            <element signature="e#11404#11430#0" expanded="true" />
-            <element signature="e#11432#11966#0" expanded="true" />
-            <element signature="e#11965#11966#0" expanded="true" />
-            <element signature="e#12023#12024#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -6969,10 +6924,10 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="93" column="32" selection-start-line="93" selection-start-column="19" selection-end-line="93" selection-end-column="32" />
           <folding>
-            <element signature="e#3491#4118#0" expanded="true" />
-            <element signature="e#3692#3706#0" expanded="true" />
-            <element signature="e#3750#3776#0" expanded="true" />
-            <element signature="e#4117#4118#0" expanded="true" />
+            <element signature="e#3491#4118#0" expanded="false" />
+            <element signature="e#3692#3706#0" expanded="false" />
+            <element signature="e#3750#3776#0" expanded="false" />
+            <element signature="e#4117#4118#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -6981,12 +6936,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="67" column="8" selection-start-line="67" selection-start-column="8" selection-end-line="67" selection-end-column="8" />
-          <folding>
-            <element signature="e#1816#1873#0" expanded="true" />
-            <element signature="e#1899#1949#0" expanded="true" />
-            <element signature="e#2576#2577#0" expanded="true" />
-            <element signature="e#2627#2628#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -7043,7 +6992,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0">
           <caret line="60" column="9" selection-start-line="60" selection-start-column="9" selection-end-line="60" selection-end-column="9" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -7075,7 +7023,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.15789473">
           <caret line="4" column="39" selection-start-line="4" selection-start-column="39" selection-end-line="4" selection-end-column="39" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -7084,20 +7031,18 @@
         <state vertical-scroll-proportion="0.0">
           <caret line="81" column="36" selection-start-line="81" selection-start-column="36" selection-end-line="81" selection-end-column="36" />
           <folding>
-            <element signature="e#2793#2825#0" expanded="true" />
+            <element signature="imports" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/Documents/workspace/fleetcents/android/remote_tpms/app/src/main/java/com/fleetcents/remote_tpms/fleetcentstpmsremoteclient/MainActivity.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.40379405">
+        <state vertical-scroll-proportion="0.0">
           <caret line="42" column="27" selection-start-line="42" selection-start-column="27" selection-end-line="42" selection-end-column="27" />
           <folding>
             <element signature="e#1227#1255#0" expanded="true" />
             <element signature="e#1274#1301#0" expanded="true" />
-            <element signature="e#1338#1366#0" expanded="true" />
-            <element signature="e#1385#1412#0" expanded="true" />
           </folding>
         </state>
       </provider>

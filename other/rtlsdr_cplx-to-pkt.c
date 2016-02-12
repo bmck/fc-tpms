@@ -129,7 +129,7 @@ char *get_url( /*long addr, long press, long temp,*/ char *returned_url) {
   long press = get_pressure_psi();
   long tempc = get_temp_c();
 
-  sprintf(url, "http://server11288.baremetalcloud.com/tire_samples/create?tire_sample[sensor_id]=%ld&tire_sample[receiver_id]=%d&tire_sample[psi]=%ld&tire_sample[tempc]=%ld&tire_sample[sample_time]=%d-%02d-%02d%%20%02d:%02d:%02d",
+  sprintf(url, "http://www.fleetcents.com/tire_samples/create?tire_sample[sensor_id]=%ld&tire_sample[receiver_id]=%d&tire_sample[psi]=%ld&tire_sample[tempc]=%ld&tire_sample[sample_time]=%d-%02d-%02d%%20%02d:%02d:%02d",
     addr, 8, press, tempc, ptm->tm_year + 1900, ptm->tm_mon + 1, ptm->tm_mday, ptm->tm_hour, ptm->tm_min, ptm->tm_sec);
   LOGI("(%s:%d) url = %s\n", __FILE__, __LINE__,  url);
   return returned_url;
