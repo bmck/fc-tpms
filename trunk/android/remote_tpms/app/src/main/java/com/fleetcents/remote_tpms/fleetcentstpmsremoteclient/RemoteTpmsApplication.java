@@ -37,7 +37,7 @@ import java.util.HashMap;
         socketTimeout = 10000,
         httpMethod = HttpSender.Method.PUT,
         reportType = HttpSender.Type.JSON,
-        formUri = "http://server11288.baremetalcloud.com:5984/acra-remotetpms/_design/acra-storage/_update/report",
+        formUri = "http://www.fleetcents.com:5984/acra-remotetpms/_design/acra-storage/_update/report",
         formUriBasicAuthLogin = "remotetpms_reporter",
         formUriBasicAuthPassword = "w4r4w4Rjp"
 )

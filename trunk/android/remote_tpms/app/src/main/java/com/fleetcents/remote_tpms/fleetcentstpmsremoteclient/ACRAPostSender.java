@@ -27,7 +27,7 @@ import android.util.Log;
 
 
 public class ACRAPostSender implements ReportSender {
-    private final static String BASE_URL = "http://server11288.baremetalcloud.com/acra/acra.php";
+    private final static String BASE_URL = "http://www.fleetcents.com/acra/acra.php";
     private final static String SHARED_SECRET = "fc_w4r4w4Rq";
     private Map<String, String> custom_data = null;
 
