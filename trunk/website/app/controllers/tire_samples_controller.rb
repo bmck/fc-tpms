@@ -56,6 +56,26 @@ class TireSamplesController < ApplicationController
         status: 403 and return
     end
 
+    stuff = '{"0":{"channelId":6726,"timestamp":"' + DateTime.now.utc.to_i.to_s +
+      '","GPS":"33.7550,-84.3900","data":{' +
+    [
+      '"Pressure1":{"value":"' + params[:tire_sample][:psi].to_s + '","unit":"PSI"}',
+      '"Pressure2":{"value":"' + params[:tire_sample][:psi].to_s + '","unit":"PSI"}',
+      '"Pressure3":{"value":"' + params[:tire_sample][:psi].to_s + '","unit":"PSI"}',
+      '"Pressure4":{"value":"' + params[:tire_sample][:psi].to_s + '","unit":"PSI"}'
+    ].join(',') +
+      '}}}'
+
+    ashu_s_call = HTTParty.post(
+      'http://test.imsight.com/channelAPI/insertBatch',
+      body: {
+        channelId: 6726,
+        key: 'MNLQ0HRDGL9XUSOR',
+        data: stuff
+      },
+      headers: { 'Content-Type' => 'application/x-www-form-urlencoded' }
+    )
+
     respond_to do |format|
       format.html { render text: 'ok', status: 200 and return }
       format.js {  }
