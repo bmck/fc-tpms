@@ -56,7 +56,7 @@ class TireSamplesController < ApplicationController
         status: 403 and return
     end
 
-    stuff = '{"0":{"channelId":6726,"timestamp":"' + DateTime.now.utc.to_i.to_s +
+    stuff = '{"0":{"channelId":6726,"timestamp":"' + @tire_sample.sample_time.to_i.to_s +
       '","GPS":"33.7550,-84.3900","data":{' +
     [
       '"Pressure1":{"value":"' + params[:tire_sample][:psi].to_s + '","unit":"PSI"}',
